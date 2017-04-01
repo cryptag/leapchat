@@ -16,13 +16,9 @@ var upgrader = websocket.Upgrader{
 
 func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Get proper authToken
-		authToken := ""
-		room, err := rooms.GetRoom(authToken)
-		if err != nil {
-			WriteError(w, err.Error(), err)
-			return
-		}
+		// TODO: Get proper roomID based on auth token
+		roomID := ""
+		room := rooms.GetRoom(roomID)
 
 		wsConn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {

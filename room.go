@@ -27,15 +27,17 @@ func NewRoomManager() *RoomManager {
 	}
 }
 
-func (rm *RoomManager) GetRoom(token string) (*Room, error) {
-	rm.mu.RLock()
-	defer rm.mu.RUnlock()
+func (rm *RoomManager) GetRoom(roomID string) *Room {
+	rm.mu.Lock()
+	defer rm.mu.Unlock()
 
-	room, ok := rm.rooms[token]
+	room, ok := rm.rooms[roomID]
 	if !ok {
-		return nil, ErrRoomNotFound
+		newRoom := NewRoom(roomID)
+		rm.rooms[roomID] = newRoom
+		return newRoom
 	}
-	return room, nil
+	return room
 }
 
 type Message []byte
@@ -47,6 +49,13 @@ type Room struct {
 
 	clientLock sync.RWMutex
 	msgLock    sync.RWMutex
+}
+
+func NewRoom(roomID string) *Room {
+	return &Room{
+		ID:       roomID,
+		messages: []Message{}, // So that they marshal to `[]`, not `null`
+	}
 }
 
 // TODO
