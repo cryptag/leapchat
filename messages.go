@@ -1,13 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
+	"sync"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
+
+type Message []byte
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -18,6 +20,7 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO: Get proper authToken
 		authToken := ""
+
 		room, err := rooms.GetRoom(authToken)
 		if err != nil {
 			WriteError(w, err.Error(), err)
@@ -31,65 +34,63 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 			WriteError(w, errStr, errors.New(fullErr))
 			return
 		}
+
 		client := &Client{
-			wsConn:  wsConn,
-			httpW:   w,
-			httpReq: r,
+			wsConn:    wsConn,
+			writeLock: sync.Mutex{},
+			httpW:     w,
+			httpReq:   r,
+			room:      room,
 		}
 		room.AddClient(client)
+
 		go messageReader(room, client)
 	}
 }
 
 func messageReader(room *Room, client *Client) {
 	// Send them already existing messages
-	messages, err := room.GetMessages()
+	err := client.wsConn.WriteJSON(
+		OutgoingPayload{Ephemeral: room.GetMessages()},
+	)
 	if err != nil {
 		WriteError(client.httpW, err.Error(), err)
 		return
 	}
 
-	outgoing := OutgoingPayload{Ephemeral: messages}
-	// TODO: Do more error handling
-	jsonData, _ := json.Marshal(outgoing)
-	client.wsConn.WriteMessage(websocket.TextMessage, jsonData)
-
 	for {
 		messageType, p, err := client.wsConn.ReadMessage()
 		if err != nil {
 			// TODO: Consider adding more checks
-			log.Printf("Error reading ws message: %s", err)
+			log.Debugf("Error reading ws message: %s", err)
 			return
 		}
 
 		// Respond to message depending on message type
 		switch messageType {
 		case websocket.TextMessage:
-			// TODO: Should this be blocking?
-			// Steve: If saving to disk fails, log but don't fail
 			msg := Message(p)
-
-			saveMessageToDisk(msg)
-
+			go saveMessageToDisk(msg)
+			room.AddMessages([]Message{msg})
 			room.BroadcastMessages(client, msg)
 
 		case websocket.BinaryMessage:
-			log.Println("Binary messages are unsupported")
+			log.Debug("Binary messages are unsupported")
 
 		case websocket.CloseMessage:
-			log.Println("Got close message")
+			log.Debug("Got close message")
 			room.RemoveClient(client)
 			return
 
 		default:
-			log.Printf("Unsupport messageType: %d", messageType)
+			log.Debugf("Unsupport messageType: %d", messageType)
 
 		}
 
 	}
 }
 
-// TODO
+// TODO: Save message to disk.
 func saveMessageToDisk(msg Message) error {
 	return nil
 }

@@ -7,6 +7,8 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // TODO: Create operation for creating new rooms
@@ -17,19 +19,20 @@ var (
 )
 
 type RoomManager struct {
-	mu    sync.RWMutex
+	lock  sync.RWMutex
 	rooms map[string]*Room // map[miniLockID]*Room
 }
 
 func NewRoomManager() *RoomManager {
 	return &RoomManager{
+		lock:  sync.RWMutex{},
 		rooms: map[string]*Room{},
 	}
 }
 
 func (rm *RoomManager) GetRoom(token string) (*Room, error) {
-	rm.mu.RLock()
-	defer rm.mu.RUnlock()
+	rm.lock.RLock()
+	defer rm.lock.RUnlock()
 
 	room, ok := rm.rooms[token]
 	if !ok {
@@ -37,8 +40,6 @@ func (rm *RoomManager) GetRoom(token string) (*Room, error) {
 	}
 	return room, nil
 }
-
-type Message []byte
 
 type Room struct {
 	ID       string // miniLock ID
@@ -49,14 +50,13 @@ type Room struct {
 	msgLock    sync.RWMutex
 }
 
-// TODO
-func (r *Room) GetMessages() ([]Message, error) {
+func (r *Room) GetMessages() []Message {
 	r.msgLock.Lock()
 	defer r.msgLock.Unlock()
 
 	newMsgs := make([]Message, len(r.messages))
 	copy(newMsgs, r.messages)
-	return newMsgs, nil
+	return newMsgs
 }
 
 func (r *Room) AddMessages(msgs []Message) {
@@ -71,8 +71,6 @@ func (r *Room) AddClient(c *Client) {
 	defer r.clientLock.Unlock()
 
 	r.Clients = append(r.Clients, c)
-	// TODO: Distribute client joined message
-	// r.BroadcastMessages()
 }
 
 func (r *Room) RemoveClient(c *Client) {
@@ -85,8 +83,6 @@ func (r *Room) RemoveClient(c *Client) {
 			break
 		}
 	}
-	// TODO: Distribute client left message
-	// r.BroadcastMessages()
 }
 
 // If it is a message from the room, make the sender nil.
@@ -101,10 +97,13 @@ func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
 }
 
 type Client struct {
-	wsConn *websocket.Conn
+	wsConn    *websocket.Conn
+	writeLock sync.Mutex
 
 	httpW   http.ResponseWriter
 	httpReq *http.Request
+
+	room *Room
 }
 
 type OutgoingPayload struct {
@@ -112,6 +111,8 @@ type OutgoingPayload struct {
 }
 
 func (c *Client) SendMessages(msgs ...Message) error {
+	c.writeLock.Lock()
+	defer c.writeLock.Unlock()
 	outgoing := OutgoingPayload{Ephemeral: msgs}
 
 	body, err := json.Marshal(outgoing)
@@ -121,7 +122,8 @@ func (c *Client) SendMessages(msgs ...Message) error {
 
 	err = c.wsConn.WriteMessage(websocket.TextMessage, body)
 	if err != nil {
-		// TODO: Remove client from room
+		log.Debugf("Error sending message to client. Removing client from room. Err: %s", err)
+		c.room.RemoveClient(c)
 		return err
 	}
 

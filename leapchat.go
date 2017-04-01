@@ -3,19 +3,26 @@ package main
 import (
 	"flag"
 	"html/template"
-	"log"
 	"net/http"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
 
-var Debug = false
+func init() {
+	log.SetLevel(log.DebugLevel)
+}
 
 func main() {
 	httpAddr := flag.String("http", "127.0.0.1:8000",
 		"Address to listen on HTTP")
+	prod := flag.Bool("prod", false, "Run in Production mode.")
 	flag.Parse()
+
+	if *prod {
+		log.SetLevel(log.FatalLevel)
+	}
 
 	r := mux.NewRouter()
 
@@ -38,7 +45,7 @@ func main() {
 		IdleTimeout:  120 * time.Second,
 		Handler:      r,
 	}
-	log.Printf("Listening on %v\n", *httpAddr)
+	log.Infof("Listening on %v", *httpAddr)
 	log.Fatal(srv.ListenAndServe())
 }
 

@@ -5,8 +5,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 const contentTypeJSON = "application/json; charset=utf-8"
@@ -16,10 +17,8 @@ func WriteError(w http.ResponseWriter, errStr string, secretErr error) error {
 }
 
 func WriteErrorStatus(w http.ResponseWriter, errStr string, secretErr error, status int) error {
-	if Debug {
-		log.Printf("Real error: %v\n", secretErr)
-		log.Printf("Returning HTTP %d w/error: %q\n", status, errStr)
-	}
+	log.Debugf("Real error: %v", secretErr)
+	log.Debugf("Returning HTTP %d w/error: %q", status, errStr)
 
 	w.Header().Set("Content-Type", contentTypeJSON)
 	w.WriteHeader(status)
