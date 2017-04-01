@@ -2,74 +2,126 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
+	"net/http"
 	"sync"
 
 	"github.com/gorilla/websocket"
 )
 
 // TODO: Create operation for creating new rooms
-var ROOMS map[string]*Room
+var AllRooms = NewRoomManager()
 
-type Room struct {
-	Messages []string
-	Clients  []*Client
-	ID       string
+var (
+	ErrRoomNotFound = errors.New("Error: Room not found")
+)
 
-	clientRWLock sync.RWMutex
+type RoomManager struct {
+	mu    sync.RWMutex
+	rooms map[string]*Room // map[miniLockID]*Room
 }
 
-func getRoom(token string) *Room {
-	return ROOMS[token]
+func NewRoomManager() *RoomManager {
+	return &RoomManager{
+		rooms: map[string]*Room{},
+	}
+}
+
+func (rm *RoomManager) GetRoom(token string) (*Room, error) {
+	rm.mu.RLock()
+	defer rm.mu.RUnlock()
+
+	room, ok := rm.rooms[token]
+	if !ok {
+		return nil, ErrRoomNotFound
+	}
+	return room, nil
+}
+
+type Message []byte
+
+type Room struct {
+	ID       string // miniLock ID
+	Clients  []*Client
+	messages []Message
+
+	clientLock sync.RWMutex
+	msgLock    sync.RWMutex
 }
 
 // TODO
 func (r *Room) GetMessages() ([]Message, error) {
-	return []Message{}, nil
+	r.msgLock.Lock()
+	defer r.msgLock.Unlock()
+
+	newMsgs := make([]Message, len(r.messages))
+	copy(newMsgs, r.messages)
+	return newMsgs, nil
+}
+
+func (r *Room) AddMessages(msgs []Message) {
+	r.msgLock.Lock()
+	defer r.msgLock.Unlock()
+
+	r.messages = append(r.messages, msgs...)
 }
 
 func (r *Room) AddClient(c *Client) {
-	r.clientRWLock.Lock()
-	defer r.clientRWLock.Unlock()
+	r.clientLock.Lock()
+	defer r.clientLock.Unlock()
+
 	r.Clients = append(r.Clients, c)
 	// TODO: Distribute client joined message
-	// r.NewMessage()
+	// r.BroadcastMessages()
 }
 
 func (r *Room) RemoveClient(c *Client) {
-	r.clientRWLock.Lock()
-	defer r.clientRWLock.Unlock()
+	r.clientLock.Lock()
+	defer r.clientLock.Unlock()
 
 	for i, client := range r.Clients {
 		if client == c {
 			r.Clients = append(r.Clients[:i], r.Clients[i+1:]...)
-			return
+			break
 		}
 	}
 	// TODO: Distribute client left message
-	// r.NewMessage()
+	// r.BroadcastMessages()
 }
 
 // If it is a message from the room, make the sender nil.
-func (r *Room) NewMessage(sender *Client, msg Message) {
-	for _, client := range r.Clients {
-		if client != sender {
-			client.SendMessage(msg)
+func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
+	for _, msg := range msgs {
+		for _, client := range r.Clients {
+			if client != sender {
+				client.SendMessages(msg)
+			}
 		}
 	}
 }
 
 type Client struct {
-	conn *websocket.Conn
+	wsConn *websocket.Conn
+
+	httpW   http.ResponseWriter
+	httpReq *http.Request
 }
 
-func (c *Client) SendMessage(msg Message) error {
-	body, err := json.Marshal(msg)
+type OutgoingPayload struct {
+	Ephemeral []Message `json:"ephemeral"`
+}
+
+func (c *Client) SendMessages(msgs ...Message) error {
+	outgoing := OutgoingPayload{Ephemeral: msgs}
+
+	body, err := json.Marshal(outgoing)
 	if err != nil {
 		return err
 	}
 
-	err = c.conn.WriteMessage(websocket.TextMessage, body)
+	err = c.wsConn.WriteMessage(websocket.TextMessage, body)
 	if err != nil {
+		// TODO: Remove client from room
 		return err
 	}
 

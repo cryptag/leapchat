@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var Debug = false
+
 func main() {
 	httpAddr := flag.String("http", "127.0.0.1:8000",
 		"Address to listen on HTTP")
@@ -25,7 +27,7 @@ func main() {
 	r.HandleFunc("/", GetIndex).Methods("GET")
 	// r.HandleFunc("/api/login", Login).Methods("GET")
 	// r.HandleFunc("/api/messages", miniware.Auth(Login)).Methods("GET")
-	r.HandleFunc("/api/ws/messages/all", WSMessagesHandler).Methods("GET")
+	r.HandleFunc("/api/ws/messages/all", WSMessagesHandler(AllRooms)).Methods("GET")
 
 	http.Handle("/", r)
 
