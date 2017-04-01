@@ -23,8 +23,8 @@ func main() {
 		http.FileServer(http.Dir("./build")))).Methods("GET")
 
 	r.HandleFunc("/", GetIndex).Methods("GET")
-	// r.HandleFunc("/api/login", Login).Methods("GET")
-	// r.HandleFunc("/api/messages", miniware.Auth(Login)).Methods("GET")
+	// r.HandleFunc("/v1/api/login", Login).Methods("GET")
+	// r.HandleFunc("/v1/api/messages", miniware.Auth(Login)).Methods("GET")
 
 	http.Handle("/", r)
 
