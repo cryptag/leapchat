@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/", GetIndex).Methods("GET")
 	// r.HandleFunc("/api/login", Login).Methods("GET")
 	// r.HandleFunc("/api/messages", miniware.Auth(Login)).Methods("GET")
+	r.HandleFunc("/api/ws/messages/all", WSMessagesHandler).Methods("GET")
 
 	http.Handle("/", r)
 
