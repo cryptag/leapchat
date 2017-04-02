@@ -25,7 +25,6 @@ type RoomManager struct {
 
 func NewRoomManager() *RoomManager {
 	return &RoomManager{
-		lock:  sync.RWMutex{},
 		rooms: map[string]*Room{},
 	}
 }
@@ -51,8 +50,8 @@ type Room struct {
 }
 
 func (r *Room) GetMessages() []Message {
-	r.msgLock.Lock()
-	defer r.msgLock.Unlock()
+	r.msgLock.RLock()
+	defer r.msgLock.RUnlock()
 
 	newMsgs := make([]Message, len(r.messages))
 	copy(newMsgs, r.messages)
@@ -87,11 +86,12 @@ func (r *Room) RemoveClient(c *Client) {
 
 // If it is a message from the room, make the sender nil.
 func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
-	for _, msg := range msgs {
-		for _, client := range r.Clients {
-			if client != sender {
-				client.SendMessages(msg)
-			}
+	r.clientLock.RLock()
+	defer r.clientLock.RUnlock()
+
+	for _, client := range r.Clients {
+		if client != sender {
+			go client.SendMessages(msgs...)
 		}
 	}
 }
@@ -104,10 +104,6 @@ type Client struct {
 	httpReq *http.Request
 
 	room *Room
-}
-
-type OutgoingPayload struct {
-	Ephemeral []Message `json:"ephemeral"`
 }
 
 func (c *Client) SendMessages(msgs ...Message) error {

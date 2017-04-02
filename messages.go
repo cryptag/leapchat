@@ -1,15 +1,23 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
-	"sync"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
 
 type Message []byte
+
+type OutgoingPayload struct {
+	Ephemeral []Message `json:"ephemeral"`
+}
+
+type IncomingPayload struct {
+	Ephemeral []Message `json:"ephemeral"`
+}
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -36,11 +44,10 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 		}
 
 		client := &Client{
-			wsConn:    wsConn,
-			writeLock: sync.Mutex{},
-			httpW:     w,
-			httpReq:   r,
-			room:      room,
+			wsConn:  wsConn,
+			httpW:   w,
+			httpReq: r,
+			room:    room,
 		}
 		room.AddClient(client)
 
@@ -50,9 +57,7 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 
 func messageReader(room *Room, client *Client) {
 	// Send them already existing messages
-	err := client.wsConn.WriteJSON(
-		OutgoingPayload{Ephemeral: room.GetMessages()},
-	)
+	err := client.SendMessages(room.GetMessages()...)
 	if err != nil {
 		WriteError(client.httpW, err.Error(), err)
 		return
@@ -69,10 +74,16 @@ func messageReader(room *Room, client *Client) {
 		// Respond to message depending on message type
 		switch messageType {
 		case websocket.TextMessage:
-			msg := Message(p)
-			go saveMessageToDisk(msg)
-			room.AddMessages([]Message{msg})
-			room.BroadcastMessages(client, msg)
+			var payload IncomingPayload
+			err := json.Unmarshal(p, &payload)
+			if err != nil {
+				log.Debugf("Error unmarshalling message. Err: %s", err)
+				continue
+			}
+
+			go saveMessagesToDisk(payload.Ephemeral)
+			room.AddMessages(payload.Ephemeral)
+			room.BroadcastMessages(client, payload.Ephemeral...)
 
 		case websocket.BinaryMessage:
 			log.Debug("Binary messages are unsupported")
@@ -91,6 +102,6 @@ func messageReader(room *Room, client *Client) {
 }
 
 // TODO: Save message to disk.
-func saveMessageToDisk(msg Message) error {
+func saveMessagesToDisk(msg []Message) error {
 	return nil
 }
