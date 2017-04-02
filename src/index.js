@@ -73,7 +73,7 @@ export default class App extends Component {
         'X-Minilock-Id': this.state.mID
       },
     }).then(function(resp){
-      return resp.text();
+      return resp.blob();
     }).then(function(body){
       that.decryptMsg(body, function(authToken){
         that.setState({
@@ -106,9 +106,11 @@ export default class App extends Component {
 
   keypairFromURLHash(){
     let passphrase = document.location.hash;
-    console.log("URL hash is", passphrase);
+    console.log("URL hash is `%s`", passphrase);
     let email = sha384(passphrase + '@cryptag.org');
+
     let that = this;
+
     miniLock.crypto.getKeyPair(passphrase, email, function(keyPair){
       // Code from https://github.com/kaepora/miniLock/blob/ffea0ecb7a619d921129b8b4aed2081050ec48c1/src/js/ui.js#L78
       // May be useful:
