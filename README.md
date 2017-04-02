@@ -33,6 +33,7 @@ There is currently one public instance running at
 ```
 npm install
 mkdir build
+# Dev: watchify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js
 browserify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js
 go build
 ./leapchat
