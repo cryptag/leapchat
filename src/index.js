@@ -8,13 +8,20 @@ import { getMessagesForRoom, createMessage, deleteMessage } from './data/chat/me
 
 import { formatMessages } from './utils/chat';
 
+import Throbber from './components/general/Throbber';
+import UsernameModal from './components/modals/Username';
+
+const USERNAME_KEY = 'username';
+
 export default class App extends Component {
   constructor(props){
     super(props);
 
+    let username = localStorage.getItem(USERNAME_KEY);
+
     this.state = {
-      username: '',
-      showUsernameModal: false,
+      username: username,
+      showUsernameModal: true,
       messages: [],
       isLoadingMessages: true,
       alertMessage: 'Welcome to miniShare!',
@@ -22,11 +29,16 @@ export default class App extends Component {
     };
 
     this.decryptIfHash = this.decryptIfHash.bind(this);
-    // ChatRoom
+
     this.loadChatroom = this.loadChatroom.bind(this);
-    this.onSendMessage = this.onSendMessage.bind(this);
     this.populateMessages = this.populateMessages.bind(this);
-    this.onMessageDelete = this.onMessageDelete.bind(this);
+
+    this.onSendMessage = this.onSendMessage.bind(this);
+    this.onDeleteMessage = this.onDeleteMessage.bind(this);
+
+    this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
+    this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
+    this.onSetUsername = this.onSetUsername.bind(this);
   }
 
   decryptIfHash(){
@@ -37,20 +49,27 @@ export default class App extends Component {
 
   componentDidMount(){
     this.decryptIfHash();
+    this.loadChatroom("");
   }
 
-  promptForUsername(){
+  onSetUsernameClick(e){
     this.setState({
       showUsernameModal: true
     });
   }
 
-  loadUsername(){
-    let { username } = this.state;
+  onCloseUsernameModal(){
+    this.setState({
+      showUsernameModal: false
+    });
+  }
 
-    if (!username){
-      this.promptForUsername();
-    }
+  onSetUsername(username){
+    localStorage.setItem(USERNAME_KEY, username);
+    this.setState({
+      'username': username
+    });
+    this.onCloseUsernameModal();
   }
 
   loadChatroom(roomKey){
@@ -89,7 +108,7 @@ export default class App extends Component {
       });
   }
 
-  onMessageDelete(messageKey, onDeleteSuccess){
+  onDeleteMessage(messageKey, onDeleteSuccess){
     // messageKey will look like: "id:d4f371df-1e0e-4a67-5c8b-bbae29917ddd"
     let { currentRoomKey } = this.state;
     deleteMessage(currentRoomKey, messageKey)
@@ -101,14 +120,21 @@ export default class App extends Component {
   }
 
   render(){
+    let { username, showUsernameModal } = this.state;
+
     return (
       <main>
         <Nav />
+        {showUsernameModal && <UsernameModal
+                                username={username}
+                                showModal={showUsernameModal}
+                                onSetUsername={this.onSetUsername}
+                                onCloseModal={this.onCloseUsernameModal} />}
         <ChatContainer
           messages={this.state.messages}
           username={this.state.username}
           onSendMessage={this.onSendMessage}
-          onMessageDelete={this.onMessageDelete}
+          onDeleteMessage={this.onDeleteMessage}
           isLoadingMessages={this.state.isLoadingMessages} />
       </main>
     );

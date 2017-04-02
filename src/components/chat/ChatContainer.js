@@ -5,14 +5,14 @@ import MessageForm from './MessageForm';
 
 class ChatContainer extends Component {
   render(){
-    let {messages, username, isLoadingMessages, onSendMessage, onMessageDelete } = this.props;
+    let {messages, username, isLoadingMessages, onSendMessage, onDeleteMessage } = this.props;
     return (
       <div className="content">
         <MessageBox
           messages={messages}
           username={username}
           isLoadingMessages={isLoadingMessages}
-          onMessageDelete={onMessageDelete}/>
+          onDeleteMessage={onDeleteMessage}/>
         <MessageForm onSendMessage={onSendMessage} />
       </div>
     );

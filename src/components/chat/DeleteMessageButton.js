@@ -4,17 +4,17 @@ class DeleteMessageButton extends Component {
   constructor(props){
     super(props);
 
-    this.onMessageDelete = this.onMessageDelete.bind(this);
+    this.onDeleteMessage = this.onDeleteMessage.bind(this);
   }
 
-  onMessageDelete(e){
+  onDeleteMessage(e){
     let deleteLink = $(e.target).parent('a');
     let messageKey = deleteLink.data('message-key');
 
     let messageContainer = deleteLink.parent('li');
 
     if (confirm('delete this message?')){
-      this.props.onMessageDelete(messageKey);
+      this.props.onDeleteMessage(messageKey);
     } else {
       // no-op
     }
@@ -23,7 +23,7 @@ class DeleteMessageButton extends Component {
   render(){
     let { message } = this.props;
     return (
-      <a href="#" onClick={this.onMessageDelete} data-message-key={message.key} className="delete-message">
+      <a href="#" onClick={this.onDeleteMessage} data-message-key={message.key} className="delete-message">
         <i className="fa fa-window-close"></i>
       </a>
     )

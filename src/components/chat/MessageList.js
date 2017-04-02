@@ -6,7 +6,7 @@ import Message from './Message';
 class MessageList extends Component {
 
   render(){
-    let { messages, username, onMessageDelete } = this.props;
+    let { messages, username, onDeleteMessage } = this.props;
 
     return (
       <ul>
@@ -15,7 +15,7 @@ class MessageList extends Component {
                     key={message.key}
                     message={message}
                     username={username}
-                    onMessageDelete={onMessageDelete} />
+                    onDeleteMessage={onDeleteMessage} />
         } )}
       </ul>
     );
