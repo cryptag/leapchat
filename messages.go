@@ -68,6 +68,7 @@ func messageReader(room *Room, client *Client) {
 		if err != nil {
 			// TODO: Consider adding more checks
 			log.Debugf("Error reading ws message: %s", err)
+			room.RemoveClient(client)
 			return
 		}
 
