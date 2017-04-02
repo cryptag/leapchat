@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"sync"
 
-	"github.com/gorilla/websocket"
-
 	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/websocket"
 )
 
 var AllRooms = NewRoomManager()
