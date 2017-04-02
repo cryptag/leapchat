@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
 import Nav from './components/layout/Nav';
 import ChatContainer from './components/chat/ChatContainer';
@@ -113,3 +114,7 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {}
+
+ReactDOM.render(<App />, document.getElementById('root'));

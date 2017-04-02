@@ -31,7 +31,7 @@ class MessageForm extends Component {
         <hr />
         <form role="form" className="form" onSubmit={this.onSendMessage}>
           <div className="col-md-12">
-            <input type="text" className="form-control" name="message" ref="messageBox" placeholder="Whatcha wanna say?" />
+            <input type="text" className="form-control" name="message" ref="messageBox" placeholder="Send a message" />
           </div>
         </form>
       </div>
