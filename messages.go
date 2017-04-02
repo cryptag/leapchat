@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/cryptag/minishare/miniware"
 	"github.com/gorilla/websocket"
 )
 
@@ -19,30 +19,17 @@ type IncomingPayload struct {
 	Ephemeral []Message `json:"ephemeral"`
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
 func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Get proper roomID based on auth token
-		roomID := ""
+		// Both guaranteed by middleware
+		wsConn, _ := miniware.GetWebsocketConn(r)
+		roomID, _ := miniware.GetMinilockID(r)
+
 		room := rooms.GetRoom(roomID)
 
-		wsConn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			errStr := "Unable to upgrade to websocket conn"
-			fullErr := errStr + ": " + err.Error()
-			WriteError(w, errStr, errors.New(fullErr))
-			return
-		}
-
 		client := &Client{
-			wsConn:  wsConn,
-			httpW:   w,
-			httpReq: r,
-			room:    room,
+			wsConn: wsConn,
+			room:   room,
 		}
 		room.AddClient(client)
 
@@ -51,10 +38,10 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 }
 
 func messageReader(room *Room, client *Client) {
-	// Send them already existing messages
+	// Send them already-existing messages
 	err := client.SendMessages(room.GetMessages()...)
 	if err != nil {
-		WriteError(client.httpW, err.Error(), err)
+		client.SendError(err.Error(), err)
 		return
 	}
 
