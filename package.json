@@ -33,6 +33,8 @@
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
     "btoa": "^1.1.2",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^3.1.0",
     "node-notifier": "^5.1.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
