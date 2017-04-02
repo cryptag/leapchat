@@ -55,7 +55,7 @@ func messageReader(room *Room, client *Client) {
 	// Send them already-existing messages
 	err := client.SendMessages(room.GetMessages()...)
 	if err != nil {
-		WSWriteError(client.wsConn, err.Error(), err)
+		client.SendError(err.Error(), err)
 		return
 	}
 

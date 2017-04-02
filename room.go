@@ -135,3 +135,10 @@ func (c *Client) SendMessages(msgs ...Message) error {
 
 	return nil
 }
+
+func (c *Client) SendError(errStr string, secretErr error) error {
+	c.writeLock.Lock()
+	defer c.writeLock.Unlock()
+
+	return WSWriteError(c.wsConn, errStr, secretErr)
+}
