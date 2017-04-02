@@ -44,6 +44,9 @@ func main() {
 	srv := NewServer(m, *httpAddr)
 
 	if *prod {
+		if *domain == "" {
+			log.Fatal("You must specify a -domain when using the -prod flag.")
+		}
 		// Setup http->https redirection
 		httpsPort := strings.SplitN(*httpsAddr, ":", 2)[1]
 		go redirectToHTTPS(*httpAddr, httpsPort)
