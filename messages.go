@@ -7,6 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/cryptag/minishare/miniware"
+	gorillacontext "github.com/gorilla/context"
 	"github.com/gorilla/websocket"
 )
 
@@ -28,7 +29,7 @@ var upgrader = websocket.Upgrader{
 func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Guaranteed by middleware
-		roomID := gorillacontext.Get(req, miniware.MINILOCK_ID_KEY).(string)
+		roomID := gorillacontext.Get(r, miniware.MINILOCK_ID_KEY).(string)
 
 		room := rooms.GetRoom(roomID)
 
