@@ -42,10 +42,8 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 		}
 
 		client := &Client{
-			wsConn:  wsConn,
-			httpW:   w,
-			httpReq: r,
-			room:    room,
+			wsConn: wsConn,
+			room:   room,
 		}
 		room.AddClient(client)
 
@@ -54,10 +52,10 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 }
 
 func messageReader(room *Room, client *Client) {
-	// Send them already existing messages
+	// Send them already-existing messages
 	err := client.SendMessages(room.GetMessages()...)
 	if err != nil {
-		WriteError(client.httpW, err.Error(), err)
+		WSWriteError(client.wsConn, err.Error(), err)
 		return
 	}
 

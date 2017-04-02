@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"net/http"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -113,9 +112,6 @@ func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
 type Client struct {
 	wsConn    *websocket.Conn
 	writeLock sync.Mutex
-
-	httpW   http.ResponseWriter
-	httpReq *http.Request
 
 	room *Room
 }
