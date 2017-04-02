@@ -61,7 +61,6 @@ func main() {
 	msgs := miniware.Auth(
 		http.HandlerFunc(WSMessagesHandler(AllRooms)),
 		m,
-		WriteErrorStatus,
 	)
 	r.HandleFunc("/api/ws/messages/all", msgs).Methods("GET")
 

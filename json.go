@@ -33,5 +33,7 @@ func WSWriteError(wsConn *websocket.Conn, errStr string, secretErr error) error 
 	log.Debugf("WebSocket error: " + secretErr.Error())
 
 	wsErr := fmt.Sprintf(`{"error":%q}`, errStr)
-	return wsConn.WriteMessage(websocket.TextMessage, []byte(wsErr))
+	err := wsConn.WriteMessage(websocket.TextMessage, []byte(wsErr))
+	wsConn.Close() // TODO: Will this panic?
+	return err
 }

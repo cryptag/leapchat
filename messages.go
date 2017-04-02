@@ -2,12 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/cryptag/minishare/miniware"
-	gorillacontext "github.com/gorilla/context"
 	"github.com/gorilla/websocket"
 )
 
@@ -21,25 +19,13 @@ type IncomingPayload struct {
 	Ephemeral []Message `json:"ephemeral"`
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
 func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Guaranteed by middleware
-		roomID := gorillacontext.Get(r, miniware.MINILOCK_ID_KEY).(string)
+		// Both guaranteed by middleware
+		wsConn, _ := miniware.GetWebsocketConn(r)
+		roomID, _ := miniware.GetMinilockID(r)
 
 		room := rooms.GetRoom(roomID)
-
-		wsConn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			errStr := "Unable to upgrade to websocket conn"
-			fullErr := errStr + ": " + err.Error()
-			WriteError(w, errStr, errors.New(fullErr))
-			return
-		}
 
 		client := &Client{
 			wsConn: wsConn,
