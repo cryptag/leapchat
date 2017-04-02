@@ -39,8 +39,6 @@
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.8",
     "react-dom": "^15.4.2",
-    "superagent": "^3.5.2",
-    "superagent-prefix": "0.0.2",
     "utf8": "^2.1.2",
     "watchify": "^3.9.0"
   }
