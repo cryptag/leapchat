@@ -1,17 +1,29 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
+
+	"github.com/cryptag/gosecure/canary"
+	"github.com/cryptag/gosecure/content"
+	"github.com/cryptag/gosecure/csp"
+	"github.com/cryptag/gosecure/frame"
+	"github.com/cryptag/gosecure/hsts"
+	"github.com/cryptag/gosecure/referrer"
+	"github.com/cryptag/gosecure/xss"
+	"github.com/cryptag/minishare/miniware"
 
 	log "github.com/Sirupsen/logrus"
 	minilock "github.com/cathalgarvey/go-minilock"
 	"github.com/cathalgarvey/go-minilock/taber"
-	"github.com/cryptag/minishare/miniware"
 	"github.com/gorilla/mux"
+	"github.com/justinas/alice"
 	uuid "github.com/nu7hatch/gouuid"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 const (
@@ -45,6 +57,7 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 
 func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 	r := NewRouter(m)
+
 	return &http.Server{
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
@@ -52,6 +65,18 @@ func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 		IdleTimeout:  120 * time.Second,
 		Handler:      r,
 	}
+}
+
+func ProductionServer(srv *http.Server, httpsAddr string, domain string) {
+	gotWarrant := false
+	middleware := alice.New(canary.GetHandler(&gotWarrant),
+		csp.GetHandler(domain), hsts.PreloadHandler, frame.DenyHandler,
+		content.GetHandler, xss.GetHandler, referrer.NoHandler)
+
+	srv.Handler = middleware.Then(srv.Handler)
+
+	srv.Addr = httpsAddr
+	srv.TLSConfig = getTLSConfig(domain)
 }
 
 func GetIndex(w http.ResponseWriter, req *http.Request) {
@@ -109,4 +134,46 @@ func parseMinilockID(req *http.Request) (string, *taber.Keys, error) {
 	}
 
 	return mID, keypair, nil
+}
+
+func redirectToHTTPS(httpAddr, httpsPort string) {
+	srv := &http.Server{
+		Addr:         httpAddr,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			w.Header().Set("Connection", "close")
+			domain := strings.SplitN(req.Host, ":", 2)[0]
+			url := "https://" + domain + ":" + httpsPort + req.URL.String()
+			http.Redirect(w, req, url, http.StatusFound)
+		}),
+	}
+	log.Infof("Listening on %v\n", httpAddr)
+	log.Fatal(srv.ListenAndServe())
+}
+
+func getTLSConfig(domain string) *tls.Config {
+	m := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist(domain),
+		Cache:      autocert.DirCache("./" + domain),
+	}
+
+	return &tls.Config{
+		PreferServerCipherSuites: true,
+		CurvePreferences: []tls.CurveID{
+			tls.CurveP256,
+			tls.X25519,
+		},
+		MinVersion: tls.VersionTLS12,
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+		},
+		GetCertificate: m.GetCertificate,
+	}
 }
