@@ -30,10 +30,32 @@ export default class App extends React.Component {
   }
 
   decryptMsg(msg, callback){
+    console.log("Trying to decrypt", msg);
     miniLock.crypto.decryptFile(msg,
                                 this.state.mID,
                                 this.state.keyPair.secretKey,
                                 callback);
+  }
+
+  login(callback){
+    let that = this;
+
+    let host = document.location.host;
+    // TODO: Use https, not http, in production
+    fetch("http://" + host + "/api/login", {
+      headers: {
+        'X-Minilock-Id': this.state.mID
+      },
+    }).then(function(resp){
+      return resp.text();
+    }).then(function(body){
+      that.decryptMsg(body, function(authToken){
+        that.setState({
+          authToken: authToken
+        })
+        callback();
+      })
+    })
   }
 
   newWebSocket(url){
@@ -42,22 +64,15 @@ export default class App extends React.Component {
 
     let that = this;
 
-    ws.onmessage = function(event){
-      let data = event.data;
-      if (ws.first) {
-        // This is the first message, therefore it's an auth challenge
-        that.decryptMsg(data, function(authToken){
-          ws.send(authToken);
-          that.setState({authToken: authToken});
-        });
-        ws.first = false;
-        return;
-      }
-      console.log("Event data:", data);
+    ws.onopen = function(event){
+      let authToken = that.state.authToken;
+      console.log("Sending auth token `%s`", authToken);
+      ws.send(authToken);
     };
 
-    ws.onopen = function(event){
-      ws.send(that.state.mID);
+    ws.onmessage = function(event){
+      let data = event.data;
+      console.log("Event data:", data);
     };
 
     return ws;
@@ -65,6 +80,7 @@ export default class App extends React.Component {
 
   keypairFromURLHash(){
     let passphrase = document.location.hash;
+    console.log("URL hash is", passphrase);
     let email = sha384(passphrase + '@cryptag.org');
     let that = this;
     miniLock.crypto.getKeyPair(passphrase, email, function(keyPair){
@@ -74,7 +90,9 @@ export default class App extends React.Component {
       miniLock.session.keys = keyPair
       miniLock.session.keyPairReady = true
 
+      console.log("keyPair ==", keyPair);
       let mID = miniLock.crypto.getMiniLockID(keyPair.publicKey);
+      console.log("mID ==", mID);
 
       that.setState({
         keyPair: keyPair,
@@ -82,12 +100,15 @@ export default class App extends React.Component {
       });
 
       let host = document.location.host;
-      // TODO: Use wss, not ws, in production
-      let wsMsgs = that.newWebSocket("ws://" + host + "/api/ws/messages/all");
 
-      that.setState({
-        wsMsgs: wsMsgs
-      });
+      that.login(function(){
+        // TODO: Use wss, not ws, in production
+        let wsMsgs = that.newWebSocket("ws://" + host + "/api/ws/messages/all");
+
+        that.setState({
+          wsMsgs: wsMsgs
+        });
+      })
     })
   }
 
