@@ -2,20 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"sync"
 
-	"github.com/gorilla/websocket"
-
 	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/websocket"
 )
 
-// TODO: Create operation for creating new rooms
 var AllRooms = NewRoomManager()
-
-var (
-	ErrRoomNotFound = errors.New("Error: Room not found")
-)
 
 type RoomManager struct {
 	lock  sync.RWMutex

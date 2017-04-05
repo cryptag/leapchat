@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/cryptag/minishare/miniware"
+
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
 
