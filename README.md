@@ -39,4 +39,4 @@ go build
 ./leapchat
 ```
 
-Then view <http://localhost:8000>.
+Then view <http://localhost:8080>.
