@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 var sha384 = require('js-sha512').sha384;
@@ -53,6 +52,21 @@ export default class App extends Component {
 
   componentDidMount(){
     this.keypairFromURLHash();
+    this.loadChatroom("");
+  }
+
+  promptForUsername(){
+    this.setState({
+      showUsernameModal: true
+    });
+  }
+
+  loadUsername(){
+    let { username } = this.state;
+
+    if (!username){
+      this.promptForUsername();
+    }
   }
 
   decryptMsg(msg, callback){
@@ -138,11 +152,6 @@ export default class App extends Component {
         });
       })
     })
-  }
-
-  componentDidMount(){
-    this.decryptIfHash();
-    this.loadChatroom("");
   }
 
   onSetUsernameClick(e){
