@@ -61,7 +61,7 @@ func messageReader(room *Room, client *Client) {
 			var payload IncomingPayload
 			err := json.Unmarshal(p, &payload)
 			if err != nil {
-				log.Debugf("Error unmarshalling message. Err: %s", err)
+				log.Debugf("Error unmarshalling message `%s` -- %s", p, err)
 				continue
 			}
 
