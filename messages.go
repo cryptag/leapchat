@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/cryptag/minishare/miniware"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
+	uuid "github.com/nu7hatch/gouuid"
 )
 
 type Message []byte
@@ -65,7 +67,12 @@ func messageReader(room *Room, client *Client) {
 				continue
 			}
 
-			go saveMessagesToDisk(payload.Ephemeral)
+			go func() {
+				err := saveMessagesToDisk(payload.Ephemeral)
+				if err != nil {
+					log.Debugf("Error from saveMessagesToDisk: %v", err)
+				}
+			}()
 			room.AddMessages(payload.Ephemeral)
 			room.BroadcastMessages(client, payload.Ephemeral...)
 
@@ -85,7 +92,19 @@ func messageReader(room *Room, client *Client) {
 	}
 }
 
-// TODO: Save message to disk.
-func saveMessagesToDisk(msg []Message) error {
+func saveMessagesToDisk(msgs []Message) error {
+	for i := 0; i < len(msgs); i++ {
+		newUUID, err := uuid.NewV4()
+		if err != nil {
+			return err
+		}
+
+		filename := newUUID.String()
+
+		err = ioutil.WriteFile(filename, msgs[i], 0600)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
