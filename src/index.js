@@ -112,6 +112,7 @@ export default class App extends Component {
       return resp.blob();
     }).then(function(body){
       that.decryptMsg(body, function(fileBlob, saveName, senderID){
+        // Read fileBlob, which contains the auth token
         let reader = new FileReader();
         reader.addEventListener("loadend", function() {
           let authToken = reader.result;
@@ -122,7 +123,7 @@ export default class App extends Component {
           callback();
         });
 
-        reader.readAsText(fileBlob);  // TODO: Add error handling
+        reader.readAsText(fileBlob);
       })
     }).catch((reason) => {
       console.log("Error logging in:", reason);
