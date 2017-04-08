@@ -63,6 +63,12 @@ func (r *Room) AddMessages(msgs []Message) {
 	r.msgLock.Lock()
 	defer r.msgLock.Unlock()
 
+	log.Infof("Room %s received %d new messages", r.ID, len(msgs))
+
+	for i := 0; i < len(msgs); i++ {
+		log.Debugf("%s\n\n", msgs[i])
+	}
+
 	r.messages = append(r.messages, msgs...)
 }
 
