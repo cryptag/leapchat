@@ -150,9 +150,8 @@ export default class App extends Component {
       }
 
       // TODO: Ensure ordering of incoming messages
-      // for (let i = 0; i < data.ephemeral.length; i++) {
-        // let binStr = atob(data.ephemeral[i]);
-        let binStr = atob(data.ephemeral[0]);
+      for (let i = 0; i < data.ephemeral.length; i++) {
+        let binStr = atob(data.ephemeral[i]);
         let binStrLength = binStr.length;
         let array = new Uint8Array(binStrLength);
 
@@ -165,8 +164,9 @@ export default class App extends Component {
         let date = new Date();
         let msgKey = date.toGMTString() + ' - ' +
               date.getSeconds() + '.' + date.getMilliseconds();
+        miniLock.util.resetCurrentFile(); // omgwtf
         that.decryptMsg(msg, that.onReceiveMessage.bind(this, msgKey));
-      // }
+      }
     };
 
     return ws;
@@ -184,7 +184,7 @@ export default class App extends Component {
     let isTypeRoomName = tags.includes('type:roomname');
     let isTypeRoomDescription = tags.includes('type:roomdescription');
 
-    if (isTypeChatmessage){
+    if (isTypeChatmessage || true){ // FIXME; remove '|| true' ASAP
       let reader = new FileReader();
       reader.addEventListener("loadend", function() {
         let obj = JSON.parse(reader.result);
