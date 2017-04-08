@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-var sha384 = require('js-sha512').sha384;
+
+let sha384 = require('js-sha512').sha384;
+let btoa = require('btoa');
+let atob = require('atob');
 
 import Nav from './components/layout/Nav';
 import ChatContainer from './components/chat/ChatContainer';
 
-import { getMessagesForRoom, createMessage, deleteMessage } from './data/chat/messages';
-
 import { formatMessages } from './utils/chat';
+import { tagByPrefixStripped } from './utils/tags';
 
 import Throbber from './components/general/Throbber';
 import UsernameModal from './components/modals/Username';
@@ -29,15 +31,19 @@ export default class App extends Component {
       mID: '', // miniLock ID
       wsMsgs: null, // WebSockets connection for getting/sending messages
       messages: [],
+      showAlert: false,
       alertMessage: 'Welcome to miniShare!',
       alertStyle: 'success'
     };
 
-    this.loadChatroom = this.loadChatroom.bind(this);
+    this.onError = this.onError.bind(this);
+
     this.populateMessages = this.populateMessages.bind(this);
+    this.createMessage = this.createMessage.bind(this);
+    this.sendMessageToServer = this.sendMessageToServer.bind(this);
 
     this.onSendMessage = this.onSendMessage.bind(this);
-    this.onDeleteMessage = this.onDeleteMessage.bind(this);
+    // this.onDeleteMessage = this.onDeleteMessage.bind(this);
 
     this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
     this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
@@ -52,7 +58,16 @@ export default class App extends Component {
 
   componentDidMount(){
     this.keypairFromURLHash();
-    this.loadChatroom("");
+  }
+
+  onError(errStr) {
+    console.log(errStr);
+
+    this.setState({
+      showAlert: true,
+      alertMessage: errStr,
+      alertStyle: 'error' // Changing this changes nothing...
+    })
   }
 
   promptForUsername(){
@@ -71,6 +86,13 @@ export default class App extends Component {
 
   decryptMsg(msg, callback){
     console.log("Trying to decrypt", msg);
+
+    // From https://github.com/kaepora/miniLock/blob/ffea0ecb7a619d921129b8b4aed2081050ec48c1/src/js/miniLock.js#L592-L595 --
+    //
+    //		Callback is passed these parameters:
+    //			file: Decrypted file object (blob),
+    //			saveName: File name for saving the file (String),
+    //			senderID: Sender's miniLock ID (Base58 string)
     miniLock.crypto.decryptFile(msg,
                                 this.state.mID,
                                 this.state.keyPair.secretKey,
@@ -89,12 +111,21 @@ export default class App extends Component {
     }).then(function(resp){
       return resp.blob();
     }).then(function(body){
-      that.decryptMsg(body, function(authToken){
-        that.setState({
-          authToken: authToken
-        })
-        callback();
+      that.decryptMsg(body, function(fileBlob, saveName, senderID){
+        let reader = new FileReader();
+        reader.addEventListener("loadend", function() {
+          let authToken = reader.result;
+          console.log('authToken:', authToken);
+          that.setState({
+            authToken: authToken
+          })
+          callback();
+        });
+
+        reader.readAsText(fileBlob);  // TODO: Add error handling
       })
+    }).catch((reason) => {
+      console.log("Error logging in:", reason);
     })
   }
 
@@ -106,22 +137,87 @@ export default class App extends Component {
 
     ws.onopen = function(event){
       let authToken = that.state.authToken;
-      console.log("Sending auth token `%s`", authToken);
+      console.log("Sending auth token", authToken);
       ws.send(authToken);
     };
 
     ws.onmessage = function(event){
-      let data = event.data;
+      let data = JSON.parse(event.data);
       console.log("Event data:", data);
+      if (data.error){
+        that.onError('Error from server: ' + data.error);
+        return;
+      }
+
+      // TODO: Ensure ordering of incoming messages
+      // for (let i = 0; i < data.ephemeral.length; i++) {
+        // let binStr = atob(data.ephemeral[i]);
+        let binStr = atob(data.ephemeral[0]);
+        let binStrLength = binStr.length;
+        let array = new Uint8Array(binStrLength);
+
+        for(let i = 0; i < binStrLength; i++) {
+          array[i] = binStr.charCodeAt(i);
+        }
+        let msg = new Blob([array], {type: 'application/octet-stream'});
+
+        // TODO: Do smarter msgKey creation
+        let date = new Date();
+        let msgKey = date.toGMTString() + ' - ' +
+              date.getSeconds() + '.' + date.getMilliseconds();
+        that.decryptMsg(msg, that.onReceiveMessage.bind(this, msgKey));
+      // }
     };
 
     return ws;
   }
 
+  onReceiveMessage(msgKey, file, saveName, senderID){
+    console.log(file, saveName, senderID);
+
+    let tags = saveName.split('|||');
+    console.log("Tags on received message:", tags);
+
+    // TODO: Make more efficient later
+    let isTypeChatmessage = tags.includes('type:chatmessage');
+    let isTypePicture = tags.includes('type:picture');
+    let isTypeRoomName = tags.includes('type:roomname');
+    let isTypeRoomDescription = tags.includes('type:roomdescription');
+
+    if (isTypeChatmessage){
+      let reader = new FileReader();
+      reader.addEventListener("loadend", function() {
+        let obj = JSON.parse(reader.result);
+        console.log('Decrypted message:', obj);
+
+        let fromUsername = tagByPrefixStripped(tags, 'from:');
+
+        let msg = {
+          key: msgKey,
+          from: fromUsername + ' (' + senderID + ')',
+          msg: obj.msg
+        }
+        this.state.messages.push(msg)
+      });
+
+      reader.readAsText(fileBlob);  // TODO: Add error handling
+      return;
+    }
+
+    // TODO: Handle other types
+
+    console.log(`onReceiveMessage: got non-chat message with tags ${tags}`);
+  }
+
   keypairFromURLHash(){
-    let passphrase = document.location.hash;
+    let passphrase = document.location.hash || '#';
+    passphrase = passphrase.slice(1);
+
     console.log("URL hash is `%s`", passphrase);
-    let email = sha384(passphrase + '@cryptag.org');
+    if (!passphrase){
+      return;
+    }
+    let email = sha384(passphrase) + '@cryptag.org';
 
     let that = this;
 
@@ -174,20 +270,6 @@ export default class App extends Component {
     this.onCloseUsernameModal();
   }
 
-  loadChatroom(roomKey){
-    this.setState({
-      currentRoomKey: roomKey
-    });
-    this.loadChatMessages(roomKey);
-  }
-
-  loadChatMessages(roomKey){
-    getMessagesForRoom(roomKey)
-      .then(this.populateMessages, (respErr) => {
-        console.log("Error getting messages for room: " + respErr);
-      });
-  }
-
   populateMessages(response){
     let messages = formatMessages(response.body);
     this.setState({
@@ -201,28 +283,62 @@ export default class App extends Component {
       isLoadingMessages: true
     });
 
-    let { currentRoomKey, username } = this.state;
-    createMessage(currentRoomKey, message, username)
-      .then((response) => {
-        this.loadChatMessages(currentRoomKey);
-      }, (respErr) => {
-        console.log("Error creating message: " + respErr);
-      });
+    this.createMessage(message);
   }
 
-  onDeleteMessage(messageKey, onDeleteSuccess){
-    // messageKey will look like: "id:d4f371df-1e0e-4a67-5c8b-bbae29917ddd"
-    let { currentRoomKey } = this.state;
-    deleteMessage(currentRoomKey, messageKey)
-      .then((response) => {
-        this.loadChatMessages(currentRoomKey);
-      }, (respErr) => {
-        console.log("Error deleting messsage: " + respErr);
-      });
+  createMessage(message){
+    console.log("Creating message with contents `%s`", message);
+
+    let contents = {msg: message};
+    let fileBlob = new Blob([JSON.stringify(contents)],
+                            {type: 'application/json'})
+    let saveName = ['from:'+this.state.username, 'type:chatmessage'].join('|||');
+
+    let mID = this.state.mID;
+
+    console.log("Encrypting file blob");
+
+    miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
+                                mID, this.state.keyPair.secretKey,
+                                this.sendMessageToServer);
   }
+
+  sendMessageToServer(fileBlob, saveName, senderMinilockID){
+    let that = this;
+
+    let reader = new FileReader();
+    reader.addEventListener("loadend", function() {
+      // From https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string#comment55137593_11562550
+      let b64encMinilockFile = btoa([].reduce.call(
+        new Uint8Array(reader.result),
+        function(p, c) {
+          return p + String.fromCharCode(c)
+        }, ''));
+
+      let msgForServer = {
+        ephemeral: [b64encMinilockFile]
+      };
+      that.state.wsMsgs.send(JSON.stringify(msgForServer));
+    })
+
+    reader.readAsArrayBuffer(fileBlob);  // TODO: Add error handling
+  }
+
+  // onDeleteMessage(messageKey, onDeleteSuccess){
+  //   // messageKey will look like: "id:d4f371df-1e0e-4a67-5c8b-bbae29917ddd"
+  //   let { currentRoomKey } = this.state;
+  //   deleteMessage(currentRoomKey, messageKey)
+  //     .then((response) => {
+  //       this.loadChatMessages(currentRoomKey);
+  //     }, (respErr) => {
+  //       console.log("Error deleting messsage: " + respErr);
+  //     });
+  // }
 
   render(){
     let { username, showUsernameModal } = this.state;
+
+    console.log('Rendering...');
 
     return (
       <main>
