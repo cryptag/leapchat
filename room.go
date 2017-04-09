@@ -97,14 +97,12 @@ func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
 	defer r.clientLock.RUnlock()
 
 	for _, client := range r.Clients {
-		if client != sender {
-			go func(client *Client) {
-				err := client.SendMessages(msgs...)
-				if err != nil {
-					log.Debugf("Error sending message. Err: %s", err)
-				}
-			}(client)
-		}
+		go func(client *Client) {
+			err := client.SendMessages(msgs...)
+			if err != nil {
+				log.Debugf("Error sending message. Err: %s", err)
+			}
+		}(client)
 	}
 }
 
