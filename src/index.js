@@ -43,6 +43,7 @@ export default class App extends Component {
     this.sendMessageToServer = this.sendMessageToServer.bind(this);
 
     this.onSendMessage = this.onSendMessage.bind(this);
+    this.onReceiveMessage = this.onReceiveMessage.bind(this);
     // this.onDeleteMessage = this.onDeleteMessage.bind(this);
 
     this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
@@ -164,17 +165,17 @@ export default class App extends Component {
         // TODO: Do smarter msgKey creation
         let date = new Date();
         let msgKey = date.toGMTString() + ' - ' +
-              date.getSeconds() + '.' + date.getMilliseconds();
-        miniLock.util.resetCurrentFile(); // omgwtf
-        that.decryptMsg(msg, that.onReceiveMessage.bind(this, msgKey));
+              date.getSeconds() + '.' + date.getMilliseconds() + '.' + i;
+        that.decryptMsg(msg, that.onReceiveMessage.bind(that, msgKey));
       }
     };
 
     return ws;
   }
 
-  onReceiveMessage(msgKey, file, saveName, senderID){
-    console.log(file, saveName, senderID);
+  onReceiveMessage(msgKey, fileBlob, saveName, senderID){
+    console.log(msgKey, fileBlob, saveName, senderID);
+    let that = this;
 
     let tags = saveName.split('|||');
     console.log("Tags on received message:", tags);
@@ -185,7 +186,7 @@ export default class App extends Component {
     let isTypeRoomName = tags.includes('type:roomname');
     let isTypeRoomDescription = tags.includes('type:roomdescription');
 
-    if (isTypeChatmessage || true){ // FIXME; remove '|| true' ASAP
+    if (isTypeChatmessage){
       let reader = new FileReader();
       reader.addEventListener("loadend", function() {
         let obj = JSON.parse(reader.result);
@@ -198,7 +199,9 @@ export default class App extends Component {
           from: fromUsername + ' (' + senderID + ')',
           msg: obj.msg
         }
-        this.state.messages.push(msg)
+        that.setState({
+          messages: that.state.messages.concat([msg])
+        })
       });
 
       reader.readAsText(fileBlob);  // TODO: Add error handling
@@ -294,6 +297,7 @@ export default class App extends Component {
     let fileBlob = new Blob([JSON.stringify(contents)],
                             {type: 'application/json'})
     let saveName = ['from:'+this.state.username, 'type:chatmessage'].join('|||');
+    fileBlob.name = saveName;
 
     let mID = this.state.mID;
 
