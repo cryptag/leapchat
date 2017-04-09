@@ -17,14 +17,7 @@ miniLock.settings.minKeyEntropy = 100
 // This is where session variables are stored
 miniLock.session = {
 	keys: {},
-	keyPairReady: false,
-	currentFile: {
-		fileObject: null,
-		fileName: '',
-		encryptedChunks: [],
-		decryptedChunks: [],
-		hashObject: new BLAKE2s(32)
-	}
+	keyPairReady: false
 }
 
 // -----------------------
@@ -36,16 +29,6 @@ miniLock.util = {}
 // Input: none
 // Result: Resets miniLock.session.currentFile
 miniLock.util.resetCurrentFile = function() {
-	delete miniLock.session.currentFile
-	miniLock.session.currentFile = {
-		fileObject: null,
-		fileName: '',
-		encryptedChunks: [],
-		decryptedChunks: [],
-		hashObject: new BLAKE2s(32),
-		streamEncryptor: null,
-		streamDecryptor: null
-	}
 }
 
 // Input: String
@@ -291,11 +274,12 @@ miniLock.crypto.encryptFile = function(
 	mySecretKey,
 	callback
 ) {
-	miniLock.session.currentFile.fileName = file.name
+	var currentFile = miniLock.file.new();
+	currentFile.fileName = file.name
 	saveName += '.minilock'
 	var fileKey = miniLock.crypto.getFileKey()
 	var fileNonce = miniLock.crypto.getNonce().subarray(0, 16)
-	miniLock.session.currentFile.streamEncryptor = nacl.stream.createEncryptor(
+	currentFile.streamEncryptor = nacl.stream.createEncryptor(
 		fileKey,
 		fileNonce,
 		miniLock.crypto.chunkSize
@@ -306,9 +290,9 @@ miniLock.crypto.encryptFile = function(
 		throw new Error('miniLock: Encryption failed - file name is too long')
 	}
 	paddedFileName.set(fileNameBytes)
-	miniLock.session.currentFile.hashObject = new BLAKE2s(32)
+	currentFile.hashObject = new BLAKE2s(32)
 	var encryptedChunk
-	encryptedChunk = miniLock.session.currentFile.streamEncryptor.encryptChunk(
+	encryptedChunk = currentFile.streamEncryptor.encryptChunk(
 		paddedFileName,
 		false
 	)
@@ -317,8 +301,8 @@ miniLock.crypto.encryptFile = function(
 		throw new Error('miniLock: Encryption failed - general encryption error')
 		return false
 	}
-	miniLock.session.currentFile.hashObject.update(encryptedChunk)
-	miniLock.session.currentFile.encryptedChunks.push(encryptedChunk)
+	currentFile.hashObject.update(encryptedChunk)
+	currentFile.encryptedChunks.push(encryptedChunk)
 	miniLock.crypto.encryptNextChunk(
 		file,
 		0,
@@ -328,6 +312,7 @@ miniLock.crypto.encryptFile = function(
 		miniLockIDs,
 		myMiniLockID,
 		mySecretKey,
+		currentFile,
 		callback
 	)
 }
@@ -340,7 +325,8 @@ miniLock.crypto.encryptFile = function(
 //		fileNonce (Uint8Array),
 //		miniLock IDs for which to encrypt (Array),
 //		sender ID (Base58 string),
-//		sender long-term secret key (Uint8Array)
+//		sender long-term secret key (Uint8Array),
+//		current file (Object; see miniLock.file.new() for its structure)
 //		Callback to execute when last chunk has been decrypted.
 //	Result: Will recursively encrypt until the last chunk,
 //		at which point callbackOnComplete() is called.
@@ -357,6 +343,7 @@ miniLock.crypto.encryptNextChunk = function(
 	miniLockIDs,
 	myMiniLockID,
 	mySecretKey,
+	currentFile,
 	callbackOnComplete
 ) {
 	miniLock.file.read(
@@ -370,7 +357,7 @@ miniLock.crypto.encryptNextChunk = function(
 				isLast = true
 			}
 			var encryptedChunk
-			encryptedChunk = miniLock.session.currentFile.streamEncryptor.encryptChunk(
+			encryptedChunk = currentFile.streamEncryptor.encryptChunk(
 				chunk,
 				isLast
 			)
@@ -379,11 +366,11 @@ miniLock.crypto.encryptNextChunk = function(
 				throw new Error('miniLock: Encryption failed - general encryption error')
 				return false
 			}
-			miniLock.session.currentFile.hashObject.update(encryptedChunk)
-			miniLock.session.currentFile.encryptedChunks.push(encryptedChunk)
+			currentFile.hashObject.update(encryptedChunk)
+			currentFile.encryptedChunks.push(encryptedChunk)
 			miniLock.UI.animateProgressBar(dataPosition + miniLock.crypto.chunkSize, file.size)
 			if (isLast) {
-				miniLock.session.currentFile.streamEncryptor.clean()
+				currentFile.streamEncryptor.clean()
 				// Finish generating header so we can pass finished file to callback
 				var ephemeral = nacl.box.keyPair()
 				var header = {
@@ -405,7 +392,7 @@ miniLock.crypto.encryptNextChunk = function(
 							fileKey: nacl.util.encodeBase64(fileKey),
 							fileNonce: nacl.util.encodeBase64(fileNonce),
 							fileHash: nacl.util.encodeBase64(
-								miniLock.session.currentFile.hashObject.digest()
+								currentFile.hashObject.digest()
 							)
 						}
 					}
@@ -426,13 +413,13 @@ miniLock.crypto.encryptNextChunk = function(
 					] = decryptInfo
 				}
 				header = JSON.stringify(header)
-				miniLock.session.currentFile.encryptedChunks.unshift(
+				currentFile.encryptedChunks.unshift(
 					'miniLock',
 					miniLock.util.numberToByteArray(header.length),
 					header
 				)
 				return callbackOnComplete(
-					new Blob(miniLock.session.currentFile.encryptedChunks),
+					new Blob(currentFile.encryptedChunks),
 					saveName,
 					myMiniLockID
 				)
@@ -448,6 +435,7 @@ miniLock.crypto.encryptNextChunk = function(
 					miniLockIDs,
 					myMiniLockID,
 					mySecretKey,
+					currentFile,
 					callbackOnComplete
 				)
 			}
@@ -473,6 +461,7 @@ miniLock.crypto.decryptFile = function(
 	mySecretKey,
 	callback
 ) {
+	var currentFile = miniLock.file.new();
 	miniLock.file.read(file, 8, 12, function(headerLength) {
 		headerLength = miniLock.util.byteArrayToNumber(
 			headerLength.data
@@ -563,7 +552,7 @@ miniLock.crypto.decryptFile = function(
 			}
 			// Begin actual ciphertext decryption
 			var dataPosition = 12 + headerLength
-			miniLock.session.currentFile.streamDecryptor = nacl.stream.createDecryptor(
+			currentFile.streamDecryptor = nacl.stream.createDecryptor(
 				nacl.util.decodeBase64(actualFileInfo.fileKey),
 				nacl.util.decodeBase64(actualFileInfo.fileNonce),
 				miniLock.crypto.chunkSize
@@ -574,6 +563,7 @@ miniLock.crypto.decryptFile = function(
 				actualFileInfo,
 				actualDecryptInfo.senderID,
 				headerLength,
+				currentFile,
 				callback
 			)
 		})
@@ -586,6 +576,7 @@ miniLock.crypto.decryptFile = function(
 //		fileInfo object (From header),
 //		sender ID (Base58 string),
 //		header length (in bytes) (number),
+//		current file (Object; see miniLock.file.new() for its structure)
 //		Callback to execute when last chunk has been decrypted.
 //	Result: Will recursively decrypt until the last chunk,
 //		at which point callbackOnComplete() is called.
@@ -599,6 +590,7 @@ miniLock.crypto.decryptNextChunk = function(
 	fileInfo,
 	senderID,
 	headerLength,
+	currentFile,
 	callbackOnComplete
 ) {
 	miniLock.file.read(
@@ -627,7 +619,7 @@ miniLock.crypto.decryptNextChunk = function(
 			}
 			if (dataPosition === (12 + headerLength)) {
 				// This is the first chunk, containing the filename
-				decryptedChunk = miniLock.session.currentFile.streamDecryptor.decryptChunk(
+				decryptedChunk = currentFile.streamDecryptor.decryptChunk(
 					chunk,
 					isLast
 				)
@@ -642,11 +634,11 @@ miniLock.crypto.decryptNextChunk = function(
 				) {
 					fileName = fileName.slice(0, -1)
 				}
-				miniLock.session.currentFile.fileName = fileName
-				miniLock.session.currentFile.hashObject.update(chunk.subarray(0, 256 + 4 + 16))
+				currentFile.fileName = fileName
+				currentFile.hashObject.update(chunk.subarray(0, 256 + 4 + 16))
 			}
 			else {
-				decryptedChunk = miniLock.session.currentFile.streamDecryptor.decryptChunk(
+				decryptedChunk = currentFile.streamDecryptor.decryptChunk(
 					chunk,
 					isLast
 				)
@@ -655,18 +647,18 @@ miniLock.crypto.decryptNextChunk = function(
 					throw new Error('miniLock: Decryption failed - general decryption error')
 					return false
 				}
-				miniLock.session.currentFile.decryptedChunks.push(decryptedChunk)
+				currentFile.decryptedChunks.push(decryptedChunk)
 				miniLock.UI.animateProgressBar(
 					dataPosition + actualChunkLength,
 					file.size - 12 - headerLength
 				)
-				miniLock.session.currentFile.hashObject.update(chunk)
+				currentFile.hashObject.update(chunk)
 			}
 			dataPosition += chunk.length
 			if (isLast) {
 				if (
 					!nacl.verify(
-						new Uint8Array(miniLock.session.currentFile.hashObject.digest()),
+						new Uint8Array(currentFile.hashObject.digest()),
 						nacl.util.decodeBase64(fileInfo.fileHash)
 					)
 				) {
@@ -675,10 +667,10 @@ miniLock.crypto.decryptNextChunk = function(
 					return false
 				}
 				else {
-					miniLock.session.currentFile.streamDecryptor.clean()
+					currentFile.streamDecryptor.clean()
 					return callbackOnComplete(
-						new Blob(miniLock.session.currentFile.decryptedChunks),
-						miniLock.session.currentFile.fileName,
+						new Blob(currentFile.decryptedChunks),
+						currentFile.fileName,
 						senderID
 					)
 				}
@@ -690,6 +682,7 @@ miniLock.crypto.decryptNextChunk = function(
 					fileInfo,
 					senderID,
 					headerLength,
+					currentFile,
 					callbackOnComplete
 				)
 			}
@@ -731,5 +724,19 @@ miniLock.file.read = function(file, start, end, callback, errorCallback) {
 	}
 	reader.readAsArrayBuffer(file.slice(start, end))
 }
+
+miniLock.file.new = function() {
+	return {
+		fileObject: null,
+		fileName: '',
+		encryptedChunks: [],
+		decryptedChunks: [],
+		hashObject: new BLAKE2s(32),
+		streamEncryptor: null,
+		streamDecryptor: null
+	}
+}
+
+
 
 })()
