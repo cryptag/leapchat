@@ -193,9 +193,14 @@ export default class App extends Component {
 
         let fromUsername = tagByPrefixStripped(tags, 'from:');
 
+        let maybeSenderID = '';
+        if (senderID !== that.state.mID){
+           maybeSenderID = ' (' + senderID + ')',
+        }
+
         let msg = {
           key: msgKey,
-          from: fromUsername + ' (' + senderID + ')',
+          from: fromUsername + maybeSenderID,
           msg: obj.msg
         }
         that.setState({
