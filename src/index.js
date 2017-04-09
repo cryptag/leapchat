@@ -21,6 +21,7 @@ export default class App extends Component {
     super(props);
 
     let username = localStorage.getItem(USERNAME_KEY);
+    let protocol = document.location.protocol.slice(0, -1);
 
     this.state = {
       username: username,
@@ -31,6 +32,7 @@ export default class App extends Component {
       mID: '', // miniLock ID
       wsMsgs: null, // WebSockets connection for getting/sending messages
       messages: [],
+      protocol: protocol,
       showAlert: false,
       alertMessage: 'Welcome to miniShare!',
       alertStyle: 'success'
@@ -104,8 +106,7 @@ export default class App extends Component {
     let that = this;
 
     let host = document.location.host;
-    // TODO: Use https, not http, in production
-    fetch("http://" + host + "/api/login", {
+    fetch(this.state.protocol + "://" + host + "/api/login", {
       headers: {
         'X-Minilock-Id': this.state.mID
       },
@@ -242,8 +243,9 @@ export default class App extends Component {
       let host = document.location.host;
 
       that.login(function(){
-        // TODO: Use wss, not ws, in production
-        let wsMsgs = that.newWebSocket("ws://" + host + "/api/ws/messages/all");
+        let wsProto = (that.state.protocol === 'https') ? 'wss' : 'ws';
+        let wsMsgs = that.newWebSocket(wsProto + "://" + host +
+                                       "/api/ws/messages/all");
 
         that.setState({
           wsMsgs: wsMsgs
