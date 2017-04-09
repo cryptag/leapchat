@@ -90,10 +90,10 @@ export default class App extends Component {
 
     // From https://github.com/kaepora/miniLock/blob/ffea0ecb7a619d921129b8b4aed2081050ec48c1/src/js/miniLock.js#L592-L595 --
     //
-    //		Callback is passed these parameters:
-    //			file: Decrypted file object (blob),
-    //			saveName: File name for saving the file (String),
-    //			senderID: Sender's miniLock ID (Base58 string)
+    //    Callback is passed these parameters:
+    //      file: Decrypted file object (blob),
+    //      saveName: File name for saving the file (String),
+    //      senderID: Sender's miniLock ID (Base58 string)
     miniLock.crypto.decryptFile(msg,
                                 this.state.mID,
                                 this.state.keyPair.secretKey,
@@ -133,8 +133,6 @@ export default class App extends Component {
 
   newWebSocket(url){
     let ws = new WebSocket(url);
-    ws.first = true;
-
     let that = this;
 
     ws.onopen = function(event){
