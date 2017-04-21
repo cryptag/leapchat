@@ -195,7 +195,7 @@ export default class App extends Component {
 
         let maybeSenderID = '';
         if (senderID !== that.state.mID){
-           maybeSenderID = ' (' + senderID + ')',
+           maybeSenderID = ' (' + senderID + ')';
         }
 
         let msg = {
