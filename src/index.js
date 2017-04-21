@@ -26,7 +26,6 @@ export default class App extends Component {
     this.state = {
       username: username,
       showUsernameModal: true,
-      isLoadingMessages: true,
       authToken: '',
       keyPair: null,
       mID: '', // miniLock ID
@@ -46,7 +45,6 @@ export default class App extends Component {
 
     this.onSendMessage = this.onSendMessage.bind(this);
     this.onReceiveMessage = this.onReceiveMessage.bind(this);
-    // this.onDeleteMessage = this.onDeleteMessage.bind(this);
 
     this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
     this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
@@ -283,15 +281,10 @@ export default class App extends Component {
     let messages = formatMessages(response.body);
     this.setState({
       messages: messages,
-      isLoadingMessages: false
     });
   }
 
   onSendMessage(message){
-    this.setState({
-      isLoadingMessages: true
-    });
-
     this.createMessage(message);
   }
 
@@ -334,17 +327,6 @@ export default class App extends Component {
     reader.readAsArrayBuffer(fileBlob);  // TODO: Add error handling
   }
 
-  // onDeleteMessage(messageKey, onDeleteSuccess){
-  //   // messageKey will look like: "id:d4f371df-1e0e-4a67-5c8b-bbae29917ddd"
-  //   let { currentRoomKey } = this.state;
-  //   deleteMessage(currentRoomKey, messageKey)
-  //     .then((response) => {
-  //       this.loadChatMessages(currentRoomKey);
-  //     }, (respErr) => {
-  //       console.log("Error deleting messsage: " + respErr);
-  //     });
-  // }
-
   render(){
     let { username, showUsernameModal } = this.state;
 
@@ -361,9 +343,7 @@ export default class App extends Component {
         <ChatContainer
           messages={this.state.messages}
           username={this.state.username}
-          onSendMessage={this.onSendMessage}
-          onDeleteMessage={this.onDeleteMessage}
-          isLoadingMessages={this.state.isLoadingMessages} />
+          onSendMessage={this.onSendMessage} />
       </main>
     );
   }
