@@ -5,13 +5,11 @@ let sha384 = require('js-sha512').sha384;
 let btoa = require('btoa');
 let atob = require('atob');
 
-import Nav from './components/layout/Nav';
 import ChatContainer from './components/chat/ChatContainer';
 
 import { formatMessages } from './utils/chat';
 import { tagByPrefixStripped } from './utils/tags';
 
-import Throbber from './components/general/Throbber';
 import UsernameModal from './components/modals/Username';
 
 const USERNAME_KEY = 'username';
@@ -334,7 +332,6 @@ export default class App extends Component {
 
     return (
       <main>
-        <Nav />
         {showUsernameModal && <UsernameModal
                                 username={username}
                                 showModal={showUsernameModal}
