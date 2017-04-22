@@ -244,7 +244,6 @@ export default class App extends Component {
       miniLock.session.keys = keyPair
       miniLock.session.keyPairReady = true
 
-      console.log("keyPair ==", keyPair);
       let mID = miniLock.crypto.getMiniLockID(keyPair.publicKey);
       console.log("mID ==", mID);
 
