@@ -9,6 +9,7 @@ import ChatContainer from './components/chat/ChatContainer';
 
 import { formatMessages } from './utils/chat';
 import { tagByPrefixStripped } from './utils/tags';
+import { genPassphrase } from './data/minishare';
 
 import UsernameModal from './components/modals/Username';
 
@@ -222,10 +223,16 @@ export default class App extends Component {
     let passphrase = document.location.hash || '#';
     passphrase = passphrase.slice(1);
 
-    console.log("URL hash is `%s`", passphrase);
+    // Generate new room for user if none specified (that is, if the
+    // URL hash is blank)
     if (!passphrase){
-      return;
+      passphrase = genPassphrase();
+      document.location.hash = '#' + passphrase;
+      this.alert('New room created!', 'success');
     }
+
+    console.log("URL hash is `%s`", passphrase);
+
     let email = sha384(passphrase) + '@cryptag.org';
 
     let that = this;
