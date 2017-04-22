@@ -36,6 +36,7 @@ export default class App extends Component {
     };
 
     this.onError = this.onError.bind(this);
+    this.alert = this.alert.bind(this);
 
     this.populateMessages = this.populateMessages.bind(this);
     this.createMessage = this.createMessage.bind(this);
@@ -59,14 +60,18 @@ export default class App extends Component {
     this.keypairFromURLHash();
   }
 
-  onError(errStr) {
+  alert(errStr, alertStyle){
     console.log(errStr);
 
     this.setState({
       showAlert: true,
       alertMessage: errStr,
-      alertStyle: 'error' // Changing this changes nothing...
+      alertStyle: alertStyle // Changing this changes nothing...
     })
+  }
+
+  onError(errStr) {
+    this.alert(errStr, 'error');
   }
 
   promptForUsername(){
