@@ -67,12 +67,15 @@ func messageReader(room *Room, client *Client) {
 				continue
 			}
 
-			go func() {
-				err := saveMessagesToDisk(payload.Ephemeral)
-				if err != nil {
-					log.Debugf("Error from saveMessagesToDisk: %v", err)
-				}
-			}()
+			// TODO: Encrypt messages with ephemeral key, save to
+			// disk, serve from disk rather than RAM
+			//
+			// go func() {
+			// 	err := saveMessagesToDisk(payload.Ephemeral)
+			// 	if err != nil {
+			// 		log.Debugf("Error from saveMessagesToDisk: %v", err)
+			// 	}
+			// }()
 			room.AddMessages(payload.Ephemeral)
 			room.BroadcastMessages(client, payload.Ephemeral...)
 
