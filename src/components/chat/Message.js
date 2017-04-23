@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 class Message extends Component {
   render(){
@@ -9,7 +10,7 @@ class Message extends Component {
     return (
       <li className={messageClass} key={message.key}>
         <span className="username">{message.from}</span>
-        {message.msg}
+        <ReactMarkdown source={message.msg} escapeHtml={true} />
       </li>
     );
   }
