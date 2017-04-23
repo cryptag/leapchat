@@ -10,7 +10,7 @@ import (
 
 	"github.com/cryptag/gosecure/canary"
 	"github.com/cryptag/gosecure/content"
-	// "github.com/cryptag/gosecure/csp"
+	"github.com/cryptag/gosecure/csp"
 	"github.com/cryptag/gosecure/frame"
 	"github.com/cryptag/gosecure/hsts"
 	"github.com/cryptag/gosecure/referrer"
@@ -70,12 +70,7 @@ func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 func ProductionServer(srv *http.Server, httpsAddr string, domain string) {
 	gotWarrant := false
 	middleware := alice.New(canary.GetHandler(&gotWarrant),
-		// FIXME: Bundle Bootstrap, Font Awesome, and jQuery rather
-		// than loading them externally so we no longer violate the
-		// commented-out secure CSP header policy.
-		//
-		// csp.GetHandler(domain),
-		hsts.PreloadHandler, frame.DenyHandler,
+		csp.GetHandler(domain), hsts.PreloadHandler, frame.DenyHandler,
 		content.GetHandler, xss.GetHandler, referrer.NoHandler)
 
 	srv.Handler = middleware.Then(srv.Handler)
