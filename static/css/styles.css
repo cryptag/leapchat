@@ -60,6 +60,11 @@ main {
     float: right;
     color: white;
     background-color: #827cd2; }
+    .message-box ul li.chat-outgoing a {
+      text-decoration: underline;
+      color: white; }
+      .message-box ul li.chat-outgoing a:hover {
+        color: #ddd; }
     .message-box ul li.chat-outgoing .username {
       display: none; }
   .message-box ul li.chat-incoming {
