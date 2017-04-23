@@ -19,7 +19,7 @@ export default class App extends Component {
   constructor(props){
     super(props);
 
-    let username = localStorage.getItem(USERNAME_KEY);
+    let username = localStorage.getItem(USERNAME_KEY) || '';
     let protocol = document.location.protocol.slice(0, -1);
 
     this.state = {
