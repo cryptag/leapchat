@@ -5,6 +5,7 @@ let sha384 = require('js-sha512').sha384;
 let btoa = require('btoa');
 let atob = require('atob');
 
+import AlertContainer from './components/general/AlertContainer';
 import ChatContainer from './components/chat/ChatContainer';
 
 import { formatMessages } from './utils/chat';
@@ -38,6 +39,7 @@ export default class App extends Component {
 
     this.onError = this.onError.bind(this);
     this.alert = this.alert.bind(this);
+    this.onAlertDismiss = this.onAlertDismiss.bind(this);
 
     this.populateMessages = this.populateMessages.bind(this);
     this.createMessage = this.createMessage.bind(this);
@@ -73,6 +75,12 @@ export default class App extends Component {
 
   onError(errStr) {
     this.alert(errStr, 'error');
+  }
+
+  onAlertDismiss(){
+    this.setState({
+      showAlert: false
+    });
   }
 
   promptForUsername(){
@@ -337,12 +345,19 @@ export default class App extends Component {
   }
 
   render(){
+    let { showAlert, alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
 
     console.log('Rendering...');
 
     return (
       <main>
+        <AlertContainer
+          showAlert={showAlert}
+          message={alertMessage}
+          alertStyle={alertStyle}
+          onAlertDismiss={this.onAlertDismiss} />
+
         {showUsernameModal && <UsernameModal
                                 username={username}
                                 showModal={showUsernameModal}
