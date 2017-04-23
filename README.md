@@ -25,7 +25,7 @@ course send (encrypted) messages to the other chat room participants.
 ## Instances
 
 There is currently one public instance running at
-[leapchat.org](https://app.leapchat.org).
+[leapchat.org](https://www.leapchat.org).
 
 
 # Development / Running
