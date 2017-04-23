@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import notifier from 'node-notifier';
 
 import MessageList from './MessageList';
 import Throbber from '../general/Throbber';
@@ -41,18 +40,24 @@ class MessageBox extends Component {
 
     // better logic needed, but this will play a notification if you've been mentioned.
     let newMessageIds = [];
+    let userWasMentioned = false;
     newMessages.forEach( (message) => {
       newMessageIds.push(message.key);
       let content = message.msg.toLowerCase();
       let username = this.props.username.toLowerCase();
       if (content.indexOf('@' + username) > -1){
-        notifier.notify({
-          'title': message.from,
-          'message': message.msg
-        });
-        playNotification();
+        userWasMentioned = true;
       }
     });
+
+    // Notifications
+    if (newMessageIds.length > 0){
+      playNotification();
+    }
+    if (userWasMentioned){
+      // TODO: Display dialog box with this data:
+      // {'title': message.from, 'message': message.msg}
+    }
 
     let notifiedIds = this.state.notifiedIds;
     this.setState({
