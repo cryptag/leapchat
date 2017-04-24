@@ -40,14 +40,14 @@ class MessageBox extends Component {
 
     // better logic needed, but this will play a notification if you've been mentioned.
     let newMessageIds = [];
-    let userWasMentioned = false;
+    let iWasMentioned = false;
     let newMessageFromNotMe = false;
     newMessages.forEach( (message) => {
       newMessageIds.push(message.key);
       let content = message.msg.toLowerCase();
       let username = this.props.username.toLowerCase();
       if (content.indexOf('@' + username) > -1){
-        userWasMentioned = true;
+        iWasMentioned = true;
       }
       if (message.from !== this.props.username){
         newMessageFromNotMe = true
@@ -57,7 +57,7 @@ class MessageBox extends Component {
     if (newMessageFromNotMe){
       playNotification();
     }
-    if (userWasMentioned){
+    if (iWasMentioned){
       // TODO: Display dialog box with this data:
       // {'title': message.from, 'message': message.msg}
     }
