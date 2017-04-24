@@ -8,10 +8,6 @@ class MessageForm extends Component {
     this.onSendMessage = this.onSendMessage.bind(this);
   }
 
-  componentDidMount(){
-    ReactDOM.findDOMNode(this.refs.messageBox).focus();
-  }
-
   onSendMessage(e){
     e.preventDefault();
 

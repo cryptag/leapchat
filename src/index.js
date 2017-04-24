@@ -63,6 +63,19 @@ export default class App extends Component {
     this.keypairFromURLHash();
   }
 
+  componentDidUpdate(){
+    if (!this.state.showUsernameModal){
+      // TODO: Find better way to do
+      // this. `findDOMNode(this.refs.messageBox).focus()` doesn't
+      // work here, and `this.refs.messageBox.focus()` doesn't work
+      // here, because we don't have a reference to the component;
+      // it's not in `this.refs`.
+
+      $('.message-form input').focus();
+      // this.refs.messageBox.focus();
+    }
+  }
+
   alert(errStr, alertStyle){
     console.log(errStr);
 
