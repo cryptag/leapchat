@@ -12,7 +12,10 @@ class UsernameModal extends Component {
   }
 
   componentDidMount(){
-    $(findDOMNode(this.refs.username)).find('input').focus();
+    let that = this;
+    setTimeout(function(){
+      $(findDOMNode(that.refs.username)).find('input').focus();
+    }, 0)
   }
 
   onUsernameKeyPress(e){
