@@ -30,13 +30,20 @@ There is currently one public instance running at
 
 # Development / Running
 
-```
-npm install
-mkdir build
-# Dev: watchify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js
-browserify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js
-go build
-./leapchat
-```
+To install and build static assets:
+
+``` $ npm install ```
+
+``` $ npm run build ```
+
+``` $ npm run dev  # watch asset files and recompile when changed ```
+
+Then, to build and run the go binary
+
+``` $ mkdir build ```
+
+``` $ go build ```
+
+``` $ ./leapchat ```
 
 Then view <http://localhost:8080>.
