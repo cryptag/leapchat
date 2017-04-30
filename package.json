@@ -4,6 +4,11 @@
   "description": "Self-destructing, encrypted, in-browser chat",
   "main": "index.js",
   "scripts": {
+    "compile_js": "browserify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js",
+    "compile_sass": "gulp sass",
+    "inject_static": "gulp inject",
+    "build": "npm-run-all --parallel compile_js compile_sass inject_static",
+    "dev": "watchify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -28,20 +33,26 @@
   "homepage": "https://github.com/cryptag/leapchat#readme",
   "dependencies": {
     "atob": "^2.0.3",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-react": "^6.23.0",
-    "babelify": "^7.3.0",
-    "browserify": "^14.1.0",
     "btoa": "^1.1.2",
-    "gulp": "^3.9.1",
-    "gulp-sass": "^3.1.0",
-    "node-notifier": "^5.1.2",
     "js-sha512": "^0.3.0",
+    "node-notifier": "^5.1.2",
+    "prop-types": "^15.5.8",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.8",
     "react-dom": "^15.4.2",
     "react-markdown": "^2.4.2",
-    "utf8": "^2.1.2",
-    "watchify": "^3.9.0"
+    "utf8": "^2.1.2"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.1.0",
+    "gulp": "^3.9.1",
+    "gulp-inject": "^4.2.0",
+    "gulp-sass": "^3.1.0",
+    "npm-run-all": "^4.0.2",
+    "watchify": "^3.9.0",
+    "wiredep": "^4.0.0"
   }
 }
