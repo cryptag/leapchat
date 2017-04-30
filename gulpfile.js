@@ -18,21 +18,21 @@ gulp.task('sass:watch', function () {
 gulp.task('inject', function(){
     var wiredep = require('wiredep').stream;
     var inject = require('gulp-inject');
-    
-    var injectSrc = gulp.src(['./static/css/*.css', 
+
+    var injectSrc = gulp.src(['./static/css/*.css',
                              './static/js/*.js'], {read: false});
     var injectOptions = {
         ignorePath: '/static'
     };
-    
+
     var options = {
         bowerJson: require('./static/bower.json'),
         directory: './static/lib'
     };
-    
+
     return gulp.src('./index.html')
         .pipe(wiredep(options))
         .pipe(inject(injectSrc, injectOptions))
         .pipe(gulp.dest('./'));
-        
+
 });
