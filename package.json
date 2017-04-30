@@ -6,7 +6,8 @@
   "scripts": {
     "compile_js": "browserify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js",
     "compile_sass": "gulp sass",
-    "build": "npm-run-all --parallel compile_js compile_sass",
+    "inject_static": "gulp inject",
+    "build": "npm-run-all --parallel compile_js compile_sass inject_static",
     "dev": "watchify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -48,6 +49,7 @@
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
     "gulp": "^3.9.1",
+    "gulp-inject": "^4.2.0",
     "gulp-sass": "^3.1.0",
     "npm-run-all": "^4.0.2",
     "watchify": "^3.9.0",

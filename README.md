@@ -30,17 +30,30 @@ There is currently one public instance running at
 
 # Development / Running
 
+## Dependencies
+
+If you've yet to install `bower` and `gulp`, run
+
+``` $ npm install -g bower ```
+
+``` $ npm install -g gulp ```
+
+
+## Install and Run
+
 To install and build static assets:
 
 ``` $ npm install ```
+
+``` $ mkdir build ```
+
+``` $ cd static/ && bower install && cd .. ```
 
 ``` $ npm run build ```
 
 ``` $ npm run dev  # watch asset files and recompile when changed ```
 
 Then, to build and run the go binary
-
-``` $ mkdir build ```
 
 ``` $ go build ```
 
