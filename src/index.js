@@ -198,7 +198,7 @@ export default class App extends Component {
       let data = JSON.parse(event.data);
       console.log("Event data:", data);
       if (data.error){
-        that.onError('Error from server: ' + data.error);
+        that.onError(SERVER_ERROR_PREFIX + data.error);
         if (data.error === AUTH_ERROR){
           // ws.onclose() is about to be called; will trigger reconnect
         }
@@ -275,9 +275,13 @@ export default class App extends Component {
   }
 
   noopifyWs(ws){
+    if (!ws){
+      return;
+    }
     let noop = function(){};
     ws.onopen = noop;
     ws.onclose = noop;
+    ws.onerror = noop;
     ws.onmessage = noop;
   }
 
