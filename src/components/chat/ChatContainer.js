@@ -5,7 +5,7 @@ import MessageForm from './MessageForm';
 
 class ChatContainer extends Component {
   render(){
-    let {messages, username, onSendMessage } = this.props;
+    let { messages, username, onSendMessage } = this.props;
     return (
       <div className="content">
         <MessageBox

@@ -36,7 +36,7 @@ export default class App extends Component {
       messages: [],
       protocol: protocol,
       showAlert: false,
-      alertMessage: 'Welcome to miniShare!',
+      alertMessage: '',
       alertStyle: 'success'
     };
 
@@ -51,7 +51,6 @@ export default class App extends Component {
     this.onSendMessage = this.onSendMessage.bind(this);
     this.onReceiveMessage = this.onReceiveMessage.bind(this);
 
-    this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
     this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
     this.onSetUsername = this.onSetUsername.bind(this);
 
@@ -325,12 +324,6 @@ export default class App extends Component {
 
       that.login();
     })
-  }
-
-  onSetUsernameClick(e){
-    this.setState({
-      showUsernameModal: true
-    });
   }
 
   onCloseUsernameModal(){
