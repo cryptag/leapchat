@@ -16,6 +16,10 @@ import UsernameModal from './components/modals/Username';
 
 const USERNAME_KEY = 'username';
 
+const SERVER_ERROR_PREFIX = "Error from server: ";
+const AUTH_ERROR = "Error authorizing you"; // Must match Go's miniware.AuthError
+const ON_CLOSE_RECONNECT_MESSAGE = "Message WebSocket closed. Reconnecting...";
+
 export default class App extends Component {
   constructor(props){
     super(props);
@@ -54,6 +58,8 @@ export default class App extends Component {
     this.decryptMsg = this.decryptMsg.bind(this);
     this.newWebSocket = this.newWebSocket.bind(this);
     this.keypairFromURLHash = this.keypairFromURLHash.bind(this);
+    this.setWsMsgs = this.setWsMsgs.bind(this);
+    this.clearConnectError = this.clearConnectError.bind(this);
     this.promptForUsername = this.promptForUsername.bind(this);
     this.loadUsername = this.loadUsername.bind(this);
   }
@@ -124,7 +130,7 @@ export default class App extends Component {
                                 callback);
   }
 
-  login(callback){
+  login(callback=this.setWsMsgs){
     let that = this;
 
     let host = document.location.host;
@@ -154,6 +160,20 @@ export default class App extends Component {
     })
   }
 
+  clearConnectError(){
+    // Sending worked, therefore we're connected. If we just
+    // reconnected, clear the error. (No pun intended.)
+    let authErrStr = SERVER_ERROR_PREFIX + AUTH_ERROR;
+    let alertMessage = this.state.alertMessage;
+    let alert = (alertMessage !== authErrStr &&
+                 alertMessage !== ON_CLOSE_RECONNECT_MESSAGE) ? alertMessage : '';
+
+    this.setState({
+      alertMessage: alert,
+      showAlert: !!alert
+    });
+  }
+
   newWebSocket(url){
     let ws = new WebSocket(url);
     let that = this;
@@ -162,7 +182,14 @@ export default class App extends Component {
       let authToken = that.state.authToken;
       console.log("Sending auth token", authToken);
       ws.send(authToken);
+
+      that.clearConnectError();
     };
+
+    ws.onclose = function(event){
+      that.onError(ON_CLOSE_RECONNECT_MESSAGE);
+      setTimeout(that.setWsMsgs, 1000);
+    }
 
     ws.onmessage = function(event){
       let data = JSON.parse(event.data);
@@ -239,6 +266,30 @@ export default class App extends Component {
     console.log(`onReceiveMessage: got non-chat message with tags ${tags}`);
   }
 
+  noopifyWs(ws){
+    let noop = function(){};
+    ws.onopen = noop;
+    ws.onclose = noop;
+    ws.onmessage = noop;
+  }
+
+  setWsMsgs(){
+    let host = document.location.host;
+    let wsProto = (this.state.protocol === 'https') ? 'wss' : 'ws';
+    let wsMsgs = this.newWebSocket(wsProto + "://" + host +
+                                   "/api/ws/messages/all");
+
+    // Kill previous wsMsgs connection
+    if (this.state.wsMsgs){
+      this.noopifyWs(this.state.wsMsgs);
+      this.state.wsMsgs.close();
+    }
+
+    this.setState({
+      wsMsgs: wsMsgs
+    });
+  }
+
   keypairFromURLHash(){
     let passphrase = document.location.hash || '#';
     passphrase = passphrase.slice(1);
@@ -272,17 +323,7 @@ export default class App extends Component {
         mID: mID
       });
 
-      let host = document.location.host;
-
-      that.login(function(){
-        let wsProto = (that.state.protocol === 'https') ? 'wss' : 'ws';
-        let wsMsgs = that.newWebSocket(wsProto + "://" + host +
-                                       "/api/ws/messages/all");
-
-        that.setState({
-          wsMsgs: wsMsgs
-        });
-      })
+      that.login();
     })
   }
 
