@@ -157,6 +157,10 @@ export default class App extends Component {
       })
     }).catch((reason) => {
       console.log("Error logging in:", reason);
+      if (reason.toString() === "TypeError: Failed to fetch"){
+        console.log("Trying to log in again");
+        setTimeout(that.login, 2000);
+      }
     })
   }
 
@@ -182,13 +186,12 @@ export default class App extends Component {
       let authToken = that.state.authToken;
       console.log("Sending auth token", authToken);
       ws.send(authToken);
-
-      that.clearConnectError();
     };
 
     ws.onclose = function(event){
       that.onError(ON_CLOSE_RECONNECT_MESSAGE);
-      setTimeout(that.setWsMsgs, 1000);
+      that.noopifyWs(ws);
+      setTimeout(that.login, 2000);
     }
 
     ws.onmessage = function(event){
@@ -196,8 +199,13 @@ export default class App extends Component {
       console.log("Event data:", data);
       if (data.error){
         that.onError('Error from server: ' + data.error);
+        if (data.error === AUTH_ERROR){
+          // ws.onclose() is about to be called; will trigger reconnect
+        }
         return;
       }
+
+      that.clearConnectError();
 
       // TODO: Ensure ordering of incoming messages
       for (let i = 0; i < data.ephemeral.length; i++) {
@@ -281,7 +289,6 @@ export default class App extends Component {
 
     // Kill previous wsMsgs connection
     if (this.state.wsMsgs){
-      this.noopifyWs(this.state.wsMsgs);
       this.state.wsMsgs.close();
     }
 
