@@ -36,7 +36,6 @@
     "atob": "^2.0.3",
     "btoa": "^1.1.2",
     "js-sha512": "^0.3.0",
-    "node-notifier": "^5.1.2",
     "prop-types": "^15.5.8",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.8",
