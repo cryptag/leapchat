@@ -20,11 +20,10 @@ export default class App extends Component {
   constructor(props){
     super(props);
 
-    let username = localStorage.getItem(USERNAME_KEY) || '';
     let protocol = document.location.protocol.slice(0, -1);
 
     this.state = {
-      username: username,
+      username: '',
       showUsernameModal: true,
       authToken: '',
       keyPair: null,
@@ -361,6 +360,11 @@ export default class App extends Component {
     let { showAlert, alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
 
+    let previousUsername = '';
+    if (!username){
+      previousUsername = localStorage.getItem(USERNAME_KEY) || '';
+    }
+
     console.log('Rendering...');
 
     return (
@@ -372,7 +376,7 @@ export default class App extends Component {
           onAlertDismiss={this.onAlertDismiss} />
 
         {showUsernameModal && <UsernameModal
-                                username={username}
+                                username={username || previousUsername}
                                 showModal={showUsernameModal}
                                 onSetUsername={this.onSetUsername}
                                 onCloseModal={this.onCloseUsernameModal} />}
