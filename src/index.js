@@ -58,6 +58,7 @@ export default class App extends Component {
     this.newWebSocket = this.newWebSocket.bind(this);
     this.keypairFromURLHash = this.keypairFromURLHash.bind(this);
     this.setWsMsgs = this.setWsMsgs.bind(this);
+    this.login = this.login.bind(this);
     this.clearConnectError = this.clearConnectError.bind(this);
     this.promptForUsername = this.promptForUsername.bind(this);
     this.loadUsername = this.loadUsername.bind(this);
