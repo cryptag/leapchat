@@ -23,7 +23,7 @@ class MessageForm extends Component {
 
   render(){
     return (
-      <div className="row message-form">
+      <div className="message-form">
         <hr />
         <form role="form" className="form" onSubmit={this.onSendMessage}>
           <div className="col-md-12">

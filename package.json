@@ -9,6 +9,7 @@
     "inject_static": "gulp inject",
     "build": "npm-run-all --parallel compile_js compile_sass inject_static",
     "dev": "watchify -t [ babelify --presets [ react es2015 ] ] src/index.js -o build/app.js",
+    "start": "npm run build && ./leapchat",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
