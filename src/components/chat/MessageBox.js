@@ -82,7 +82,7 @@ class MessageBox extends Component {
 
     return (
       <div className="row message-box" ref="messages">
-        <div className="col-md-12">
+        <div className="col-md-12 message-list">
           <MessageList messages={messages} username={username} />
         </div>
       </div>
