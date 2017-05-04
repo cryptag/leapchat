@@ -10,14 +10,14 @@ class AlertContainer extends Component {
   }
 
   render(){
-    let { showAlert, message, alertStyle } = this.props;
+    let { showAlert, message, alertStyle, onAlertDismiss } = this.props;
     if (['success', 'error', 'warning'].indexOf(alertStyle) === -1){
       alertStyle = 'success';
     }
 
     return (
       <div className="alert-container" ref="alert_container">
-        {showAlert && <Alert className={alertStyle} onDismiss={this.props.onAlertDismiss}>
+        {showAlert && <Alert className={alertStyle} onDismiss={onAlertDismiss}>
           {message}
         </Alert>}
       </div>
