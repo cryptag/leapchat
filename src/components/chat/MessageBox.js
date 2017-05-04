@@ -11,7 +11,8 @@ class MessageBox extends Component {
     super(props);
 
     this.state = {
-      notifiedIds: []
+      notifiedIds: [],
+      messagesEnd: null
     };
   }
   componentDidUpdate(prevProps){
@@ -73,17 +74,19 @@ class MessageBox extends Component {
   }
 
   scrollToBottom(){
-    let messageContainer = ReactDOM.findDOMNode(this.refs.messages);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    this.messagesEnd.scrollIntoView({behavior: "smooth"});
   }
 
   render(){
     let { messages, username } = this.props;
 
     return (
-      <div className="row message-box" ref="messages">
+      <div className="row message-box">
         <div className="col-md-12 message-list">
           <MessageList messages={messages} username={username} />
+        </div>
+        <div style={{float: "left", clear: "both"}}
+             ref={(el) => { this.messagesEnd = el }}>
         </div>
       </div>
     )
