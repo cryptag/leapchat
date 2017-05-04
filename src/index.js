@@ -97,7 +97,8 @@ export default class App extends Component {
 
   onAlertDismiss(){
     this.setState({
-      showAlert: false
+      showAlert: false,
+      alertMessage: ''
     });
   }
 
