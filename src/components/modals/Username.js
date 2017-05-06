@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 
 import { Modal, Button } from 'react-bootstrap';
@@ -21,7 +20,7 @@ class UsernameModal extends Component {
 
   // TODO: destroy this madness when possible, very un-React.
   getUsernameInputElement(){
-    return $(findDOMNode(this.refs.username)).find('input');
+    return $(this.refs.username);
   }
 
   giveFormFocus(){
@@ -74,8 +73,8 @@ class UsernameModal extends Component {
             <Modal.Title>Set Username</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group" ref="username">
-              <input type="text" className="form-control" defaultValue={username} placeholder="Enter username (e.g., trinity)" onKeyPress={this.onUsernameKeyPress} />
+            <div className="form-group">
+              <input type="text" className="form-control" ref="username" defaultValue={username} placeholder="Enter username (e.g., trinity)" onKeyPress={this.onUsernameKeyPress} />
               <br/>
               <Button bsSize="xsmall" bsStyle="primary" onClick={this.setRandomUsernameInForm}>Generate Random Username</Button>
             </div>
