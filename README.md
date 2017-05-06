@@ -47,7 +47,7 @@ To install and build static assets:
 
 ``` $ mkdir build ```
 
-``` $ cd static/ && bower install && cd .. ```
+``` $ bower install ```
 
 ``` $ npm run build ```
 
