@@ -60,3 +60,11 @@ Then, to build and run the go binary
 ``` $ ./leapchat ```
 
 Then view <http://localhost:8080>.
+
+## Testing
+
+We use [mocha](https://mochajs.org/) as the testing framework, with [chai](http://chaijs.com/)'s expect API.
+
+To run tests:
+
+``` $ npm test ```
