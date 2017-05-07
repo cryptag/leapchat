@@ -71,4 +71,4 @@ To run tests:
 
 and go tests:
 
-``` $ go build ```
+``` $ go test [-v] ./... ```
