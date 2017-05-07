@@ -68,3 +68,7 @@ We use [mocha](https://mochajs.org/) as the testing framework, with [chai](http:
 To run tests:
 
 ``` $ npm test ```
+
+and go tests:
+
+``` $ go build ```
