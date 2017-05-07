@@ -58,7 +58,6 @@ export default class App extends Component {
     this.newWebSocket = this.newWebSocket.bind(this);
     this.setWsConnection = this.setWsConnection.bind(this);
     this.clearConnectError = this.clearConnectError.bind(this);
-    
 
     this.promptForUsername = this.promptForUsername.bind(this);
     this.loadUsername = this.loadUsername.bind(this);
@@ -209,7 +208,9 @@ export default class App extends Component {
 
       this.clearConnectError();
 
-      // TODO: Ensure ordering of incoming messages
+      // TODO: Ensure that incoming messages are correctly ordered in
+      // the DOM; this code is racy, since onReceiveMessage() is a
+      // callback and is what adds messages to `this.state.messages`.
       for (let i = 0; i < data.ephemeral.length; i++) {
         let binStr = atob(data.ephemeral[i]);
         let binStrLength = binStr.length;
@@ -320,14 +321,13 @@ export default class App extends Component {
   }
 
   keypairFromURLHash(){
-
     let { passphrase, isNewRoom } = getPassphrase(document.location.hash);
 
     if (isNewRoom){
       document.location.hash = '#' + passphrase;
       this.displayAlert('New room created!', 'success');
     }
-    
+
     console.log("URL hash is `%s`", passphrase);
 
     let email = getEmail(passphrase);
