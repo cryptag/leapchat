@@ -4,6 +4,7 @@ html, body, ul {
 
 body {
   color: #222;
+  font-size: 16px;
   font-family: 'Lato', sans-serif; }
 
 // remove bootstrap's default gutters
@@ -33,7 +34,7 @@ ul {
 
         a {
           text-decoration: underline;
-          color: white; 
+          color: white;
         }
 
         a:hover {
@@ -67,8 +68,28 @@ ul {
   width: 100%;
   left: 0px;
   bottom: 0px;
-  padding-bottom: 15px;
+  padding: 5px;
   background-color: white;
+  border-top: solid 1px #ccc;
+
+  textarea {
+    /* this font-size disables zooming
+    on mobile safari, which breaks layout */
+    font-size: 16px;
+    width: calc(100% - 40px);
+  }
+
+  button {
+    border: none;
+    padding: 5px;
+    float: right;
+    height: 54px;
+    vertical-align: bottom;
+
+    i {
+      color: #1e202f;
+    }
+  }
 }
 
 .message-list {
