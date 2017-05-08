@@ -26,7 +26,7 @@ gulp.task('inject', function(){
     };
 
     var options = {
-        bowerJson: require('./static/bower.json'),
+        bowerJson: require('./bower.json'),
         directory: './static/lib'
     };
 
