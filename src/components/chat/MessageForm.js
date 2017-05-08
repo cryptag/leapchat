@@ -27,7 +27,6 @@ class MessageForm extends Component {
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey){
       this.onSendMessage(e);
-      return;
     }
   }
 
@@ -75,7 +74,7 @@ class MessageForm extends Component {
               name="message"
               value={message}
               placeholder="Enter message" required></textarea>
-            
+
           </div>
         </form>
       </div>
