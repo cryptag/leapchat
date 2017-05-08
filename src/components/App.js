@@ -75,7 +75,7 @@ export default class App extends Component {
       // here, because we don't have a reference to the component;
       // it's not in `this.refs`.
 
-      $('.message-form input').focus();
+      $('.message-form textarea').focus();
       // this.refs.messageBox.focus();
     }
   }
