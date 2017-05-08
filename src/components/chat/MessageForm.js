@@ -8,6 +8,7 @@ class MessageForm extends Component {
     super(props);
 
     this.onMessageUpdate = this.onMessageUpdate.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
     this.onSendMessage = this.onSendMessage.bind(this);
     this.clearMessage = this.clearMessage.bind(this);
 
@@ -20,6 +21,14 @@ class MessageForm extends Component {
     this.setState({
       message: e.target.value
     });
+  }
+
+  onKeyPress(e){
+    // Send on <enter> unless <shift-enter> has been pressed
+    if (e.key === 'Enter' && !e.nativeEvent.shiftKey){
+      this.onSendMessage(e);
+      return;
+    }
   }
 
   isPayloadValid(message){
@@ -62,6 +71,7 @@ class MessageForm extends Component {
             <textarea
               className="form-control"
               onChange={this.onMessageUpdate}
+              onKeyPress={this.onKeyPress}
               name="message"
               value={message}
               placeholder="Enter message" required></textarea>
