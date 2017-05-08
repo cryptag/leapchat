@@ -16,6 +16,13 @@ ul {
   list-style: none;
 }
 
+.alert-container {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
 .message-box {
   ul {
     li {
@@ -94,4 +101,5 @@ ul {
 
 .message-list {
   margin-bottom: 100px;
+  padding: 0 15px;
 }

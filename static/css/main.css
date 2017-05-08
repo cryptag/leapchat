@@ -13,6 +13,12 @@ body {
 ul {
   list-style: none; }
 
+.alert-container {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10; }
+
 .message-box ul li {
   display: block;
   border: solid 1px #eee;
@@ -65,4 +71,5 @@ ul {
       color: #1e202f; }
 
 .message-list {
-  margin-bottom: 100px; }
+  margin-bottom: 100px;
+  padding: 0 15px; }
