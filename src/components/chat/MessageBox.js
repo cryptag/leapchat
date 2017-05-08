@@ -80,8 +80,8 @@ class MessageBox extends Component {
     let { messages, username } = this.props;
 
     return (
-      <div className="row message-box">
-        <div className="col-md-12 message-list">
+      <div className="message-box">
+        <div className="message-list">
           <MessageList messages={messages} username={username} />
           <div style={{clear: "both"}}></div>
         </div>
