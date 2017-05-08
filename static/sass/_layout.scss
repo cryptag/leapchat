@@ -32,6 +32,7 @@ ul {
       margin-bottom: 5px;
       width: 80%;
       position: relative;
+      word-wrap: break-word;
 
       &.chat-outgoing {
         float: right;

@@ -25,7 +25,8 @@ ul {
   padding: 5px 15px;
   margin-bottom: 5px;
   width: 80%;
-  position: relative; }
+  position: relative;
+  word-wrap: break-word; }
   .message-box ul li.chat-outgoing {
     float: right;
     color: white;
