@@ -80,20 +80,32 @@ export default class App extends Component {
     }
   }
 
-  displayAlert(message, alertStyle){
+  /**
+   * Displays bootstrap alert fixed at top of page
+   * @param {string} message - Text to display in the alert.
+   * @param {string} alertStyle - {'success', 'info', 'danger', 'warning'}
+   */
+  displayAlert(message, alertStyle='success'){
     console.log(message);
 
     this.setState({
       showAlert: true,
       alertMessage: message,
-      alertStyle: alertStyle // Changing this changes nothing...
+      alertStyle: alertStyle
     })
   }
 
+  /**
+   * Curries displayAlert with warning style alert.
+   * @param {string} message - Text to display in the alert.
+   */
   onError(errStr) {
-    this.displayAlert(errStr, 'error');
+    this.displayAlert(errStr, 'warning');
   }
 
+  /**
+   * Closes the alert.
+   */
   onAlertDismiss(){
     this.setState({
       showAlert: false,
@@ -235,7 +247,7 @@ export default class App extends Component {
     // Sending worked, therefore we're connected. If we just
     // reconnected, clear the error. (No pun intended.)
     let authErrStr = SERVER_ERROR_PREFIX + AUTH_ERROR;
-    let alertMessage = this.state.alertMessage;
+    let { alertMessage } = this.state;
     let alert = (alertMessage !== authErrStr &&
                  alertMessage !== ON_CLOSE_RECONNECT_MESSAGE) ? alertMessage : '';
 
