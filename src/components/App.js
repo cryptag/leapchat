@@ -48,7 +48,7 @@ export default class App extends Component {
 
     this.keypairFromURLHash = this.keypairFromURLHash.bind(this);
     this.decryptMessage = this.decryptMessage.bind(this);
-    this.decryptFileCallback = this.decryptFileCallback.bind(this);
+    this.decryptAuthToken = this.decryptAuthToken.bind(this);
 
     // authentication methods
     this.login = this.login.bind(this);
@@ -134,7 +134,7 @@ export default class App extends Component {
     })
       .then(this.onLoginSuccess)
       .then((body) => {
-        this.decryptMessage(body, this.decryptFileCallback)
+        this.decryptMessage(body, this.decryptAuthToken)
       })
       .catch(this.onLoginError);
   }
@@ -162,11 +162,11 @@ export default class App extends Component {
 
   // From https://github.com/kaepora/miniLock/blob/ffea0ecb7a619d921129b8b4aed2081050ec48c1/src/js/miniLock.js#L592-L595 --
   //
-  //    Callback is passed these parameters:
+  //    miniLock.crypto.decryptFile's callback is passed these parameters:
   //      file: Decrypted file object (blob),
   //      saveName: File name for saving the file (String),
   //      senderID: Sender's miniLock ID (Base58 string)
-  decryptFileCallback(fileBlob, saveName, senderID){
+  decryptAuthToken(fileBlob, saveName, senderID){
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let authToken = reader.result;
