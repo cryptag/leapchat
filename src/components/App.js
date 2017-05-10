@@ -182,6 +182,7 @@ export default class App extends Component {
 
   newWebSocket(url){
     let ws = new WebSocket(url);
+    ws.firstMsg = true;
 
     ws.onopen = (event) => {
       let authToken = this.state.authToken;
@@ -196,6 +197,12 @@ export default class App extends Component {
     }
 
     ws.onmessage = (event) => {
+      if (ws.firstMsg){
+        this.setState({
+          messages: []
+        })
+        ws.firstMsg = false;
+      }
       let data = JSON.parse(event.data);
       console.log("Event data:", data);
       if (data.error){
