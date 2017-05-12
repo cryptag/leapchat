@@ -29,11 +29,16 @@ ul {
       display: block;
       border: solid 1px #eee;
       border-radius: 10px;
-      padding: 5px 15px;
+      padding: 5px 10px;
       margin-bottom: 5px;
-      width: 80%;
+      width: 90%;
       position: relative;
       word-wrap: break-word;
+
+      .username {
+        display: block;
+        font-weight: bold;
+      }
 
       &.chat-outgoing {
         float: right;
@@ -48,20 +53,12 @@ ul {
         a:hover {
           color: #ddd;
         }
-
-        .username {
-          display: none;
-        }
       }
 
       &.chat-incoming {
         float: left;
         color: #333;
 
-        .username {
-          display: block;
-          font-style: italic;
-        }
       }
     }
 
