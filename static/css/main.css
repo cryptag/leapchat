@@ -7,68 +7,127 @@ body {
   font-size: 16px;
   font-family: 'Lato', sans-serif; }
 
-.container {
-  width: 100%; }
+.encloser {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: row; }
+
+@media (max-width: 768px) {
+  .encloser {
+    flex-direction: column; } }
 
 ul {
   list-style: none; }
 
+header {
+  display: flex;
+  background-color: #1e202f;
+  color: #fff;
+  padding: 10px 10px 5px;
+  flex-direction: row;
+  justify-content: space-between; }
+  header .users-list {
+    order: -1; }
+    header .users-list .users-icon {
+      cursor: pointer; }
+    header .users-list ul {
+      display: none; }
+  header .logo {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold; }
+  header .menu-list {
+    display: none; }
+    header .menu-list i.fa {
+      margin-right: 5px; }
+
+@media (min-width: 768px) {
+  header {
+    flex: 1;
+    min-width: 300px;
+    flex-direction: column;
+    justify-content: start;
+    height: 100vh; }
+    header .logo {
+      text-align: left;
+      order: -3; }
+    header .settings {
+      order: -2; } }
+
+main {
+  display: flex;
+  flex-grow: 1; }
+  main .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; }
+    main .content .message-box {
+      height: calc(100vh - 120px);
+      overflow-y: scroll;
+      padding-top: 5px; }
+      main .content .message-box ul li {
+        display: block;
+        border: solid 1px #eee;
+        border-radius: 10px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        width: 90%;
+        position: relative;
+        word-wrap: break-word;
+        flex-grow: 1; }
+        main .content .message-box ul li .username {
+          display: block;
+          font-weight: bold; }
+        main .content .message-box ul li.chat-outgoing {
+          float: right;
+          color: white;
+          background-color: #827cd2; }
+          main .content .message-box ul li.chat-outgoing a {
+            text-decoration: underline;
+            color: white; }
+          main .content .message-box ul li.chat-outgoing a:hover {
+            color: #ddd; }
+        main .content .message-box ul li.chat-incoming {
+          float: left;
+          color: #333; }
+      main .content .message-box ul li:hover .delete-message {
+        visibility: visible; }
+    main .content .message-list {
+      padding: 0 15px; }
+    main .content .message-form {
+      padding: 5px;
+      background-color: white;
+      border-top: solid 1px #ccc;
+      margin-top: auto; }
+      main .content .message-form .message {
+        margin-right: 40px; }
+        main .content .message-form .message textarea {
+          /* this font-size disables zooming
+          on mobile safari, which breaks layout */
+          font-size: 16px; }
+      main .content .message-form button {
+        border: none;
+        padding: 5px;
+        float: right;
+        height: 54px;
+        vertical-align: bottom; }
+        main .content .message-form button i {
+          color: #1e202f; }
+
+@media (min-width: 768px) {
+  main {
+    flex: 5; }
+    main .content .message-box {
+      height: calc(100vh - 70px); } }
+
 .alert-container {
   position: fixed;
-  top: 0;
-  width: 100%;
+  top: 5px;
+  left: 10px;
+  right: 10px;
+  font-size: 12px;
   z-index: 10; }
-
-.message-box ul li {
-  display: block;
-  border: solid 1px #eee;
-  border-radius: 10px;
-  padding: 5px 10px;
-  margin-bottom: 5px;
-  width: 90%;
-  position: relative;
-  word-wrap: break-word; }
-  .message-box ul li .username {
-    display: block;
-    font-weight: bold; }
-  .message-box ul li.chat-outgoing {
-    float: right;
-    color: white;
-    background-color: #827cd2; }
-    .message-box ul li.chat-outgoing a {
-      text-decoration: underline;
-      color: white; }
-    .message-box ul li.chat-outgoing a:hover {
-      color: #ddd; }
-  .message-box ul li.chat-incoming {
-    float: left;
-    color: #333; }
-
-.message-box ul li:hover .delete-message {
-  visibility: visible; }
-
-.message-form {
-  position: fixed;
-  width: 100%;
-  left: 0px;
-  bottom: 0px;
-  padding: 5px;
-  background-color: white;
-  border-top: solid 1px #ccc; }
-  .message-form textarea {
-    /* this font-size disables zooming
-    on mobile safari, which breaks layout */
-    font-size: 16px;
-    width: calc(100% - 40px); }
-  .message-form button {
-    border: none;
-    padding: 5px;
-    float: right;
-    height: 54px;
-    vertical-align: bottom; }
-    .message-form button i {
-      color: #1e202f; }
-
-.message-list {
-  margin-bottom: 100px;
-  padding: 0 15px; }
+  .alert-container .alert {
+    padding: 5px 15px; }
+    .alert-container .alert.alert-dismissable .close {
+      right: auto; }

@@ -67,13 +67,15 @@ class MessageForm extends Component {
               <i className="fa fa-arrow-circle-right fa-2x"></i>
             </Button>
 
-            <textarea
-              className="form-control"
-              onChange={this.onMessageUpdate}
-              onKeyPress={this.onKeyPress}
-              name="message"
-              value={message}
-              placeholder="Enter message" required></textarea>
+            <div className="message">
+              <textarea
+                className="form-control"
+                onChange={this.onMessageUpdate}
+                onKeyPress={this.onKeyPress}
+                name="message"
+                value={message}
+                placeholder="Enter message" required></textarea>
+            </div>
 
           </div>
         </form>

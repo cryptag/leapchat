@@ -5,99 +5,232 @@ html, body, ul {
 body {
   color: #222;
   font-size: 16px;
-  font-family: 'Lato', sans-serif; }
-
-// remove bootstrap's default gutters
-.container {
-  width: 100%;
+  font-family: 'Lato', sans-serif;
 }
+
+.encloser {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: row;
+}
+
+@media (max-width: 768px) {
+  .encloser {
+    flex-direction: column;
+  }
+}
+
 
 ul {
   list-style: none;
 }
 
+// HEADER - mobile settings
+header {
+  display: flex;
+  background-color: $base-color;
+  color: #fff;
+  padding: 10px 10px 5px;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .users-list {
+    order: -1;
+
+    .users-icon {
+      cursor: pointer;
+    }
+
+    ul {
+      display: none;
+    }
+  }
+
+  .logo {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .settings {
+  }
+
+  .menu-list {
+    display: none;
+
+    i.fa {
+      margin-right: 5px;
+    }
+  }
+}
+
+
+// HEADER - desktop settings
+@media (min-width: 768px) {
+  header {
+    flex: 1;
+    min-width: 300px;
+    flex-direction: column;
+    justify-content: start;
+    height: 100vh;
+
+    .logo {
+      text-align: left;
+      order: -3;
+    }
+
+    .settings {
+      order: -2;
+    }
+
+    .user-list {
+
+    }
+  }
+}
+
+// MAIN - mobile settings
+main {
+
+  display: flex;
+  flex-grow: 1;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .message-box {
+        // scroll with flexbox needs revisiting
+        // for now, message box is viewport height
+        // less display height of message form
+        // + display height of header
+        height: calc(100vh - 120px);
+        overflow-y: scroll;
+        padding-top: 5px;
+
+      ul {
+        li {
+          display: block;
+          border: solid 1px #eee;
+          border-radius: 10px;
+          padding: 5px 10px;
+          margin-bottom: 5px;
+          width: 90%;
+          position: relative;
+          word-wrap: break-word;
+          flex-grow: 1;
+
+          .username {
+            display: block;
+            font-weight: bold;
+          }
+
+          &.chat-outgoing {
+            float: right;
+            color: white;
+            background-color: #827cd2;
+
+            a {
+              text-decoration: underline;
+              color: white;
+            }
+
+            a:hover {
+              color: #ddd;
+            }
+          }
+
+          &.chat-incoming {
+            float: left;
+            color: #333;
+
+          }
+        }
+
+        li:hover .delete-message {
+          visibility: visible;
+        }
+      }
+    }
+
+    .message-list {
+      padding: 0 15px;
+    }
+
+    .message-form {
+      padding: 5px;
+      background-color: white;
+      border-top: solid 1px #ccc;
+      margin-top: auto;
+
+      .message {
+        margin-right: 40px;
+
+        textarea {
+          /* this font-size disables zooming
+          on mobile safari, which breaks layout */
+          font-size: 16px;
+        }
+      }
+
+      button {
+        border: none;
+        padding: 5px;
+        float: right;
+        height: 54px;
+        vertical-align: bottom;
+
+        i {
+          color: #1e202f;
+        }
+      }
+    }
+
+  } // end .content
+
+} // end main
+
+// MAIN - desktop settings
+@media (min-width: 768px) {
+  main {
+    flex: 5;
+
+    .content {
+      .message-box{
+        // scroll with flexbox needs revisiting
+        // for now, message box is viewport height
+        // less display height of message form
+        height: calc(100vh - 70px);
+      }
+    }
+  }
+}
+
+// Alert styles, overrides default bootstrap
+// styles for positioning
 .alert-container {
   position: fixed;
-  top: 0;
-  width: 100%;
+  top: 5px;
+  left: 10px;
+  right: 10px;
+  font-size: 12px;
   z-index: 10;
-}
 
-.message-box {
-  ul {
-    li {
-      display: block;
-      border: solid 1px #eee;
-      border-radius: 10px;
-      padding: 5px 10px;
-      margin-bottom: 5px;
-      width: 90%;
-      position: relative;
-      word-wrap: break-word;
+  .alert {
+    padding: 5px 15px;
 
-      .username {
-        display: block;
-        font-weight: bold;
+    &.alert-dismissable {
+      .close {
+        right: auto;
       }
 
-      &.chat-outgoing {
-        float: right;
-        color: white;
-        background-color: #827cd2;
-
-        a {
-          text-decoration: underline;
-          color: white;
-        }
-
-        a:hover {
-          color: #ddd;
-        }
-      }
-
-      &.chat-incoming {
-        float: left;
-        color: #333;
-
-      }
-    }
-
-    li:hover .delete-message {
-      visibility: visible;
     }
   }
 }
 
-.message-form {
-  position: fixed;
-  width: 100%;
-  left: 0px;
-  bottom: 0px;
-  padding: 5px;
-  background-color: white;
-  border-top: solid 1px #ccc;
+// desktop
+@media (min-width: 768px) {
 
-  textarea {
-    /* this font-size disables zooming
-    on mobile safari, which breaks layout */
-    font-size: 16px;
-    width: calc(100% - 40px);
-  }
-
-  button {
-    border: none;
-    padding: 5px;
-    float: right;
-    height: 54px;
-    vertical-align: bottom;
-
-    i {
-      color: #1e202f;
-    }
-  }
 }
 
-.message-list {
-  margin-bottom: 100px;
-  padding: 0 15px;
-}
