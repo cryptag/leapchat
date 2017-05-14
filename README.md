@@ -38,6 +38,11 @@ If you've yet to install `bower` and `gulp`, run
 
 ``` $ npm install -g gulp ```
 
+To install Postgres along with the relevant extensions on Debian-based
+Linux distros, run
+
+``` $ bash debian_install.sh ```
+
 
 ## Install and Run
 
