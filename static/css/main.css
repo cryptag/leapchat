@@ -73,8 +73,7 @@ main {
         margin-bottom: 5px;
         width: 90%;
         position: relative;
-        word-wrap: break-word;
-        flex-grow: 1; }
+        word-wrap: break-word; }
         main .content .message-box ul li .username {
           display: block;
           font-weight: bold; }
