@@ -96,6 +96,8 @@ func messageReader(room *Room, client *Client) {
 }
 
 func saveMessagesToDisk(msgs []Message) error {
+	// PERSISTENCE: Turn into array of JSON objects and POST to /messages
+
 	for i := 0; i < len(msgs); i++ {
 		newUUID, err := uuid.NewV4()
 		if err != nil {

@@ -27,10 +27,13 @@ func (rm *RoomManager) GetRoom(roomID string) *Room {
 
 	room, ok := rm.rooms[roomID]
 	if !ok {
+		// PERSINTENCE: If room doesn't exist, do POST to /rooms with
+		// {"room_id": "MINILOCK_ID_GOES_HERE"}
 		newRoom := NewRoom(roomID)
 		rm.rooms[roomID] = newRoom
 		return newRoom
 	}
+	// PERSINTENCE: GET "/rooms?room_id=eq." + roomID
 	return room
 }
 
@@ -53,6 +56,9 @@ func NewRoom(roomID string) *Room {
 func (r *Room) GetMessages() []Message {
 	r.msgLock.RLock()
 	defer r.msgLock.RUnlock()
+
+	// PERSINTENCE: GET to /messages?select=message_enc then turn into
+	// []message_enc values
 
 	newMsgs := make([]Message, len(r.messages))
 	copy(newMsgs, r.messages)
