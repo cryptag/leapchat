@@ -6,12 +6,16 @@ import MessageForm from './MessageForm';
 class ChatContainer extends Component {
   render(){
     let { messages, username, onSendMessage } = this.props;
+
     return (
       <div className="content">
         <MessageBox
           messages={messages}
           username={username} />
-        <MessageForm onSendMessage={onSendMessage} />
+
+        <MessageForm
+          onSendMessage={onSendMessage} />
+
       </div>
     );
   }

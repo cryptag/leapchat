@@ -83,7 +83,6 @@ class MessageBox extends Component {
       <div className="message-box">
         <div className="message-list">
           <MessageList messages={messages} username={username} />
-          <div style={{clear: "both"}}></div>
         </div>
         <div style={{float: "left", clear: "both"}}
              ref={(el) => { this.messagesEnd = el }}>

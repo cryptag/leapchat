@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 const btoa = require('btoa');
 const atob = require('atob');
 
+import Header from './layout/Header';
+
 import AlertContainer from './general/AlertContainer';
 import ChatContainer from './chat/ChatContainer';
 
@@ -437,23 +439,28 @@ export default class App extends Component {
     console.log('Rendering...');
 
     return (
-      <main>
-        <AlertContainer
-          showAlert={showAlert}
-          message={alertMessage}
-          alertStyle={alertStyle}
-          onAlertDismiss={this.onAlertDismiss} />
+      <div className="encloser">
+        <Header
+          promptForUsername={this.promptForUsername} />
 
-        {showUsernameModal && <UsernameModal
-                                username={username || previousUsername}
-                                showModal={showUsernameModal}
-                                onSetUsername={this.onSetUsername}
-                                onCloseModal={this.onCloseUsernameModal} />}
-        <ChatContainer
-          messages={this.state.messages}
-          username={this.state.username}
-          onSendMessage={this.onSendMessage} />
-      </main>
+        <main>
+          <AlertContainer
+            showAlert={showAlert}
+            message={alertMessage}
+            alertStyle={alertStyle}
+            onAlertDismiss={this.onAlertDismiss} />
+
+          {showUsernameModal && <UsernameModal
+                                  username={username || previousUsername}
+                                  showModal={showUsernameModal}
+                                  onSetUsername={this.onSetUsername}
+                                  onCloseModal={this.onCloseUsernameModal} />}
+          <ChatContainer
+            messages={this.state.messages}
+            username={this.state.username}
+            onSendMessage={this.onSendMessage} />
+        </main>
+      </div>
     );
   }
 }
