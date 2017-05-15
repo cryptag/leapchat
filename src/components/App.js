@@ -16,7 +16,7 @@ import UsernameModal from './modals/Username';
 
 const USERNAME_KEY = 'username';
 
-import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE } from '../constants/messaging';
+import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE, ONE_MINUTE } from '../constants/messaging';
 
 export default class App extends Component {
   constructor(props){
@@ -30,6 +30,7 @@ export default class App extends Component {
       mID: '', // miniLock ID
       wsConnection: null, // WebSockets connection for getting/sending messages
       messages: [],
+      statuses: [],
       showAlert: false,
       alertMessage: '',
       alertStyle: 'success'
@@ -45,6 +46,8 @@ export default class App extends Component {
     this.onSendMessage = this.onSendMessage.bind(this);
     this.onReceiveMessage = this.onReceiveMessage.bind(this);
 
+    this.nowUTC = this.nowUTC.bind(this);
+
     this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
     this.onSetUsername = this.onSetUsername.bind(this);
 
@@ -55,6 +58,8 @@ export default class App extends Component {
     // authentication methods
     this.login = this.login.bind(this);
     this.onLoginError = this.onLoginError.bind(this);
+
+    this.userStatusManager = this.userStatusManager.bind(this);
 
     // websocket connection methods
     this.newWebSocket = this.newWebSocket.bind(this);
@@ -194,6 +199,36 @@ export default class App extends Component {
     reader.readAsText(fileBlob);
   }
 
+  userStatusManager(){
+    const delay = 10 * ONE_MINUTE;
+
+    setInterval(() => {
+      let statuses = this.state.statuses;
+      let tooOld = 0;
+      let now = this.nowUTC();
+
+      for(let i = 0, len = statuses.length; i < len; i++){
+        if (now - statuses[i].created >= delay + 2000){
+          tooOld++;
+        } else {
+          break;
+        }
+      }
+
+      if (tooOld === 0){
+        return;
+      }
+
+      // Uses `this.state.statuses` rather than local `statuses` var
+      // to prevent race where new statuses were received while the
+      // above for-loop was executing
+      this.setState({
+        statuses: this.state.statuses.slice(tooOld)
+      })
+
+    }, delay)
+  }
+
   newWebSocket(url){
     let ws = new WebSocket(url);
     ws.firstMsg = true;
@@ -216,6 +251,8 @@ export default class App extends Component {
           messages: []
         })
         ws.firstMsg = false;
+
+        this.userStatusManager();
       }
       let data = JSON.parse(event.data);
       console.log("Event data:", data);
@@ -266,6 +303,10 @@ export default class App extends Component {
     });
   }
 
+  nowUTC(){
+    return new Date(new Date().toUTCString().substr(0, 25));
+  }
+
   onReceiveMessage(msgKey, fileBlob, saveName, senderID){
     console.log(msgKey, fileBlob, saveName, senderID);
 
@@ -274,6 +315,7 @@ export default class App extends Component {
 
     // TODO: Make more efficient later
     let isTypeChatmessage = tags.includes('type:chatmessage');
+    let isTypeUserStatus = tags.includes('type:userstatus');
     let isTypePicture = tags.includes('type:picture');
     let isTypeRoomName = tags.includes('type:roomname');
     let isTypeRoomDescription = tags.includes('type:roomdescription');
@@ -302,6 +344,22 @@ export default class App extends Component {
       });
 
       reader.readAsText(fileBlob);  // TODO: Add error handling
+      return;
+    } else if (isTypeUserStatus){
+      let fromUsername = tagByPrefixStripped(tags, 'from:');
+      let userStatus = tagByPrefixStripped(tags, 'status:');
+
+      let status = {
+        key: msgKey,
+        from: fromUsername,
+        status: userStatus,
+        created: this.nowUTC() // TODO: use message.created from server
+      }
+
+      this.setState({
+        statuses: [...this.state.statuses, status]
+      })
+
       return;
     }
 
