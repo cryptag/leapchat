@@ -5,7 +5,6 @@ const atob = require('atob');
 
 import Header from './layout/Header';
 
-import AlertContainer from './general/AlertContainer';
 import ChatContainer from './chat/ChatContainer';
 
 import { formatMessages } from '../utils/chat';
@@ -430,6 +429,7 @@ export default class App extends Component {
   render(){
     let { showAlert, alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
+    let { messages } = this.state;
 
     let previousUsername = '';
     if (!username){
@@ -444,11 +444,6 @@ export default class App extends Component {
           promptForUsername={this.promptForUsername} />
 
         <main>
-          <AlertContainer
-            showAlert={showAlert}
-            message={alertMessage}
-            alertStyle={alertStyle}
-            onAlertDismiss={this.onAlertDismiss} />
 
           {showUsernameModal && <UsernameModal
                                   username={username || previousUsername}
@@ -456,8 +451,12 @@ export default class App extends Component {
                                   onSetUsername={this.onSetUsername}
                                   onCloseModal={this.onCloseUsernameModal} />}
           <ChatContainer
-            messages={this.state.messages}
-            username={this.state.username}
+            showAlert={showAlert}
+            alertMessage={alertMessage}
+            alertStyle={alertStyle}
+            onAlertDismiss={this.onAlertDismiss}
+            messages={messages}
+            username={username}
             onSendMessage={this.onSendMessage} />
         </main>
       </div>
