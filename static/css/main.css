@@ -65,7 +65,8 @@ main {
   main .content {
     display: flex;
     flex-direction: column;
-    flex-grow: 1; }
+    flex-grow: 1;
+    position: relative; }
     main .content .message-box {
       height: calc(100vh - 120px);
       overflow-y: scroll;
@@ -122,11 +123,11 @@ main {
       height: calc(100vh - 70px); } }
 
 .alert-container {
-  position: fixed;
+  position: absolute;
   top: 5px;
   left: 10px;
   right: 10px;
-  font-size: 12px;
+  font-size: 14px;
   z-index: 10; }
   .alert-container .alert {
     padding: 5px 15px; }
