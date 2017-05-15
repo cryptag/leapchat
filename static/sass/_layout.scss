@@ -10,7 +10,6 @@ body {
 
 .encloser {
   display: flex;
-  min-height: 100vh;
   flex-direction: row;
 }
 
@@ -19,7 +18,6 @@ body {
     flex-direction: column;
   }
 }
-
 
 ul {
   list-style: none;
@@ -36,6 +34,7 @@ header {
 
   .users-list {
     order: -1;
+    flex-grow: 1;
 
     .users-icon {
       cursor: pointer;
@@ -46,6 +45,12 @@ header {
     }
   }
 
+  .logo-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+
   .logo {
     text-align: center;
     font-size: 24px;
@@ -54,16 +59,7 @@ header {
 
   .settings {
   }
-
-  .menu-list {
-    display: none;
-
-    i.fa {
-      margin-right: 5px;
-    }
-  }
 }
-
 
 // HEADER - desktop settings
 @media (min-width: 768px) {
@@ -74,17 +70,22 @@ header {
     justify-content: start;
     height: 100vh;
 
-    .logo {
-      text-align: left;
-      order: -3;
+    .logo-container {
+      margin-bottom: 15px;
+      order: -1;
+      flex-grow: 0;
     }
 
-    .settings {
-      order: -2;
-    }
+    .users-list {
+      flex-grow: 0;
 
-    .user-list {
+      .users-icon {
+        display: none;
+      }
 
+      ul {
+        display: block;
+      }
     }
   }
 }
@@ -117,7 +118,6 @@ main {
           padding: 5px 10px;
           margin-bottom: 5px;
           width: 90%;
-          position: relative;
           word-wrap: break-word;
 
           .username {
@@ -145,10 +145,6 @@ main {
             color: #333;
 
           }
-        }
-
-        li:hover .delete-message {
-          visibility: visible;
         }
       }
     }
@@ -227,9 +223,3 @@ main {
     }
   }
 }
-
-// desktop
-@media (min-width: 768px) {
-
-}
-

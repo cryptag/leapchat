@@ -9,7 +9,6 @@ body {
 
 .encloser {
   display: flex;
-  min-height: 100vh;
   flex-direction: row; }
 
 @media (max-width: 768px) {
@@ -27,19 +26,20 @@ header {
   flex-direction: row;
   justify-content: space-between; }
   header .users-list {
-    order: -1; }
+    order: -1;
+    flex-grow: 1; }
     header .users-list .users-icon {
       cursor: pointer; }
     header .users-list ul {
       display: none; }
+  header .logo-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1; }
   header .logo {
     text-align: center;
     font-size: 24px;
     font-weight: bold; }
-  header .menu-list {
-    display: none; }
-    header .menu-list i.fa {
-      margin-right: 5px; }
 
 @media (min-width: 768px) {
   header {
@@ -48,11 +48,16 @@ header {
     flex-direction: column;
     justify-content: start;
     height: 100vh; }
-    header .logo {
-      text-align: left;
-      order: -3; }
-    header .settings {
-      order: -2; } }
+    header .logo-container {
+      margin-bottom: 15px;
+      order: -1;
+      flex-grow: 0; }
+    header .users-list {
+      flex-grow: 0; }
+      header .users-list .users-icon {
+        display: none; }
+      header .users-list ul {
+        display: block; } }
 
 main {
   display: flex;
@@ -72,7 +77,6 @@ main {
         padding: 5px 10px;
         margin-bottom: 5px;
         width: 90%;
-        position: relative;
         word-wrap: break-word; }
         main .content .message-box ul li .username {
           display: block;
@@ -89,8 +93,6 @@ main {
         main .content .message-box ul li.chat-incoming {
           float: left;
           color: #333; }
-      main .content .message-box ul li:hover .delete-message {
-        visibility: visible; }
     main .content .message-list {
       padding: 0 15px; }
     main .content .message-form {

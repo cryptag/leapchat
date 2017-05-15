@@ -13,10 +13,12 @@ export default class Header extends Component {
   render(){
     return (
       <header>
-        <Logo />
+        <div className="logo-container">
+          <Logo />
+          <Settings
+            promptForUsername={this.props.promptForUsername} />
+        </div>
         <UserList />
-        <Settings
-          promptForUsername={this.props.promptForUsername} />
       </header>
     )
   }
