@@ -19,6 +19,7 @@ const USERNAME_KEY = 'username';
 
 import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE, ONE_MINUTE } from '../constants/messaging';
 
+
 export default class App extends Component {
   constructor(props){
     super(props);

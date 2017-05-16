@@ -6,11 +6,16 @@
 
     <title>LeapChat</title>
 
-    <!-- bower:css -->
-    <link rel="stylesheet" href="static/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.css" />
-    <!-- endbower -->
-    <link rel="stylesheet" href="static/css/main.css">
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/build/app-8a34b4f915.css">
+    <!-- endinject -->
+
+    <link href="static/lib/font-awesome/fonts/FontAwesome.otf">
+    <link href="static/lib/font-awesome/fonts/fontawesome-webfont.eot">
+    <link href="static/lib/font-awesome/fonts/fontawesome-webfont.svg">
+    <link href="static/lib/font-awesome/fonts/fontawesome-webfont.ttf">
+    <link href="static/lib/font-awesome/fonts/fontawesome-webfont.woff">
+    <link href="static/lib/font-awesome/fonts/fontawesome-webfont.woff2">
 
   </head>
 
@@ -18,23 +23,9 @@
     <div id="root">
     </div>
 
-    <!-- bower:js -->
-    <script src="static/lib/jquery/dist/jquery.js"></script>
-    <script src="static/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="static/lib/fetch/fetch.js"></script>
-    <!-- endbower -->
-
-    <!-- miniLock and dependencies -->
-    <!-- TODO: externalize this dependency file list for test runner and compressing -->
-    <script type="text/javascript" src="static/js/crypto/blake2s.js"></script>
-    <script type="text/javascript" src="static/js/crypto/nacl.js"></script>
-    <script type="text/javascript" src="static/js/crypto/nacl-stream.js"></script>
-    <script type="text/javascript" src="static/js/crypto/scrypt.js"></script>
-    <script type="text/javascript" src="static/js/base58.js"></script>
-    <script type="text/javascript" src="static/js/miniLock.js"></script>
-    <script type="text/javascript" src="static/js/ui.js"></script>
-
-    <script type="text/javascript" src="build/app.js"></script>
+    <!-- inject:js -->
+    <script src="/build/build-b8711e03b5.min.js"></script>
+    <!-- endinject -->
 
     <audio id="notification-audio" src="static/audio/notification_gertz.wav"></audio>
 
