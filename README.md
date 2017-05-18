@@ -61,9 +61,13 @@ To install and build static assets:
 
 ``` $ npm run dev  # watch asset files and recompile when changed ```
 
-Then, to set up the database and run PostgREST, which our Go code uses for persistence:
+Then, to set up the database and run PostgREST, which our Go code uses
+for persistence:
 
 ``` $ cd db/ ```
+
+Now, become the `postgres` user and run `bash init_sql.sh`. One way
+this usually works (at least on Linux):
 
 ``` $ sudo su postgres -c 'bash init_sql.sh' ```
 
