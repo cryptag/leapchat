@@ -17,4 +17,4 @@ for file in sql/table*.sql; do
     psql leapchat < "$file"
 done
 
-migrate.sh sql/migration*.sql
+/bin/bash migrate.sh sql/migration*.sql
