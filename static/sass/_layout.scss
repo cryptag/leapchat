@@ -100,6 +100,7 @@ main {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    position: relative;
 
     .message-box {
         // scroll with flexbox needs revisiting
@@ -205,11 +206,11 @@ main {
 // Alert styles, overrides default bootstrap
 // styles for positioning
 .alert-container {
-  position: fixed;
+  position: absolute;
   top: 5px;
   left: 10px;
   right: 10px;
-  font-size: 12px;
+  font-size: 14px;
   z-index: 10;
 
   .alert {
