@@ -1,0 +1,1 @@
+ALTER TABLE messages ALTER COLUMN ttl_secs SET NOT NULL;
