@@ -17,7 +17,8 @@ import UsernameModal from './modals/Username';
 
 const USERNAME_KEY = 'username';
 
-import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE, ONE_MINUTE } from '../constants/messaging';
+import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
+         USER_STATUS_DELAY_MS } from '../constants/messaging';
 
 export default class App extends Component {
   constructor(props){
@@ -229,9 +230,7 @@ export default class App extends Component {
   }
 
   userStatusManager(wsConn){
-    const delay = 10 * ONE_MINUTE;
-
-    // Every `delay` minutes, send current status
+    // Every `USER_STATUS_DELAY_MS` seconds, send current status
     let sendStatus = setInterval(() => {
       if (wsConn.noopified){
         clearInterval(sendStatus);
@@ -239,7 +238,7 @@ export default class App extends Component {
       }
 
       this.sendStatusMessage();
-    }, delay)
+    }, USER_STATUS_DELAY_MS)
 
     // Remove old statuses from state.statuses
     let removeOldStatuses = setInterval(() => {
@@ -253,7 +252,7 @@ export default class App extends Component {
       let now = nowUTC();
 
       for(let i = 0, len = statuses.length; i < len; i++){
-        if (now - statuses[i].created >= delay + 2000){
+        if (now - statuses[i].created >= USER_STATUS_DELAY_MS + 2000){
           numOld++;
         } else {
           break;
@@ -272,7 +271,7 @@ export default class App extends Component {
         statuses: this.state.statuses.slice(numOld)
       })
 
-    }, delay)
+    }, USER_STATUS_DELAY_MS)
   }
 
   newWebSocket(url){
@@ -497,7 +496,7 @@ export default class App extends Component {
     this.createMessage(message);
   }
 
-  sendJsonMessage(contents, tags){
+  sendJsonMessage(contents, tags, ttl_secs=0){
     console.log("Creating message with contents `%s`", contents);
 
     let saveName = tags.join('|||');
@@ -510,7 +509,7 @@ export default class App extends Component {
     let mID = this.state.mID;
     miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
                                 mID, this.state.keyPair.secretKey,
-                                this.sendMessageToServer);
+                                this.sendMessageToServer.bind(this, ttl_secs));
   }
 
   sendStatusMessage(){
@@ -526,8 +525,9 @@ export default class App extends Component {
 
       let contents = {};  // Unused. TODO: Make more efficient?
       let tags = ['from:'+username, 'type:userstatus', 'status:'+status];
+      let ttl_secs = USER_STATUS_DELAY_MS / 1000;
 
-      this.sendJsonMessage(contents, tags);
+      this.sendJsonMessage(contents, tags, ttl_secs);
       clearInterval(interval);
     }, 500)
   }
@@ -539,7 +539,7 @@ export default class App extends Component {
     this.sendJsonMessage(contents, tags);
   }
 
-  sendMessageToServer(fileBlob, saveName, senderMinilockID){
+  sendMessageToServer(ttl_secs, fileBlob, saveName, senderMinilockID){
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       // From https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string#comment55137593_11562550
@@ -552,6 +552,11 @@ export default class App extends Component {
       let msgForServer = {
         ephemeral: [b64encMinilockFile]
       };
+      if (ttl_secs > 0){
+        msgForServer.to_server = {
+          ttl_secs: ttl_secs
+        }
+      }
       this.state.wsConnection.send(JSON.stringify(msgForServer));
     })
 

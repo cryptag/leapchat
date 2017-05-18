@@ -9,7 +9,7 @@ import (
 )
 
 func TestRoomManager(t *testing.T) {
-	rooms := NewRoomManager()
+	rooms := NewRoomManager(pgClient)
 	roomIDs := []string{}
 	wg := &sync.WaitGroup{}
 
@@ -31,7 +31,7 @@ func TestRoomManager(t *testing.T) {
 }
 
 func TestRoomMessages(t *testing.T) {
-	r := NewRoom("testing-room")
+	r := NewRoom("testing-room-testing-room-testing-room-testing", pgClient)
 	wg := &sync.WaitGroup{}
 
 	msgs := [][]Message{}
@@ -47,23 +47,30 @@ func TestRoomMessages(t *testing.T) {
 	wg.Add(len(msgs) * 2)
 	for i := 0; i < 10; i++ {
 		go func(i int) {
-			r.AddMessages(msgs[i])
+			err := r.AddMessages(msgs[i])
+			if err != nil {
+				t.Logf("Error from AddMessages: %s", err)
+			}
 			wg.Done()
 		}(i)
 
 		go func() {
-			r.GetMessages()
+			_, err := r.GetMessages()
+			if err != nil {
+				t.Logf("Error from GetMessages: %s", err)
+			}
 			wg.Done()
 		}()
 	}
 
 	wg.Wait()
 
-	assert.Equal(t, expectedMsgs, r.GetMessages())
+	gotMsgs, _ := r.GetMessages()
+	assert.Equal(t, expectedMsgs, gotMsgs)
 }
 
 func TestRoomClients(t *testing.T) {
-	r := NewRoom("testing-room")
+	r := NewRoom("testing-room-testing-room-testing-room-testing", pgClient)
 	clients := []*Client{}
 	wg := &sync.WaitGroup{}
 

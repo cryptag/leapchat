@@ -1,23 +1,53 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
+	"net/http"
 	"sync"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
 
-var AllRooms = NewRoomManager()
+const (
+	POSTGREST_BASE_URL = "http://localhost:3000"
+)
+
+var (
+	DELETE_EXPIRED_MESSAGES_PERIOD = 10 * time.Minute
+
+	pgClient = NewPGClient(POSTGREST_BASE_URL)
+	AllRooms = NewRoomManager(pgClient)
+)
 
 type RoomManager struct {
 	lock  sync.RWMutex
 	rooms map[string]*Room // map[miniLockID]*Room
+
+	pgClient *PGClient
 }
 
-func NewRoomManager() *RoomManager {
+func NewRoomManager(pgClient *PGClient) *RoomManager {
+	go func() {
+		tick := time.Tick(DELETE_EXPIRED_MESSAGES_PERIOD)
+		var err error
+		for {
+			err = pgClient.PostWanted("/rpc/delete_expired_messages", nil,
+				http.StatusOK)
+			if err != nil {
+				log.Infof("Error deleting expired messages: %v", err)
+			} else {
+				log.Debugf("Just deleted expired messages")
+			}
+			<-tick
+		}
+	}()
 	return &RoomManager{
-		rooms: map[string]*Room{},
+		pgClient: pgClient,
+		rooms:    map[string]*Room{},
 	}
 }
 
@@ -27,49 +57,92 @@ func (rm *RoomManager) GetRoom(roomID string) *Room {
 
 	room, ok := rm.rooms[roomID]
 	if !ok {
-		newRoom := NewRoom(roomID)
-		rm.rooms[roomID] = newRoom
-		return newRoom
+		room = NewRoom(roomID, rm.pgClient)
+		rm.rooms[roomID] = room
 	}
 	return room
 }
 
 type Room struct {
-	ID       string // miniLock ID
-	Clients  []*Client
-	messages []Message
+	ID string // miniLock ID
 
+	Clients    []*Client
 	clientLock sync.RWMutex
-	msgLock    sync.RWMutex
+
+	pgClient *PGClient
 }
 
-func NewRoom(roomID string) *Room {
+func NewRoom(roomID string, pgClient *PGClient) *Room {
+	// TODO: Error handling
+	_ = PGRoom{RoomID: roomID}.Create(pgClient)
 	return &Room{
 		ID:       roomID,
-		messages: []Message{}, // So that they marshal to `[]`, not `null`
+		pgClient: pgClient,
 	}
 }
 
-func (r *Room) GetMessages() []Message {
-	r.msgLock.RLock()
-	defer r.msgLock.RUnlock()
+func (r *Room) GetMessages() ([]Message, error) {
+	var pgMessages PGMessages
+	err := r.pgClient.GetInto(
+		"/messages?select=message_enc&order=created.desc&limit=100&room_id=eq."+r.ID,
+		&pgMessages)
+	if err != nil {
+		return nil, err
+	}
 
-	newMsgs := make([]Message, len(r.messages))
-	copy(newMsgs, r.messages)
-	return newMsgs
+	msgs := make([]Message, len(pgMessages))
+
+	var bindata []byte
+
+	// Grab just the message_enc field, reverse the order, and turn
+	// PostgREST's hex string response back into base64
+	for i := 0; i < len(pgMessages); i++ {
+		bindata, err = byteaToBytes(pgMessages[i].MessageEnc)
+		if err != nil {
+			log.Debugf("Error from byteaToBytes: %s", err)
+			continue
+		}
+		msgs[len(pgMessages)-i-1] = bindata
+	}
+
+	return msgs, nil
 }
 
-func (r *Room) AddMessages(msgs []Message) {
-	r.msgLock.Lock()
-	defer r.msgLock.Unlock()
-
-	log.Infof("Room %s received %d new messages", r.ID, len(msgs))
+func (r *Room) AddMessages(msgs []Message, ttlSecs *int) error {
+	post := make(PGMessages, len(msgs))
 
 	for i := 0; i < len(msgs); i++ {
-		log.Debugf("%s\n\n", msgs[i])
+		post[i] = &PGMessage{
+			RoomID:     r.ID,
+			MessageEnc: string(msgs[i]),
+			TTL:        ttlSecs,
+		}
 	}
 
-	r.messages = append(r.messages, msgs...)
+	return post.Create(r.pgClient)
+}
+
+func byteaToBytes(hexdata string) ([]byte, error) {
+	if len(hexdata) <= 2 {
+		return []byte{}, nil
+	}
+
+	// Postgres prefixes the stored strings with "\\x"
+	hexdatab := []byte(hexdata[2:])
+
+	b64b := make([]byte, hex.DecodedLen(len(hexdatab)))
+	n, err := hex.Decode(b64b, hexdatab)
+	if err != nil {
+		return nil, err
+	}
+
+	bindata := make([]byte, base64.StdEncoding.DecodedLen(len(b64b)))
+	n, err = base64.StdEncoding.Decode(bindata, b64b)
+	if err != nil {
+		return nil, err
+	}
+
+	return bindata[:n], nil
 }
 
 func (r *Room) AddClient(c *Client) {
