@@ -30,6 +30,7 @@ export default class App extends Component {
       showUsernameModal: true,
       authToken: '',
       keyPair: null,
+      keyPairReady: false,
       mID: '', // miniLock ID
       wsConnection: null, // WebSockets connection for getting/sending messages
       messages: [],
@@ -467,6 +468,7 @@ export default class App extends Component {
 
       this.setState({
         keyPair: keyPair,
+        keyPairReady: true,
         mID: mID
       }, this.login);
     })
@@ -507,9 +509,22 @@ export default class App extends Component {
     console.log("Encrypting file blob");
 
     let mID = this.state.mID;
-    miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
-                                mID, this.state.keyPair.secretKey,
-                                this.sendMessageToServer.bind(this, ttl_secs));
+    if (this.state.keyPairReady){
+      miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
+                                  mID, this.state.keyPair.secretKey,
+                                  this.sendMessageToServer.bind(this, ttl_secs));
+    } else {
+      let interval = setInterval(() => {
+        if (!this.state.keyPairReady){
+          return;
+        }
+
+        miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
+                                    mID, this.state.keyPair.secretKey,
+                                    this.sendMessageToServer.bind(this, ttl_secs));
+        clearInterval(interval);
+      }, 500)
+    }
   }
 
   sendStatusMessage(){
@@ -519,7 +534,7 @@ export default class App extends Component {
       let username = this.state.username;
       let status = this.state.status;
 
-      if (!username || !status || !this.state.keyPair){
+      if (!username || !status || !this.state.keyPairReady){
         return;
       }
 
@@ -564,13 +579,17 @@ export default class App extends Component {
   }
 
   wsSend(payload){
-    if (this.state.keyPair && this.state.wsConnection){
+    if (this.state.keyPairReady &&
+        this.state.wsConnection &&
+        this.state.wsConnection.readyState === WebSocket.OPEN){
       this.state.wsConnection.send(JSON.stringify(payload));
     } else {
       // This is in a setInterval because sometimes
       // `this.state.wsConnection` isn't quite ready yet
       let interval = setInterval(() => {
-        if (!this.state.keyPair || !this.state.wsConnection){
+        if (!this.state.keyPairReady ||
+            !this.state.wsConnection ||
+            this.state.wsConnection.readyState !== WebSocket.OPEN){
           return;
         }
 
