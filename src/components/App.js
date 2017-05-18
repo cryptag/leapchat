@@ -46,6 +46,7 @@ export default class App extends Component {
 
     this.createMessage = this.createMessage.bind(this);
     this.sendMessageToServer = this.sendMessageToServer.bind(this);
+    this.wsSend = this.wsSend.bind(this);
 
     this.onSendMessage = this.onSendMessage.bind(this);
     this.onReceiveMessage = this.onReceiveMessage.bind(this);
@@ -467,9 +468,7 @@ export default class App extends Component {
       this.setState({
         keyPair: keyPair,
         mID: mID
-      });
-
-      this.login();
+      }, this.login);
     })
   }
 
@@ -558,10 +557,27 @@ export default class App extends Component {
           ttl_secs: ttl_secs
         }
       }
-      this.state.wsConnection.send(JSON.stringify(msgForServer));
+      this.wsSend(msgForServer);
     })
 
     reader.readAsArrayBuffer(fileBlob);  // TODO: Add error handling
+  }
+
+  wsSend(payload){
+    if (this.state.keyPair && this.state.wsConnection){
+      this.state.wsConnection.send(JSON.stringify(payload));
+    } else {
+      // This is in a setInterval because sometimes
+      // `this.state.wsConnection` isn't quite ready yet
+      let interval = setInterval(() => {
+        if (!this.state.keyPair || !this.state.wsConnection){
+          return;
+        }
+
+        this.state.wsConnection.send(JSON.stringify(payload));
+        clearInterval(interval);
+      }, 500)
+    }
   }
 
   render(){
