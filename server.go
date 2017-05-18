@@ -106,7 +106,7 @@ func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, r
 
 		newUUID, err := uuid.NewV4()
 		if err != nil {
-			WriteError(w, "Error generating now auth token; sorry!", err)
+			WriteError(w, "Error generating new auth token; sorry!", err)
 			return
 		}
 
