@@ -75,7 +75,9 @@ export default class App extends Component {
   }
 
   componentDidMount(){
-    detectPageVisible(this.setStatusViewing, this.setStatusOnline);
+    detectPageVisible(this.setStatusViewing,
+                      this.setStatusOnline,
+                      this.setStatusOffline);
     this.keypairFromURLHash();
   }
 

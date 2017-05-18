@@ -1,6 +1,9 @@
 // Derived from https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
 
-export function detectPageVisible(onVisible, onHidden){
+export function detectPageVisible(onVisible, onHidden, onClose){
+  //
+  // If user viewing page versus not
+  //
 
   // Set the name of the hidden property and the change event for visibility
   var hidden, visibilityChange;
@@ -24,4 +27,16 @@ export function detectPageVisible(onVisible, onHidden){
   }
 
   document.addEventListener(visibilityChange, handleVisibilityChange, false);
+
+  //
+  // If user closes tab or window
+  //
+
+  window.onbeforeunload = function(e) {
+    onClose();  // Fires in some browsers, but not all
+
+    var msg = 'Do you want to leave this site?';
+    e.returnValue = msg;
+    return msg;
+  };
 }
