@@ -64,7 +64,7 @@ class UsernameModal extends Component {
   }
 
   render(){
-    let { showModal, username, onCloseModal } = this.props;
+    let { showModal, previousUsername, username, onCloseModal } = this.props;
 
     return (
       <div>
@@ -74,13 +74,13 @@ class UsernameModal extends Component {
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">
-              <input type="text" className="form-control" ref="username" defaultValue={username} placeholder="Enter username (e.g., trinity)" onKeyPress={this.onUsernameKeyPress} />
+              <input type="text" className="form-control" ref="username" defaultValue={username || previousUsername} placeholder="Enter username (e.g., trinity)" onKeyPress={this.onUsernameKeyPress} />
               <br/>
               <Button bsSize="xsmall" bsStyle="primary" onClick={this.setRandomUsernameInForm}>Generate Random Username</Button>
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={onCloseModal}>Cancel</Button>
+            {username && <Button onClick={onCloseModal}>Cancel</Button>}
             <Button onClick={this.onSetUsernameClick} bsStyle="primary">Set Username</Button>
           </Modal.Footer>
         </Modal>
@@ -92,6 +92,7 @@ class UsernameModal extends Component {
 
 UsernameModal.propType = {
   showModal: PropTypes.bool.isRequired,
+  previousUsername: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSetUsername: PropTypes.func.isRequired

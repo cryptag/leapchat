@@ -3,18 +3,21 @@ import React, { Component } from 'react';
 const btoa = require('btoa');
 const atob = require('atob');
 
-import AlertContainer from './general/AlertContainer';
+import Header from './layout/Header';
+
 import ChatContainer from './chat/ChatContainer';
 
 import { formatMessages } from '../utils/chat';
 import { tagByPrefixStripped } from '../utils/tags';
 import { getEmail, getPassphrase, generateMessageKey } from '../utils/encrypter';
+import { detectPageVisible } from '../utils/pagevisibility';
+import { nowUTC } from '../utils/time';
 
 import UsernameModal from './modals/Username';
 
 const USERNAME_KEY = 'username';
 
-import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE } from '../constants/messaging';
+import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE, ONE_MINUTE } from '../constants/messaging';
 
 export default class App extends Component {
   constructor(props){
@@ -28,6 +31,8 @@ export default class App extends Component {
       mID: '', // miniLock ID
       wsConnection: null, // WebSockets connection for getting/sending messages
       messages: [],
+      statuses: [],
+      status: '',
       showAlert: false,
       alertMessage: '',
       alertStyle: 'success'
@@ -54,6 +59,11 @@ export default class App extends Component {
     this.login = this.login.bind(this);
     this.onLoginError = this.onLoginError.bind(this);
 
+    this.userStatusManager = this.userStatusManager.bind(this);
+    this.setStatusViewing = this.setStatusViewing.bind(this);
+    this.setStatusOnline = this.setStatusOnline.bind(this);
+    this.setStatusOffline = this.setStatusOffline.bind(this);
+
     // websocket connection methods
     this.newWebSocket = this.newWebSocket.bind(this);
     this.setWsConnection = this.setWsConnection.bind(this);
@@ -64,10 +74,13 @@ export default class App extends Component {
   }
 
   componentDidMount(){
+    detectPageVisible(this.setStatusViewing,
+                      this.setStatusOnline,
+                      this.setStatusOffline);
     this.keypairFromURLHash();
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState){
     if (!this.state.showUsernameModal){
       // TODO: Find better way to do
       // this. `findDOMNode(this.refs.messageBox).focus()` doesn't
@@ -77,6 +90,11 @@ export default class App extends Component {
 
       $('.message-form textarea').focus();
       // this.refs.messageBox.focus();
+    }
+
+    if (prevState.status !== this.state.status ||
+        prevState.username !== this.state.username){
+      this.sendStatusMessage();
     }
   }
 
@@ -192,6 +210,71 @@ export default class App extends Component {
     reader.readAsText(fileBlob);
   }
 
+  setStatusViewing(){
+    this.setState({
+      status: 'viewing' // green
+    })
+  }
+
+  setStatusOnline(){
+    this.setState({
+      status: 'online' // yellow
+    })
+  }
+
+  setStatusOffline(){
+    this.setState({
+      status: 'offline' // gray
+    })
+  }
+
+  userStatusManager(wsConn){
+    const delay = 10 * ONE_MINUTE;
+
+    // Every `delay` minutes, send current status
+    let sendStatus = setInterval(() => {
+      if (wsConn.noopified){
+        clearInterval(sendStatus);
+        return;
+      }
+
+      this.sendStatusMessage();
+    }, delay)
+
+    // Remove old statuses from state.statuses
+    let removeOldStatuses = setInterval(() => {
+      if (wsConn.noopified){
+        clearInterval(removeOldStatuses);
+        return;
+      }
+
+      let statuses = this.state.statuses;
+      let numOld = 0;
+      let now = nowUTC();
+
+      for(let i = 0, len = statuses.length; i < len; i++){
+        if (now - statuses[i].created >= delay + 2000){
+          numOld++;
+        } else {
+          break;
+        }
+      }
+
+      if (numOld === 0){
+        return;
+      }
+
+      // Uses `this.state.statuses` rather than local `statuses` var
+      // to prevent race where new statuses were received while the
+      // above for-loop was executing. (New statuses are always
+      // appended to `this.state.statuses`, never prepended.)
+      this.setState({
+        statuses: this.state.statuses.slice(numOld)
+      })
+
+    }, delay)
+  }
+
   newWebSocket(url){
     let ws = new WebSocket(url);
     ws.firstMsg = true;
@@ -214,6 +297,8 @@ export default class App extends Component {
           messages: []
         })
         ws.firstMsg = false;
+
+        this.userStatusManager(ws);
       }
       let data = JSON.parse(event.data);
       console.log("Event data:", data);
@@ -272,6 +357,7 @@ export default class App extends Component {
 
     // TODO: Make more efficient later
     let isTypeChatmessage = tags.includes('type:chatmessage');
+    let isTypeUserStatus = tags.includes('type:userstatus');
     let isTypePicture = tags.includes('type:picture');
     let isTypeRoomName = tags.includes('type:roomname');
     let isTypeRoomDescription = tags.includes('type:roomdescription');
@@ -301,6 +387,22 @@ export default class App extends Component {
 
       reader.readAsText(fileBlob);  // TODO: Add error handling
       return;
+    } else if (isTypeUserStatus){
+      let fromUsername = tagByPrefixStripped(tags, 'from:');
+      let userStatus = tagByPrefixStripped(tags, 'status:');
+
+      let status = {
+        key: msgKey,
+        from: fromUsername,
+        status: userStatus,
+        created: nowUTC() // TODO: use message.created from server
+      }
+
+      this.setState({
+        statuses: [...this.state.statuses, status]
+      })
+
+      return;
     }
 
     // TODO: Handle other types
@@ -317,6 +419,7 @@ export default class App extends Component {
     ws.onclose = noop;
     ws.onerror = noop;
     ws.onmessage = noop;
+    ws.noopified = true;
   }
 
   getWebsocketUrl(){
@@ -377,10 +480,16 @@ export default class App extends Component {
   }
 
   onSetUsername(username){
+    if (!username){
+      this.onError('Invalid username!');
+      return;
+    }
     localStorage.setItem(USERNAME_KEY, username);
     this.setState({
-      'username': username
+      username: username,
+      status: 'viewing'
     });
+
     this.onCloseUsernameModal();
   }
 
@@ -388,22 +497,46 @@ export default class App extends Component {
     this.createMessage(message);
   }
 
-  createMessage(message){
-    console.log("Creating message with contents `%s`", message);
+  sendJsonMessage(contents, tags){
+    console.log("Creating message with contents `%s`", contents);
 
-    let contents = {msg: message};
+    let saveName = tags.join('|||');
     let fileBlob = new Blob([JSON.stringify(contents)],
                             {type: 'application/json'})
-    let saveName = ['from:'+this.state.username, 'type:chatmessage'].join('|||');
     fileBlob.name = saveName;
-
-    let mID = this.state.mID;
 
     console.log("Encrypting file blob");
 
+    let mID = this.state.mID;
     miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
                                 mID, this.state.keyPair.secretKey,
                                 this.sendMessageToServer);
+  }
+
+  sendStatusMessage(){
+    // This is in a setInterval because sometimes `this.state.keyPair`
+    // isn't quite ready yet
+    let interval = setInterval(() => {
+      let username = this.state.username;
+      let status = this.state.status;
+
+      if (!username || !status || !this.state.keyPair){
+        return;
+      }
+
+      let contents = {};  // Unused. TODO: Make more efficient?
+      let tags = ['from:'+username, 'type:userstatus', 'status:'+status];
+
+      this.sendJsonMessage(contents, tags);
+      clearInterval(interval);
+    }, 500)
+  }
+
+  createMessage(message){
+    let contents = {msg: message};
+    let tags = ['from:'+this.state.username, 'type:chatmessage'];
+
+    this.sendJsonMessage(contents, tags);
   }
 
   sendMessageToServer(fileBlob, saveName, senderMinilockID){
@@ -428,6 +561,8 @@ export default class App extends Component {
   render(){
     let { showAlert, alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
+    let { statuses } = this.state;
+    let { messages } = this.state;
 
     let previousUsername = '';
     if (!username){
@@ -437,23 +572,29 @@ export default class App extends Component {
     console.log('Rendering...');
 
     return (
-      <main>
-        <AlertContainer
-          showAlert={showAlert}
-          message={alertMessage}
-          alertStyle={alertStyle}
-          onAlertDismiss={this.onAlertDismiss} />
+      <div className="encloser">
+        <Header
+          statuses={statuses}
+          promptForUsername={this.promptForUsername} />
 
-        {showUsernameModal && <UsernameModal
-                                username={username || previousUsername}
-                                showModal={showUsernameModal}
-                                onSetUsername={this.onSetUsername}
-                                onCloseModal={this.onCloseUsernameModal} />}
-        <ChatContainer
-          messages={this.state.messages}
-          username={this.state.username}
-          onSendMessage={this.onSendMessage} />
-      </main>
+        <main>
+
+          {showUsernameModal && <UsernameModal
+                                  previousUsername={previousUsername}
+                                  username={username}
+                                  showModal={showUsernameModal}
+                                  onSetUsername={this.onSetUsername}
+                                  onCloseModal={this.onCloseUsernameModal} />}
+          <ChatContainer
+            showAlert={showAlert}
+            alertMessage={alertMessage}
+            alertStyle={alertStyle}
+            onAlertDismiss={this.onAlertDismiss}
+            messages={messages}
+            username={username}
+            onSendMessage={this.onSendMessage} />
+        </main>
+      </div>
     );
   }
 }
