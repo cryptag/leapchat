@@ -11,6 +11,8 @@ import ChatContainer from './chat/ChatContainer';
 import { formatMessages } from '../utils/chat';
 import { tagByPrefixStripped } from '../utils/tags';
 import { getEmail, getPassphrase, generateMessageKey } from '../utils/encrypter';
+import { detectPageVisible } from '../utils/pagevisibility';
+import { nowUTC } from '../utils/time';
 
 import UsernameModal from './modals/Username';
 
@@ -31,6 +33,7 @@ export default class App extends Component {
       wsConnection: null, // WebSockets connection for getting/sending messages
       messages: [],
       statuses: [],
+      status: '',
       showAlert: false,
       alertMessage: '',
       alertStyle: 'success'
@@ -46,8 +49,6 @@ export default class App extends Component {
     this.onSendMessage = this.onSendMessage.bind(this);
     this.onReceiveMessage = this.onReceiveMessage.bind(this);
 
-    this.nowUTC = this.nowUTC.bind(this);
-
     this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
     this.onSetUsername = this.onSetUsername.bind(this);
 
@@ -60,6 +61,9 @@ export default class App extends Component {
     this.onLoginError = this.onLoginError.bind(this);
 
     this.userStatusManager = this.userStatusManager.bind(this);
+    this.setStatusViewing = this.setStatusViewing.bind(this);
+    this.setStatusOnline = this.setStatusOnline.bind(this);
+    this.setStatusOffline = this.setStatusOffline.bind(this);
 
     // websocket connection methods
     this.newWebSocket = this.newWebSocket.bind(this);
@@ -71,10 +75,11 @@ export default class App extends Component {
   }
 
   componentDidMount(){
+    detectPageVisible(this.setStatusViewing, this.setStatusOnline);
     this.keypairFromURLHash();
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState){
     if (!this.state.showUsernameModal){
       // TODO: Find better way to do
       // this. `findDOMNode(this.refs.messageBox).focus()` doesn't
@@ -84,6 +89,11 @@ export default class App extends Component {
 
       $('.message-form textarea').focus();
       // this.refs.messageBox.focus();
+    }
+
+    if (prevState.status !== this.state.status ||
+        prevState.username !== this.state.username){
+      this.sendStatusMessage();
     }
   }
 
@@ -199,31 +209,66 @@ export default class App extends Component {
     reader.readAsText(fileBlob);
   }
 
-  userStatusManager(){
-    const delay = 10 * ONE_MINUTE;
+  setStatusViewing(){
+    this.setState({
+      status: 'viewing' // green
+    })
+  }
 
-    setInterval(() => {
+  setStatusOnline(){
+    this.setState({
+      status: 'online' // yellow
+    })
+  }
+
+  setStatusOffline(){
+    this.setState({
+      status: 'offline' // gray
+    })
+  }
+
+  userStatusManager(wsConn){
+    const delay = 10 * ONE_MINUTE / 10;  // TEMPORARY; DO NOT COMMIT DIVISION
+
+    // Every `delay` minutes, send current status
+    let sendStatus = setInterval(() => {
+      if (wsConn.noopified){
+        clearInterval(sendStatus);
+        return;
+      }
+
+      this.sendStatusMessage();
+    }, delay)
+
+    // Remove old statuses from state.statuses
+    let removeOldStatuses = setInterval(() => {
+      if (wsConn.noopified){
+        clearInterval(removeOldStatuses);
+        return;
+      }
+
       let statuses = this.state.statuses;
-      let tooOld = 0;
-      let now = this.nowUTC();
+      let numOld = 0;
+      let now = nowUTC();
 
       for(let i = 0, len = statuses.length; i < len; i++){
         if (now - statuses[i].created >= delay + 2000){
-          tooOld++;
+          numOld++;
         } else {
           break;
         }
       }
 
-      if (tooOld === 0){
+      if (numOld === 0){
         return;
       }
 
       // Uses `this.state.statuses` rather than local `statuses` var
       // to prevent race where new statuses were received while the
-      // above for-loop was executing
+      // above for-loop was executing. (New statuses are always
+      // appended to `this.state.statuses`, never prepended.)
       this.setState({
-        statuses: this.state.statuses.slice(tooOld)
+        statuses: this.state.statuses.slice(numOld)
       })
 
     }, delay)
@@ -252,7 +297,7 @@ export default class App extends Component {
         })
         ws.firstMsg = false;
 
-        this.userStatusManager();
+        this.userStatusManager(ws);
       }
       let data = JSON.parse(event.data);
       console.log("Event data:", data);
@@ -303,10 +348,6 @@ export default class App extends Component {
     });
   }
 
-  nowUTC(){
-    return new Date(new Date().toUTCString().substr(0, 25));
-  }
-
   onReceiveMessage(msgKey, fileBlob, saveName, senderID){
     console.log(msgKey, fileBlob, saveName, senderID);
 
@@ -353,7 +394,7 @@ export default class App extends Component {
         key: msgKey,
         from: fromUsername,
         status: userStatus,
-        created: this.nowUTC() // TODO: use message.created from server
+        created: nowUTC() // TODO: use message.created from server
       }
 
       this.setState({
@@ -377,6 +418,7 @@ export default class App extends Component {
     ws.onclose = noop;
     ws.onerror = noop;
     ws.onmessage = noop;
+    ws.noopified = true;
   }
 
   getWebsocketUrl(){
@@ -437,10 +479,16 @@ export default class App extends Component {
   }
 
   onSetUsername(username){
+    if (!username){
+      this.onError('Invalid username!');
+      return;
+    }
     localStorage.setItem(USERNAME_KEY, username);
     this.setState({
-      'username': username
+      username: username,
+      status: 'viewing'
     });
+
     this.onCloseUsernameModal();
   }
 
@@ -448,22 +496,46 @@ export default class App extends Component {
     this.createMessage(message);
   }
 
-  createMessage(message){
-    console.log("Creating message with contents `%s`", message);
+  sendJsonMessage(contents, tags){
+    console.log("Creating message with contents `%s`", contents);
 
-    let contents = {msg: message};
+    let saveName = tags.join('|||');
     let fileBlob = new Blob([JSON.stringify(contents)],
                             {type: 'application/json'})
-    let saveName = ['from:'+this.state.username, 'type:chatmessage'].join('|||');
     fileBlob.name = saveName;
-
-    let mID = this.state.mID;
 
     console.log("Encrypting file blob");
 
+    let mID = this.state.mID;
     miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
                                 mID, this.state.keyPair.secretKey,
                                 this.sendMessageToServer);
+  }
+
+  sendStatusMessage(){
+    // This is in a setInterval because sometimes `this.state.keyPair`
+    // isn't quite ready yet
+    let interval = setInterval(() => {
+      let username = this.state.username;
+      let status = this.state.status;
+
+      if (!username || !status || !this.state.keyPair){
+        return;
+      }
+
+      let contents = {};  // Unused. TODO: Make more efficient?
+      let tags = ['from:'+username, 'type:userstatus', 'status:'+status];
+
+      this.sendJsonMessage(contents, tags);
+      clearInterval(interval);
+    }, 500)
+  }
+
+  createMessage(message){
+    let contents = {msg: message};
+    let tags = ['from:'+this.state.username, 'type:chatmessage'];
+
+    this.sendJsonMessage(contents, tags);
   }
 
   sendMessageToServer(fileBlob, saveName, senderMinilockID){
@@ -488,6 +560,7 @@ export default class App extends Component {
   render(){
     let { showAlert, alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
+    let { statuses } = this.state;
 
     let previousUsername = '';
     if (!username){
@@ -499,6 +572,7 @@ export default class App extends Component {
     return (
       <div className="encloser">
         <Header
+          statuses={statuses}
           promptForUsername={this.promptForUsername} />
 
         <main>

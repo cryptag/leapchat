@@ -18,7 +18,8 @@ export default class Header extends Component {
           <Settings
             promptForUsername={this.props.promptForUsername} />
         </div>
-        <UserList />
+        <UserList
+          statuses={this.props.statuses} />
       </header>
     )
   }
