@@ -4,17 +4,20 @@
 
 set -euo pipefail
 
-# Initialization (create roles, etc)
+# Create 'leapchat' database, associated role
+psql < sql/pre.sql
+
+# More initialization
 for file in sql/init*.sql; do
-    psql < "$file"
+    psql leapchat < "$file"
 done
 
 # Create tables
 for file in sql/table*.sql; do
-    psql < "$file"
+    psql leapchat < "$file"
 done
 
 # Run migrations
 for file in sql/migration*.sql; do
-    psql < "$file"
+    psql leapchat < "$file"
 done

@@ -6,3 +6,4 @@ CREATE TABLE messages (
     ttl_secs    integer   DEFAULT 7776000 CHECK (60 <= ttl_secs AND ttl_secs <= 7776000),
     created     timestamp WITH time zone DEFAULT now()
 );
+ALTER TABLE messages OWNER TO superuser;
