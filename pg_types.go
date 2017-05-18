@@ -26,9 +26,13 @@ func NewPGClient(baseURL string) *PGClient {
 }
 
 func (cl *PGClient) Post(urlSuffix string, payload interface{}) (*http.Response, error) {
-	payloadb, err := json.Marshal(payload)
-	if err != nil {
-		return nil, err
+	var payloadb []byte
+	if payload != nil {
+		b, err := json.Marshal(payload)
+		if err != nil {
+			return nil, err
+		}
+		payloadb = b
 	}
 
 	log.Debugf("POST'ing to %s: %s", urlSuffix, payloadb)

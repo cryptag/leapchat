@@ -4,7 +4,9 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"net/http"
 	"sync"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
@@ -15,6 +17,8 @@ const (
 )
 
 var (
+	DELETE_EXPIRED_MESSAGES_PERIOD = 10 * time.Minute
+
 	pgClient = NewPGClient(POSTGREST_BASE_URL)
 	AllRooms = NewRoomManager(pgClient)
 )
@@ -27,6 +31,20 @@ type RoomManager struct {
 }
 
 func NewRoomManager(pgClient *PGClient) *RoomManager {
+	go func() {
+		tick := time.Tick(DELETE_EXPIRED_MESSAGES_PERIOD)
+		var err error
+		for {
+			err = pgClient.PostWanted("/rpc/delete_expired_messages", nil,
+				http.StatusOK)
+			if err != nil {
+				log.Infof("Error deleting expired messages: %v", err)
+			} else {
+				log.Debugf("Just deleted expired messages")
+			}
+			<-tick
+		}
+	}()
 	return &RoomManager{
 		pgClient: pgClient,
 		rooms:    map[string]*Room{},
