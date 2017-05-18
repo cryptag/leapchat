@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"sync"
 
@@ -8,16 +10,26 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var AllRooms = NewRoomManager()
+const (
+	POSTGREST_BASE_URL = "http://localhost:3000"
+)
+
+var (
+	pgClient = NewPGClient(POSTGREST_BASE_URL)
+	AllRooms = NewRoomManager(pgClient)
+)
 
 type RoomManager struct {
 	lock  sync.RWMutex
 	rooms map[string]*Room // map[miniLockID]*Room
+
+	pgClient *PGClient
 }
 
-func NewRoomManager() *RoomManager {
+func NewRoomManager(pgClient *PGClient) *RoomManager {
 	return &RoomManager{
-		rooms: map[string]*Room{},
+		pgClient: pgClient,
+		rooms:    map[string]*Room{},
 	}
 }
 
@@ -27,55 +39,91 @@ func (rm *RoomManager) GetRoom(roomID string) *Room {
 
 	room, ok := rm.rooms[roomID]
 	if !ok {
-		// PERSINTENCE: If room doesn't exist, do POST to /rooms with
-		// {"room_id": "MINILOCK_ID_GOES_HERE"}
-		newRoom := NewRoom(roomID)
-		rm.rooms[roomID] = newRoom
-		return newRoom
+		room = NewRoom(roomID, rm.pgClient)
+		rm.rooms[roomID] = room
 	}
-	// PERSINTENCE: GET "/rooms?room_id=eq." + roomID
 	return room
 }
 
 type Room struct {
-	ID       string // miniLock ID
-	Clients  []*Client
-	messages []Message
+	ID string // miniLock ID
 
+	Clients    []*Client
 	clientLock sync.RWMutex
-	msgLock    sync.RWMutex
+
+	pgClient *PGClient
 }
 
-func NewRoom(roomID string) *Room {
+func NewRoom(roomID string, pgClient *PGClient) *Room {
+	// TODO: Error handling
+	_ = PGRoom{RoomID: roomID}.Create(pgClient)
 	return &Room{
 		ID:       roomID,
-		messages: []Message{}, // So that they marshal to `[]`, not `null`
+		pgClient: pgClient,
 	}
 }
 
-func (r *Room) GetMessages() []Message {
-	r.msgLock.RLock()
-	defer r.msgLock.RUnlock()
+func (r *Room) GetMessages() ([]Message, error) {
+	var pgMessages PGMessages
+	err := r.pgClient.GetInto(
+		"/messages?select=message_enc&order=created.desc&limit=100&room_id=eq."+r.ID,
+		&pgMessages)
+	if err != nil {
+		return nil, err
+	}
 
-	// PERSINTENCE: GET to /messages?select=message_enc then turn into
-	// []message_enc values
+	msgs := make([]Message, len(pgMessages))
 
-	newMsgs := make([]Message, len(r.messages))
-	copy(newMsgs, r.messages)
-	return newMsgs
+	var bindata []byte
+
+	// Grab just the message_enc field, reverse the order, and turn
+	// PostgREST's hex string response back into base64
+	for i := 0; i < len(pgMessages); i++ {
+		bindata, err = byteaToBytes(pgMessages[i].MessageEnc)
+		if err != nil {
+			log.Debugf("Error from byteaToBytes: %s", err)
+			continue
+		}
+		msgs[len(pgMessages)-i-1] = bindata
+	}
+
+	return msgs, nil
 }
 
-func (r *Room) AddMessages(msgs []Message) {
-	r.msgLock.Lock()
-	defer r.msgLock.Unlock()
-
-	log.Infof("Room %s received %d new messages", r.ID, len(msgs))
+func (r *Room) AddMessages(msgs []Message) error {
+	post := make(PGMessages, len(msgs))
 
 	for i := 0; i < len(msgs); i++ {
-		log.Debugf("%s\n\n", msgs[i])
+		post[i] = &PGMessage{
+			RoomID:     r.ID,
+			MessageEnc: string(msgs[i]),
+		}
 	}
 
-	r.messages = append(r.messages, msgs...)
+	return post.Create(r.pgClient)
+}
+
+func byteaToBytes(hexdata string) ([]byte, error) {
+	if len(hexdata) <= 2 {
+		return []byte{}, nil
+	}
+
+	// Postgres prefixes the stored strings with "\\x"
+	hexdatab := []byte(hexdata[2:])
+
+	b64b := make([]byte, hex.DecodedLen(len(hexdatab)))
+	n, err := hex.Decode(b64b, hexdatab)
+	if err != nil {
+		return nil, err
+	}
+
+	bindata := make([]byte, base64.StdEncoding.DecodedLen(len(b64b)))
+	n, err = base64.StdEncoding.Decode(bindata, b64b)
+	if err != nil {
+		return nil, err
+	}
+
+	return bindata[:n], nil
 }
 
 func (r *Room) AddClient(c *Client) {

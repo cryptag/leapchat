@@ -43,7 +43,8 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 		http.FileServer(http.Dir("./build")))).Methods("GET")
 	r.HandleFunc("/", GetIndex).Methods("GET")
 
-	r.HandleFunc("/api/login", Login(m)).Methods("GET")
+	// pgClient defined in room.go
+	r.HandleFunc("/api/login", Login(m, pgClient)).Methods("GET")
 
 	msgsHandler := miniware.Auth(
 		http.HandlerFunc(WSMessagesHandler(AllRooms)),
@@ -83,12 +84,21 @@ func GetIndex(w http.ResponseWriter, req *http.Request) {
 	_ = templates.ExecuteTemplate(w, "index.html", nil)
 }
 
-func Login(m *miniware.Mapper) func(w http.ResponseWriter, req *http.Request) {
+func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		mID, keypair, err := parseMinilockID(req)
 		if err != nil {
 			WriteErrorStatus(w, "Error: invalid miniLock ID",
 				err, http.StatusBadRequest)
+			return
+		}
+
+		err = PGRoom{RoomID: mID}.Create(pgClient)
+		if err != nil && !strings.Contains(err.Error(),
+			"duplicate key value violates unique constraint") {
+
+			WriteErrorStatus(w, "Error creating new room",
+				err, http.StatusInternalServerError)
 			return
 		}
 

@@ -43,6 +43,9 @@ Linux distros, run
 
 ``` $ bash debian_install.sh ```
 
+Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
+and put it in your PATH.
+
 
 ## Install and Run
 
@@ -58,13 +61,22 @@ To install and build static assets:
 
 ``` $ npm run dev  # watch asset files and recompile when changed ```
 
-Then, to build and run the go binary
+Then, to set up the database and run PostgREST, which our Go code uses for persistence:
+
+``` $ cd db/ ```
+
+``` $ sudo su postgres -c 'bash init_sql.sh' ```
+
+``` $ postgrest postgrest.conf ```
+
+Finally, to build and run the Go binary:
 
 ``` $ go build ```
 
 ``` $ ./leapchat ```
 
 Then view <http://localhost:8080>.
+
 
 ## Testing
 

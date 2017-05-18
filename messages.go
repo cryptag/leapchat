@@ -2,14 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/cryptag/minishare/miniware"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
-	uuid "github.com/nu7hatch/gouuid"
 )
 
 type Message []byte
@@ -41,8 +39,14 @@ func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.R
 }
 
 func messageReader(room *Room, client *Client) {
+	msgs, err := room.GetMessages()
+	if err != nil {
+		client.SendError(err.Error(), err)
+		return
+	}
+
 	// Send them already-existing messages
-	err := client.SendMessages(room.GetMessages()...)
+	err = client.SendMessages(msgs...)
 	if err != nil {
 		client.SendError(err.Error(), err)
 		return
@@ -67,16 +71,12 @@ func messageReader(room *Room, client *Client) {
 				continue
 			}
 
-			// TODO: Encrypt messages with ephemeral key, save to
-			// disk, serve from disk rather than RAM
-			//
-			// go func() {
-			// 	err := saveMessagesToDisk(payload.Ephemeral)
-			// 	if err != nil {
-			// 		log.Debugf("Error from saveMessagesToDisk: %v", err)
-			// 	}
-			// }()
-			room.AddMessages(payload.Ephemeral)
+			err = room.AddMessages(payload.Ephemeral)
+			if err != nil {
+				log.Debugf("Error from AddMessages: %v", err)
+				continue
+			}
+
 			room.BroadcastMessages(client, payload.Ephemeral...)
 
 		case websocket.BinaryMessage:
@@ -93,23 +93,4 @@ func messageReader(room *Room, client *Client) {
 		}
 
 	}
-}
-
-func saveMessagesToDisk(msgs []Message) error {
-	// PERSISTENCE: Turn into array of JSON objects and POST to /messages
-
-	for i := 0; i < len(msgs); i++ {
-		newUUID, err := uuid.NewV4()
-		if err != nil {
-			return err
-		}
-
-		filename := newUUID.String()
-
-		err = ioutil.WriteFile(filename, msgs[i], 0600)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
