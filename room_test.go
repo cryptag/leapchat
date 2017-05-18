@@ -45,9 +45,10 @@ func TestRoomMessages(t *testing.T) {
 	}
 
 	wg.Add(len(msgs) * 2)
+	ttlSecs := 60
 	for i := 0; i < 10; i++ {
 		go func(i int) {
-			err := r.AddMessages(msgs[i])
+			err := r.AddMessages(msgs[i], &ttlSecs)
 			if err != nil {
 				t.Logf("Error from AddMessages: %s", err)
 			}
