@@ -229,7 +229,7 @@ export default class App extends Component {
   }
 
   userStatusManager(wsConn){
-    const delay = 10 * ONE_MINUTE / 10;  // TEMPORARY; DO NOT COMMIT DIVISION
+    const delay = 10 * ONE_MINUTE;
 
     // Every `delay` minutes, send current status
     let sendStatus = setInterval(() => {
