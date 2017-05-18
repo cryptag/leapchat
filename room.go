@@ -90,13 +90,14 @@ func (r *Room) GetMessages() ([]Message, error) {
 	return msgs, nil
 }
 
-func (r *Room) AddMessages(msgs []Message) error {
+func (r *Room) AddMessages(msgs []Message, ttlSecs *int) error {
 	post := make(PGMessages, len(msgs))
 
 	for i := 0; i < len(msgs); i++ {
 		post[i] = &PGMessage{
 			RoomID:     r.ID,
 			MessageEnc: string(msgs[i]),
+			TTL:        ttlSecs,
 		}
 	}
 

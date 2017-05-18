@@ -16,8 +16,13 @@ type OutgoingPayload struct {
 	Ephemeral []Message `json:"ephemeral"`
 }
 
+type ToServer struct {
+	TTL *int `json:"ttl_secs"`
+}
+
 type IncomingPayload struct {
 	Ephemeral []Message `json:"ephemeral"`
+	ToServer  ToServer  `json:"to_server"`
 }
 
 func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +76,7 @@ func messageReader(room *Room, client *Client) {
 				continue
 			}
 
-			err = room.AddMessages(payload.Ephemeral)
+			err = room.AddMessages(payload.Ephemeral, payload.ToServer.TTL)
 			if err != nil {
 				log.Debugf("Error from AddMessages: %v", err)
 				continue
