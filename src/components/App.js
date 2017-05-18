@@ -585,7 +585,8 @@ export default class App extends Component {
             onAlertDismiss={this.onAlertDismiss} />
 
           {showUsernameModal && <UsernameModal
-                                  username={username || previousUsername}
+                                  previousUsername={previousUsername}
+                                  username={username}
                                   showModal={showUsernameModal}
                                   onSetUsername={this.onSetUsername}
                                   onCloseModal={this.onCloseUsernameModal} />}
