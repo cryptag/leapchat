@@ -9,7 +9,7 @@ export default class UserList extends Component {
 
   // TODO: if mobile make this do nothing
   onClickUsersIcon(){
-  	$(this.refs.menuList).slideToggle();
+    $(this.refs.menuList).slideToggle('fast');
   }
 
   sortByFrom(status1, status2) {
@@ -58,7 +58,7 @@ export default class UserList extends Component {
       	<div className="users-icon" onClick={this.onClickUsersIcon}>
           <i className="fa fa-users fa-2x"></i>
         </div>
-        <ul>
+        <ul ref="menuList">
           {viewing.map(status => {
             return (
               <li key={status.key}>
