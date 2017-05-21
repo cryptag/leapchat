@@ -206,7 +206,8 @@ export default class App extends Component {
       let authToken = reader.result;
       console.log('authToken:', authToken);
       this.setState({
-        authToken: authToken
+        authToken: authToken,
+        messages: [] // TODO: Once messages have server-visible IDs, just fetch new
       })
       this.setWsConnection();
     });
