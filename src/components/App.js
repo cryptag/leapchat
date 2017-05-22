@@ -170,7 +170,16 @@ export default class App extends Component {
       .then((body) => {
         this.decryptMessage(body, this.decryptAuthToken)
       })
-      .catch(this.onLoginError);
+      .catch((reason) => {
+        if (reason.then){
+          reason.then((errjson) => {
+            this.onLoginError(errjson.error);
+          })
+          return;
+        }
+        this.onLoginError(reason);
+        return;
+      });
   }
 
   onLoginError(reason){
@@ -178,10 +187,15 @@ export default class App extends Component {
     if (reason.toString() === "TypeError: Failed to fetch"){
       console.log("Trying to log in again");
       setTimeout(this.login, 2000);
+      return;
     }
+    this.displayAlert(reason, 'danger');
   }
 
   onLoginSuccess(response){
+    if (response.status !== 200){
+      throw response.json();
+    }
     return response.blob();
   }
 
@@ -499,7 +513,7 @@ export default class App extends Component {
   }
 
   sendJsonMessage(contents, tags, ttl_secs=0){
-    console.log("Creating message with contents `%s`", contents);
+    console.log("Creating message with contents", contents);
 
     let saveName = tags.join('|||');
     let fileBlob = new Blob([JSON.stringify(contents)],
