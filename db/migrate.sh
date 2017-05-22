@@ -6,5 +6,5 @@ set -euo pipefail
 
 # Run migrations
 for file in $*; do
-    psql leapchat < "$file"
+    psql -U ${pg_user:-postgres} -d leapchat < "$file"
 done

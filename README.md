@@ -66,10 +66,16 @@ for persistence:
 
 ``` $ cd db/ ```
 
-Now, become the `postgres` user and run `bash init_sql.sh`. One way
-this usually works (at least on Linux):
+If you're on Linux, run
 
-``` $ sudo su postgres -c 'bash init_sql.sh' ```
+``` $ sudo -u postgres bash init_sql.sh ```
+
+On Mac OS X, instead run
+
+``` $ sudo bash init_sql.sh ```
+
+(The following commands should be run regardless of whether you're on
+Linux or OS X.)
 
 ``` $ postgrest postgrest.conf ```
 
