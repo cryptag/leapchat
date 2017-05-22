@@ -9,12 +9,12 @@ psql < sql/pre.sql
 
 # More initialization
 for file in sql/init*.sql; do
-    psql leapchat < "$file"
+    psql -d leapchat < "$file"
 done
 
 # Create tables
 for file in sql/table*.sql; do
-    psql leapchat < "$file"
+    psql -d leapchat < "$file"
 done
 
 /bin/bash migrate.sh sql/migration*.sql
