@@ -31,7 +31,7 @@ const (
 )
 
 var (
-	templates = template.Must(template.ParseFiles("index.html"))
+	templates = template.Must(template.ParseFiles("build/index.html"))
 )
 
 func NewRouter(m *miniware.Mapper) *mux.Router {

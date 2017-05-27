@@ -15,9 +15,14 @@ const gulp = require('gulp'),
 
 gulp.task('default', ['sass:watch']);
 
+gulp.task('copy-index', function () {
+    gulp.src('./index.html')
+        .pipe(gulp.dest('./build/'));
+});
+
 // entry point for CSS build task sequence
 gulp.task('build-css', function(){
-  runSequence('reset-css', 'sass', 'concat-css', 'minify-css', 'clean-css', 'inject-css');
+  runSequence('copy-index', 'reset-css', 'sass', 'concat-css', 'minify-css', 'clean-css', 'inject-css');
 })
 
 // wipe all CSS files from /build
@@ -66,9 +71,9 @@ gulp.task('inject-css', function(){
   var inject = require('gulp-inject');
   var injectSrc = gulp.src(['./build/*.css'], {read: false});
 
-  return gulp.src('./index.html')
+  return gulp.src('./build/index.html')
         .pipe(inject(injectSrc))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest('./build'));
 });
 
 // entry point for JS build task sequence
@@ -129,9 +134,9 @@ gulp.task('inject-js', function(){
   var inject = require('gulp-inject');
   var injectSrc = gulp.src(['./build/*.min.js'], {read: false});
 
-  return gulp.src('./index.html')
+  return gulp.src('./build/index.html')
     .pipe(inject(injectSrc))
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest('./build'));
 });
 
 // development injection of static assets
@@ -150,7 +155,7 @@ gulp.task('inject', function(){
         directory: './static/lib'
     };
 
-    return gulp.src('./index.dev.html')
+    return gulp.src('./index.html')
         .pipe(wiredep(options))
         .pipe(inject(injectSrc, injectOptions))
         .pipe(gulp.dest('./'));
