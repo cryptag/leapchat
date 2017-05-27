@@ -20,7 +20,7 @@ func init() {
 		log.Fatalf("Error generating random server key: %v\n", err)
 	}
 
-	// Setting globlar var
+	// Setting global var
 	randomServerKey = k
 }
 
