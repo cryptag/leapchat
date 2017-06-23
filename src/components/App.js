@@ -36,7 +36,6 @@ export default class App extends Component {
       messages: [],
       statuses: [],
       status: '',
-      showAlert: false,
       alertMessage: '',
       alertStyle: 'success'
     };
@@ -111,7 +110,6 @@ export default class App extends Component {
     console.log(message);
 
     this.setState({
-      showAlert: true,
       alertMessage: message,
       alertStyle: alertStyle
     })
@@ -130,7 +128,6 @@ export default class App extends Component {
    */
   onAlertDismiss(){
     this.setState({
-      showAlert: false,
       alertMessage: ''
     });
   }
@@ -360,8 +357,7 @@ export default class App extends Component {
                  alertMessage !== ON_CLOSE_RECONNECT_MESSAGE) ? alertMessage : '';
 
     this.setState({
-      alertMessage: alert,
-      showAlert: !!alert
+      alertMessage: alert
     });
   }
 
@@ -614,7 +610,7 @@ export default class App extends Component {
   }
 
   render(){
-    let { showAlert, alertMessage, alertStyle } = this.state;
+    let { alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
     let { statuses } = this.state;
     let { messages } = this.state;
@@ -641,7 +637,6 @@ export default class App extends Component {
                                   onSetUsername={this.onSetUsername}
                                   onCloseModal={this.onCloseUsernameModal} />}
           <ChatContainer
-            showAlert={showAlert}
             alertMessage={alertMessage}
             alertStyle={alertStyle}
             onAlertDismiss={this.onAlertDismiss}

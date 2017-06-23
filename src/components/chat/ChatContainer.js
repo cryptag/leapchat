@@ -7,13 +7,12 @@ import AlertContainer from '../general/AlertContainer';
 class ChatContainer extends Component {
   render(){
     let { messages, username, onSendMessage } = this.props;
-    let { showAlert, alertMessage, alertStyle, onAlertDismiss } = this.props;
+    let { alertMessage, alertStyle, onAlertDismiss } = this.props;
 
     return (
       <div className="content">
 
         <AlertContainer
-            showAlert={showAlert}
             message={alertMessage}
             alertStyle={alertStyle}
             onAlertDismiss={onAlertDismiss} />
