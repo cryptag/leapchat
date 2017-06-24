@@ -62,7 +62,7 @@ export default class UserList extends Component {
           {viewing.map(status => {
             return (
               <li key={status.key}>
-                <i className="fa fa-circle" style={{color: 'green'}}></i>
+                <i className="fa fa-circle" style={styleViewing}></i>
                 {status.from}
               </li>
             )
@@ -71,7 +71,7 @@ export default class UserList extends Component {
           {online.map(status => {
             return (
               <li key={status.key}>
-                <i className="fa fa-circle" style={{color: 'yellow'}}></i>
+                <i className="fa fa-circle" style={styleOnline}></i>
                 {status.from}
               </li>
             )
@@ -79,7 +79,7 @@ export default class UserList extends Component {
 
           {offline.map(status => {
             return (
-              <li key={status.key} style={{color: 'gray'}}>
+              <li key={status.key} style={styleOffline}>
                 <i className="fa fa-minus-circle"></i>
                 {status.from}
               </li>
@@ -90,3 +90,22 @@ export default class UserList extends Component {
     );
   }
 }
+
+const styleDots = {
+  marginRight: '.2em'
+}
+
+const styleViewing = Object.assign(
+  {color: 'green'},
+  styleDots
+)
+
+const styleOnline = Object.assign(
+  {color: 'yellow'},
+  styleDots
+)
+
+const styleOffline = Object.assign(
+  {color: 'gray'},
+  styleDots
+)
