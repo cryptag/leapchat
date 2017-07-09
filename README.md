@@ -43,6 +43,10 @@ Linux distros, run
 
 ``` $ bash debian_install.sh ```
 
+On Fedora and friends you can run
+
+```$ bash fedora_install.sh ```
+
 Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
 
