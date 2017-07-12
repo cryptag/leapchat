@@ -240,7 +240,6 @@ class App extends Component {
   userStatusManager(wsConn) {
     // Every `USER_STATUS_DELAY_MS` seconds, send current status
     let sendStatus = setInterval(() => {
-      console.log('sendStatus');
       if (wsConn.noopified) {
         clearInterval(sendStatus);
         return;
@@ -251,7 +250,6 @@ class App extends Component {
 
     // Remove old statuses from state.statuses
     let removeOldStatuses = setInterval(() => {
-      console.log('removeOldStatuses');
       if (wsConn.noopified) {
         clearInterval(removeOldStatuses);
         return;
@@ -302,9 +300,7 @@ class App extends Component {
 
     ws.onmessage = (event) => {
       if (ws.firstMsg) {
-        this.setState({
-          messages: []
-        })
+        this.props.clearAllMessages();
         ws.firstMsg = false;
 
         this.userStatusManager(ws);
@@ -378,9 +374,9 @@ class App extends Component {
 
         let fromUsername = tagByPrefixStripped(tags, 'from:');
 
-        let maybeSenderID = '';
+        let maybeSenderId = '';
         if (senderID !== this.state.mID) {
-          maybeSenderID = ' (' + senderID + ')';
+          maybeSenderId = ' (' + senderID + ')';
         }
 
         this.props.addNewMessage({
@@ -395,7 +391,6 @@ class App extends Component {
       reader.readAsText(fileBlob);  // TODO: Add error handling
       return;
     } else if (isTypeUserStatus) {
-      console.log('isTypeUserStatus');
       let fromUsername = tagByPrefixStripped(tags, 'from:');
       let userStatus = tagByPrefixStripped(tags, 'status:');
 
@@ -539,7 +534,6 @@ class App extends Component {
     // This is in a setInterval because sometimes `this.state.keyPair`
     // isn't quite ready yet
     const interval = setInterval(() => {
-      console.log('sendStatusMessage')
       const username = this.props.username;
       let status = this.state.status;
 
@@ -618,8 +612,6 @@ class App extends Component {
     if (!username) {
       previousUsername = localStorage.getItem(USERNAME_KEY) || '';
     }
-
-    console.log('Rendering...');
 
     return (
       <div className="encloser">
