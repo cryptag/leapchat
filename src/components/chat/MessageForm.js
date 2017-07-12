@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Button } from 'react-bootstrap';
 
 class MessageForm extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.onMessageUpdate = this.onMessageUpdate.bind(this);
@@ -17,38 +17,52 @@ class MessageForm extends Component {
     }
   }
 
-  onMessageUpdate(e){
+  componentDidMount() {
+    this.resolveFocus();
+  }
+
+  componentDidUpdate() {
+    this.resolveFocus();
+  }
+
+  resolveFocus() {
+    if (this.props.hasFocus) {
+      this.messageInput.focus();
+    }
+  }
+
+  onMessageUpdate(e) {
     this.setState({
       message: e.target.value
     });
   }
 
-  onKeyPress(e){
+  onKeyPress(e) {
     // Send on <enter> unless <shift-enter> has been pressed
-    if (e.key === 'Enter' && !e.nativeEvent.shiftKey){
+    if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
       this.onSendMessage(e);
     }
   }
 
-  isPayloadValid(message){
-    if (message && message.length > 0){
+  isPayloadValid(message) {
+    if (message && message.length > 0) {
       return true;
     }
     return false;
   }
 
-  clearMessage(){
+  clearMessage() {
     this.setState({
       message: ''
     });
   }
 
-  onSendMessage(e){
+  onSendMessage(e) {
     e.preventDefault();
 
     let { message } = this.state;
 
-    if (!this.isPayloadValid(message)){
+    if (!this.isPayloadValid(message)) {
       return false;
     }
 
@@ -56,7 +70,7 @@ class MessageForm extends Component {
     this.clearMessage();
   }
 
-  render(){
+  render() {
     let { message } = this.state;
 
     return (
@@ -74,6 +88,7 @@ class MessageForm extends Component {
                 onKeyPress={this.onKeyPress}
                 name="message"
                 value={message}
+                ref={(input) => { this.messageInput = input; }}
                 placeholder="Enter message" required></textarea>
             </div>
 

@@ -44,6 +44,8 @@
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.5.4",
     "react-markdown": "^2.5.0",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.1",
     "utf8": "^2.1.2"
   },
   "devDependencies": {

@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+    postgres:
+        image: postgres:latest
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=superuser
+            - POSTGRES_USER=superuser
+            - POSTGRES_DB=leapchat
+        volumes:
+            - ./_docker-volumes/postgres:/var/lib/postgresql/data
+    postgrest:
+        image: erasche/postgrest:latest
+        ports:
+            - "3000:3000"
+        environment:
+            PGUSER: superuser
+            PGPASSWORD: superuser
+            PGHOST: postgres
+            PGPORT: 5432
+            PGDATABASE: leapchat
+            PGSCHEMA: public
+            DB_ANON_ROLE: postgres
+        depends_on:
+            - postgres
+    adminer:
+        image: adminer
+        ports:
+            - 8081:8080
