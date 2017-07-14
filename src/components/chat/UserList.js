@@ -33,15 +33,15 @@ export default class UserList extends Component {
         continue;
       }
       switch (status.status) {
-        case 'viewing':
-          viewing.push(status);
-          break;
-        case 'online':
-          online.push(status);
-          break;
-        case 'offline':
-          offline.push(status);
-          break;
+      case 'viewing':
+        viewing.push(status);
+        break;
+      case 'online':
+        online.push(status);
+        break;
+      case 'offline':
+        offline.push(status);
+        break;
       }
       console.log('Already seen', status.from);
       usernamesSeen.push(status.from);
@@ -55,7 +55,7 @@ export default class UserList extends Component {
 
     return (
       <div className="users-list">
-      	<div className="users-icon" onClick={this.onClickUsersIcon}>
+        <div className="users-icon" onClick={this.onClickUsersIcon}>
           <i className="fa fa-users fa-2x"></i>
         </div>
         <ul ref="menuList">

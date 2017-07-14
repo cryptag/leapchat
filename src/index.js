@@ -6,21 +6,25 @@ import rootReducer from './reducers';
 import App from './components/App';
 import ReduxDevTools from './components/_dev/ReduxDevTools';
 
+/*
 const enhancer = compose(
-    ReduxDevTools.instrument()
+  ReduxDevTools.instrument()
 );
+*/
 
-const store = createStore(rootReducer, enhancer);// Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
+const store = createStore(rootReducer);// Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
 
+/*
 if (module.hot) {
-    module.hot.accept('./reducers', () =>
-        store.replaceReducer(require('./reducers')/*.default if you use Babel 6+ */)
-    );
+  module.hot.accept('./reducers', () =>
+    store.replaceReducer(require('./reducers'))
+  );
 }
+*/
 
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root'));
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root'));

@@ -85,7 +85,7 @@ class MessageBox extends Component {
           <MessageList messages={messages} username={username} />
         </div>
         <div style={{float: "left", clear: "both"}}
-             ref={(el) => { this.messagesEnd = el }}>
+          ref={(el) => { this.messagesEnd = el }}>
         </div>
       </div>
     )
