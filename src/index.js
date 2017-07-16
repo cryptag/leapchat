@@ -10,7 +10,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './static/sass/main.scss';
 import './static/fonts/Lato.ttf';
 import './static/audio/notification_gertz.wav';
-
+import './index.html';
+import './static/sass/main.scss';
+import './static/fonts/Lato.ttf';
+import './static/audio/notification_gertz.wav';
 
 const enhancer = compose(
   ReduxDevTools.instrument()
