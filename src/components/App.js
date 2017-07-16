@@ -11,7 +11,6 @@ import {
 
 const btoa = require('btoa');
 const atob = require('atob');
-
 import Header from './layout/Header';
 
 import ChatContainer from './chat/ChatContainer';

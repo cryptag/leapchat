@@ -39,15 +39,15 @@ class UserList extends Component {
         continue;
       }
       switch (status.status) {
-      case 'viewing':
-        viewing.push(status);
-        break;
-      case 'online':
-        online.push(status);
-        break;
-      case 'offline':
-        offline.push(status);
-        break;
+        case 'viewing':
+          viewing.push(status);
+          break;
+        case 'online':
+          online.push(status);
+          break;
+        case 'offline':
+          offline.push(status);
+          break;
       }
       console.log('Already seen', status.from);
       usernamesSeen.push(status.from);
