@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import miniLock from '../utils/miniLock';
 
 const btoa = require('btoa');
 const atob = require('atob');
