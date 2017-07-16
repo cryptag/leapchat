@@ -13,9 +13,9 @@ class ChatContainer extends Component {
       <div className="content">
 
         <AlertContainer
-            message={alertMessage}
-            alertStyle={alertStyle}
-            onAlertDismiss={onAlertDismiss} />
+          message={alertMessage}
+          alertStyle={alertStyle}
+          onAlertDismiss={onAlertDismiss} />
 
         <MessageBox
           messages={messages}
