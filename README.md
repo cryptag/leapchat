@@ -43,6 +43,10 @@ Linux distros, run
 
 ``` $ bash debian_install.sh ```
 
+On Fedora and friends you can run
+
+```$ bash fedora_install.sh ```
+
 Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
 
@@ -59,31 +63,30 @@ To install and build static assets:
 
 ``` $ npm run build ```
 
-``` $ npm run dev  # watch asset files and recompile when changed ```
-
-Then, to set up the database and run PostgREST, which our Go code uses
-for persistence:
+Then, _in another terminal, to set up the database and run PostgREST,
+which our Go code uses for persistence, run:
 
 ``` $ cd db/ ```
 
-If you're on Linux, run
+If you're on Linux, now run
 
 ``` $ sudo -u postgres bash init_sql.sh ```
 
 On Mac OS X, instead run
 
-``` $ sudo bash init_sql.sh ```
+``` $ sudo -u $USER bash init_sql.sh ```
 
 (The following commands should be run regardless of whether you're on
 Linux or OS X.)
 
 ``` $ postgrest postgrest.conf ```
 
-Finally, to build and run the Go binary:
+Finally, to build the Go binary, then run Go and the Node webserver
+hosting LeapChat:
 
 ``` $ go build ```
 
-``` $ ./leapchat ```
+``` $ npm run start ```
 
 Then view <http://localhost:8080>.
 
