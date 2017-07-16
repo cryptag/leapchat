@@ -1,0 +1,19 @@
+{
+	"stylesheets": [
+		"static/lib/bootstrap/dist/css/bootstrap.css",
+		"static/css/main.css"
+	],
+	"scripts": [
+		"static/lib/jquery/dist/jquery.js",
+		"static/lib/bootstrap/dist/js/bootstrap.js",
+		"static/lib/fetch/fetch.js",
+		"static/js/crypto/blake2s.js",
+		"static/js/crypto/nacl.js",
+		"static/js/crypto/nacl-stream.js",
+		"static/js/crypto/scrypt.js",
+		"static/js/base58.js",
+		"static/js/miniLock.js",
+		"static/js/ui.js",
+		"build/app.js"
+	]
+}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FaCog from 'react-icons/lib/fa/cog';
 
 export default class Settings extends Component {
   constructor(props) {
@@ -8,14 +9,14 @@ export default class Settings extends Component {
   }
 
   // only one settings options for now
-  onClickSettings(){
+  onClickSettings() {
     this.props.promptForUsername();
   }
 
   render() {
     return (
       <div className="settings" onClick={this.onClickSettings}>
-        <i className="fa fa-cog fa-2x"></i>
+        <FaCog size={30} />
       </div>
     );
   }

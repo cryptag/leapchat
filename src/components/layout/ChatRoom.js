@@ -6,7 +6,7 @@ class ChatRoom extends Component {
     let rooms = this.props.rooms;
 
     return (
-     <div key={this.props.room.key} className="chatroom">
+      <div key={this.props.room.key} className="chatroom">
         {(this.props.room.messages || []).map(message => {
           let fromMe = (message.from === username);
           return (

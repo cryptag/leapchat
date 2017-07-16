@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 
 import { Modal, Button } from 'react-bootstrap';
 
 import { generateRandomUsername } from '../../data/username';
 
 class UsernameModal extends Component {
-  constructor(){
+  constructor() {
     super(...arguments);
 
     this.onUsernameKeyPress = this.onUsernameKeyPress.bind(this);
@@ -14,56 +15,56 @@ class UsernameModal extends Component {
     this.setRandomUsernameInForm = this.setRandomUsernameInForm.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.giveFormFocus()
   }
 
   // TODO: destroy this madness when possible, very un-React.
-  getUsernameInputElement(){
+  getUsernameInputElement() {
     return $(this.refs.username);
   }
 
-  giveFormFocus(){
+  giveFormFocus() {
     this.getUsernameInputElement().focus()
   }
 
-  getUsernameInputValue(){
+  getUsernameInputValue() {
     return this.getUsernameInputElement().val();
   }
 
-  setUsernameInputValue(newUsername){
+  setUsernameInputValue(newUsername) {
     this.getUsernameInputElement().val(newUsername);
   }
 
-  onUsernameKeyPress(e){
-    if(e.which === 13){
+  onUsernameKeyPress(e) {
+    if (e.which === 13) {
       this.onSetUsernameClick();
     }
   }
 
-  isUsernameValid(username){
-    if (!username || username.length === 0){
+  isUsernameValid(username) {
+    if (!username || username.length === 0) {
       return false;
     }
     return true;
   }
 
-  onSetUsernameClick(e){
+  onSetUsernameClick(e) {
     let username = this.getUsernameInputValue()
 
-    if (!this.isUsernameValid(username)){
+    if (!this.isUsernameValid(username)) {
       alert('Invalid username!');
     } else {
       this.props.onSetUsername(username);
     }
   }
 
-  setRandomUsernameInForm(){
+  setRandomUsernameInForm() {
     let randomUsername = generateRandomUsername();
     this.setUsernameInputValue(randomUsername);
   }
 
-  render(){
+  render() {
     let { showModal, previousUsername, username, onCloseModal } = this.props;
 
     return (
@@ -75,7 +76,7 @@ class UsernameModal extends Component {
           <Modal.Body>
             <div className="form-group">
               <input type="text" className="form-control" ref="username" defaultValue={username || previousUsername} placeholder="Enter username (e.g., trinity)" onKeyPress={this.onUsernameKeyPress} />
-              <br/>
+              <br />
               <Button bsSize="xsmall" bsStyle="primary" onClick={this.setRandomUsernameInForm}>Generate Random Username</Button>
             </div>
           </Modal.Body>
