@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 
 export default class UserList extends Component {
   constructor(props) {
@@ -8,7 +9,7 @@ export default class UserList extends Component {
   }
 
   // TODO: if mobile make this do nothing
-  onClickUsersIcon(){
+  onClickUsersIcon() {
     $(this.refs.menuList).slideToggle('fast');
   }
 
@@ -25,11 +26,11 @@ export default class UserList extends Component {
 
     let usernamesSeen = [];
 
-    for(let i = statuses.length - 1; i >= 0; i--){
+    for (let i = statuses.length - 1; i >= 0; i--) {
       let status = statuses[i];
 
       // Avoid showing a user's status twice
-      if (usernamesSeen.indexOf(status.from) !== -1){
+      if (usernamesSeen.indexOf(status.from) !== -1) {
         continue;
       }
       switch (status.status) {
@@ -55,7 +56,7 @@ export default class UserList extends Component {
 
     return (
       <div className="users-list">
-      	<div className="users-icon" onClick={this.onClickUsersIcon}>
+        <div className="users-icon" onClick={this.onClickUsersIcon}>
           <i className="fa fa-users fa-2x"></i>
         </div>
         <ul ref="menuList">
@@ -96,16 +97,16 @@ const styleDots = {
 }
 
 const styleViewing = Object.assign(
-  {color: 'green'},
+  { color: 'green' },
   styleDots
 )
 
 const styleOnline = Object.assign(
-  {color: 'yellow'},
+  { color: 'yellow' },
   styleDots
 )
 
 const styleOffline = Object.assign(
-  {color: 'gray'},
+  { color: 'gray' },
   styleDots
 )
