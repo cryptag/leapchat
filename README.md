@@ -74,7 +74,7 @@ If you're on Linux, now run
 
 On Mac OS X, instead run
 
-``` $ sudo bash init_sql.sh ```
+``` $ sudo -u $USER bash init_sql.sh ```
 
 (The following commands should be run regardless of whether you're on
 Linux or OS X.)
