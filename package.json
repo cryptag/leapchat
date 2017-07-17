@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint ./src",
     "build": "webpack --config webpack.config.prod.js",
+    "build-dev": "webpack --config webpack.config.dev.js",
     "start": "npm run build && ./leapchat",
     "dev": "webpack --config webpack.config.dev.js --progress",
     "be": "./leapchat",
