@@ -4,10 +4,10 @@
   "description": "Self-destructing, encrypted, in-browser chat",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.prod.js",
-    "start": "npm run build && ./leapchat",
-    "build-dev": "webpack --config webpack.config.dev.js",
-    "dev": "npm run build-dev && ./leapchat",
+    "build-prod": "webpack --config webpack.config.prod.js",
+    "start": "npm run build-prod && ./leapchat",
+    "build": "webpack --config webpack.config.dev.js",
+    "dev": "npm run build && ./leapchat",
     "test": "node_modules/.bin/mocha --reporter nyan test/.setup.js test/**/*.test.js"
   },
   "repository": {
