@@ -4,7 +4,8 @@
   "description": "Self-destructing, encrypted, in-browser chat",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack.config.prod.js",
+    "build-dev": "webpack --config webpack.config.dev.js",
     "start": "npm run build && ./leapchat",
     "test": "node_modules/.bin/mocha  --reporter nyan test/.setup.js test/**/*.test.js"
   },
@@ -52,10 +53,12 @@
     "bootstrap": "^3.3.7",
     "bs58": "^4.0.1",
     "chai": "^3.5.0",
+    "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.4",
     "extract-loader": "^0.1.0",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",
+    "html-webpack-plugin": "^2.29.0",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.2.1",
     "jsdom": "^10.1.0",
