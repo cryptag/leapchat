@@ -3,7 +3,10 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
+const env = require('node-env-file');
 const outputFolder = 'build';
+
+env(__dirname + '/.env');
 
 module.exports = {
   context: __dirname,
@@ -43,6 +46,9 @@ module.exports = {
     new ExtractTextPlugin({
       filename: '[name].css',
       allChunks: true
+    }),
+    new webpack.EnvironmentPlugin({
+      BACKEND_URL: process.env.BACKEND_URL,
     })
   ]
 }

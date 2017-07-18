@@ -18,6 +18,7 @@ import { nowUTC } from '../utils/time';
 import UsernameModal from './modals/Username';
 
 const USERNAME_KEY = 'username';
+const BACKEND_URL = process.env.BACKEND_URL;
 
 import {
   SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
@@ -151,9 +152,7 @@ export default class App extends Component {
   }
 
   getAuthUrl() {
-    let protocol = document.location.protocol.slice(0, -1);
-    let host = document.location.host;
-    return `${protocol}://${host}/api/login`;
+    return `${BACKEND_URL}/api/login`;
   }
 
   getAuthHeaders(mID) {
@@ -439,9 +438,7 @@ export default class App extends Component {
   }
 
   getWebsocketUrl() {
-    let host = document.location.host;
-    let wsProtocol = document.location.protocol.replace('http', 'ws');
-    return `${wsProtocol}//${host}/api/ws/messages/all`;
+    return `${BACKEND_URL}/api/ws/messages/all`;
   }
 
   setWsConnection() {
