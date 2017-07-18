@@ -1,0 +1,42 @@
+{
+ "parser": "babel-eslint",
+  "plugins": [
+    "react"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "binaryLiterals": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "modules": true,
+      "objectLiteralComputedProperties": true,
+      "objectLiteralDuplicateProperties": false,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "octalLiterals": true,
+      "restParams": true,
+      "spread": true,
+      "templateStrings": true,
+      "unicodeCodePointEscapes": true,
+      "globalReturn": false,
+      "jsx": true,
+      "experimentalObjectRestSpread": true,
+    }
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "react/jsx-indent-props":  ["error", 2],
+    "react/jsx-indent": ["error", 2],
+  },
+
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest": true,
+    "jasmine": true
+  }
+}
