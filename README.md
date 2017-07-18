@@ -109,6 +109,12 @@ If you want to remove the containers just run:
 
 ## Install and Run
 
+**Environment variables**
+All environment variables that the frontend uses should be declared with standard values for development in `./.env`.
+If no specific value are set for a given environment variable then the value in that file will be used.
+Right now we have the following environment variables:
+ - `BACKEND_URL` This is the url that frontend will use to communicate with the GO backend service.
+
 To install and build static assets:
 
 ``` $ npm install ```
@@ -123,8 +129,15 @@ will automatically rebuild it when you make changes to something in
 the `./src` directory.
 
 Then, in another terminal, to set up the database and run PostgREST,
-which our Go code uses for persistence, run (unless you run it in
-Docker, see above):
+which our Go code uses for persistence, run (unless you run it in Docker, see above):
+To build the frontend run the following:
+
+``` $ npm run dev ```
+
+Webpack is used to build the frontend and it will automatically rebuild it when you make changes to something in the `./src` directory.
+
+Then, in another terminal, to set up the database and run PostgREST,
+which our Go code uses for persistence, run:
 
 ``` $ cd db/ ```
 
@@ -142,13 +155,7 @@ Linux or OS X.)
 ``` $ postgrest postgrest.conf ```
 
 Then, in another terminal session run:
-
-``` $ go get ./... ```
-
-(An error about not finding `github.com/cryptag/leapchat` is OK here.)
-
 ``` $ go build ```
-
 ``` $ npm run be ```
 
 Then view <http://localhost:8080>.
