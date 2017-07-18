@@ -48,6 +48,7 @@
     "utf8": "^2.1.2"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "babel-plugin-system-import-transformer": "^3.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-latest": "^6.24.1",
@@ -59,6 +60,8 @@
     "chai": "^3.5.0",
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.4",
+    "eslint": "^4.2.0",
+    "eslint-plugin-react": "^7.1.0",
     "extract-loader": "^0.1.0",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",

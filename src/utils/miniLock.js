@@ -36,12 +36,12 @@ miniLock.util.resetCurrentFile = function () {
 // Notes: Validates if string is a proper miniLock ID.
 miniLock.util.validateID = function (id) {
   var base58Match = new RegExp(
-		'^[1-9ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$'
-	)
+    '^[1-9ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$'
+  )
   if (
-		(id.length > 55) ||
-		(id.length < 40)
-	) {
+    (id.length > 55) ||
+  (id.length < 40)
+  ) {
     return false
   }
   if (!base58Match.test(id)) {
@@ -64,12 +64,12 @@ miniLock.util.validateID = function (id) {
 // Notes: Validates if string is a proper nonce.
 miniLock.util.validateNonce = function (nonce, expectedLength) {
   var base64Match = new RegExp(
-		'^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'
-	)
+    '^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'
+  )
   if (
-		(nonce.length > 40) ||
-		(nonce.length < 10)
-	) {
+    (nonce.length > 40) ||
+  (nonce.length < 10)
+  ) {
     return false
   }
   if (base64Match.test(nonce)) {
@@ -84,12 +84,12 @@ miniLock.util.validateNonce = function (nonce, expectedLength) {
 // Notes: Validates if string is a proper symmetric key.
 miniLock.util.validateKey = function (key) {
   var base64Match = new RegExp(
-		'^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'
-	)
+    '^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'
+  )
   if (
-		(key.length > 50) ||
-		(key.length < 40)
-	) {
+    (key.length > 50) ||
+  (key.length < 40)
+  ) {
     return false
   }
   if (base64Match.test(key)) {
@@ -245,12 +245,12 @@ miniLock.crypto.getMiniLockID = function (publicKey) {
 // Result: Sends file to be encrypted, with the result picked up
 //	 and sent to the specified callback.
 miniLock.crypto.encryptFile = function (
-	file,
-	saveName,
-	miniLockIDs,
-	myMiniLockID,
-	mySecretKey,
-	callback
+  file,
+  saveName,
+  miniLockIDs,
+  myMiniLockID,
+  mySecretKey,
+  callback
 ) {
   var currentFile = miniLock.file.new();
   currentFile.fileName = file.name
@@ -258,10 +258,10 @@ miniLock.crypto.encryptFile = function (
   var fileKey = miniLock.crypto.getFileKey()
   var fileNonce = miniLock.crypto.getNonce().subarray(0, 16)
   currentFile.streamEncryptor = nacl.stream.createEncryptor(
-		fileKey,
-		fileNonce,
-		miniLock.crypto.chunkSize
-	)
+    fileKey,
+    fileNonce,
+    miniLock.crypto.chunkSize
+  )
   var paddedFileName = new Uint8Array(256)
   var fileNameBytes = nacl.util.decodeUTF8(file.name)
   if (fileNameBytes.length > paddedFileName.length) {
@@ -271,9 +271,9 @@ miniLock.crypto.encryptFile = function (
   currentFile.hashObject = new BLAKE2s(32)
   var encryptedChunk
   encryptedChunk = currentFile.streamEncryptor.encryptChunk(
-		paddedFileName,
-		false
-	)
+    paddedFileName,
+    false
+  )
   if (!encryptedChunk) {
     throw new Error('miniLock: Encryption failed - general encryption error')
     return false
@@ -281,17 +281,17 @@ miniLock.crypto.encryptFile = function (
   currentFile.hashObject.update(encryptedChunk)
   currentFile.encryptedChunks.push(encryptedChunk)
   miniLock.crypto.encryptNextChunk(
-		file,
-		0,
-		saveName,
-		fileKey,
-		fileNonce,
-		miniLockIDs,
-		myMiniLockID,
-		mySecretKey,
-		currentFile,
-		callback
-	)
+    file,
+    0,
+    saveName,
+    fileKey,
+    fileNonce,
+    miniLockIDs,
+    myMiniLockID,
+    mySecretKey,
+    currentFile,
+    callback
+  )
 }
 
 //	Input:
@@ -312,110 +312,110 @@ miniLock.crypto.encryptFile = function (
 //			saveName: File name for saving the file (String),
 //			senderID: Sender's miniLock ID (Base58 string)
 miniLock.crypto.encryptNextChunk = function (
-	file,
-	dataPosition,
-	saveName,
-	fileKey,
-	fileNonce,
-	miniLockIDs,
-	myMiniLockID,
-	mySecretKey,
-	currentFile,
-	callbackOnComplete
+  file,
+  dataPosition,
+  saveName,
+  fileKey,
+  fileNonce,
+  miniLockIDs,
+  myMiniLockID,
+  mySecretKey,
+  currentFile,
+  callbackOnComplete
 ) {
   miniLock.file.read(
-		file,
-		dataPosition,
-		dataPosition + miniLock.crypto.chunkSize,
-		function (chunk) {
-  chunk = chunk.data
-  var isLast = false
-  if (dataPosition >= (file.size - miniLock.crypto.chunkSize)) {
-    isLast = true
-  }
-  var encryptedChunk
-  encryptedChunk = currentFile.streamEncryptor.encryptChunk(
-				chunk,
-				isLast
-			)
-  if (!encryptedChunk) {
-    throw new Error('miniLock: Encryption failed - general encryption error')
-    return false
-  }
-  currentFile.hashObject.update(encryptedChunk)
-  currentFile.encryptedChunks.push(encryptedChunk)
-  if (isLast) {
-    currentFile.streamEncryptor.clean()
-				// Finish generating header so we can pass finished file to callback
-    var ephemeral = nacl.box.keyPair()
-    var header = {
-      version: 1,
-      ephemeral: nacl.util.encodeBase64(ephemeral.publicKey),
-      decryptInfo: {}
-    }
-    var decryptInfoNonces = []
-    for (var u = 0; u < miniLockIDs.length; u++) {
-      decryptInfoNonces.push(
-						miniLock.crypto.getNonce()
-					)
-    }
-    for (var i = 0; i < miniLockIDs.length; i++) {
-      var decryptInfo = {
-        senderID: myMiniLockID,
-        recipientID: miniLockIDs[i],
-        fileInfo: {
-          fileKey: nacl.util.encodeBase64(fileKey),
-          fileNonce: nacl.util.encodeBase64(fileNonce),
-          fileHash: nacl.util.encodeBase64(
-								currentFile.hashObject.digest()
-							)
-        }
+    file,
+    dataPosition,
+    dataPosition + miniLock.crypto.chunkSize,
+    function (chunk) {
+      chunk = chunk.data
+      var isLast = false
+      if (dataPosition >= (file.size - miniLock.crypto.chunkSize)) {
+        isLast = true
       }
-      decryptInfo.fileInfo = nacl.util.encodeBase64(nacl.box(
-						nacl.util.decodeUTF8(JSON.stringify(decryptInfo.fileInfo)),
-						decryptInfoNonces[i],
-						Base58.decode(miniLockIDs[i]).subarray(0, 32),
-						mySecretKey
-					))
-      decryptInfo = nacl.util.encodeBase64(nacl.box(
-						nacl.util.decodeUTF8(JSON.stringify(decryptInfo)),
-						decryptInfoNonces[i],
-						Base58.decode(miniLockIDs[i]).subarray(0, 32),
-						ephemeral.secretKey
-					))
-      header.decryptInfo[
-						nacl.util.encodeBase64(decryptInfoNonces[i])
-					] = decryptInfo
+      var encryptedChunk
+      encryptedChunk = currentFile.streamEncryptor.encryptChunk(
+        chunk,
+        isLast
+      )
+      if (!encryptedChunk) {
+        throw new Error('miniLock: Encryption failed - general encryption error')
+        return false
+      }
+      currentFile.hashObject.update(encryptedChunk)
+      currentFile.encryptedChunks.push(encryptedChunk)
+      if (isLast) {
+        currentFile.streamEncryptor.clean()
+        // Finish generating header so we can pass finished file to callback
+        var ephemeral = nacl.box.keyPair()
+        var header = {
+          version: 1,
+          ephemeral: nacl.util.encodeBase64(ephemeral.publicKey),
+          decryptInfo: {}
+        }
+        var decryptInfoNonces = []
+        for (var u = 0; u < miniLockIDs.length; u++) {
+          decryptInfoNonces.push(
+            miniLock.crypto.getNonce()
+          )
+        }
+        for (var i = 0; i < miniLockIDs.length; i++) {
+          var decryptInfo = {
+            senderID: myMiniLockID,
+            recipientID: miniLockIDs[i],
+            fileInfo: {
+              fileKey: nacl.util.encodeBase64(fileKey),
+              fileNonce: nacl.util.encodeBase64(fileNonce),
+              fileHash: nacl.util.encodeBase64(
+                currentFile.hashObject.digest()
+              )
+            }
+          }
+          decryptInfo.fileInfo = nacl.util.encodeBase64(nacl.box(
+            nacl.util.decodeUTF8(JSON.stringify(decryptInfo.fileInfo)),
+            decryptInfoNonces[i],
+            Base58.decode(miniLockIDs[i]).subarray(0, 32),
+            mySecretKey
+          ))
+          decryptInfo = nacl.util.encodeBase64(nacl.box(
+            nacl.util.decodeUTF8(JSON.stringify(decryptInfo)),
+            decryptInfoNonces[i],
+            Base58.decode(miniLockIDs[i]).subarray(0, 32),
+            ephemeral.secretKey
+          ))
+          header.decryptInfo[
+            nacl.util.encodeBase64(decryptInfoNonces[i])
+          ] = decryptInfo
+        }
+        header = JSON.stringify(header)
+        currentFile.encryptedChunks.unshift(
+          'miniLock',
+          miniLock.util.numberToByteArray(header.length),
+          header
+        )
+        return callbackOnComplete(
+          new Blob(currentFile.encryptedChunks),
+          saveName,
+          myMiniLockID
+        )
+      }
+      else {
+        dataPosition += miniLock.crypto.chunkSize
+        return miniLock.crypto.encryptNextChunk(
+          file,
+          dataPosition,
+          saveName,
+          fileKey,
+          fileNonce,
+          miniLockIDs,
+          myMiniLockID,
+          mySecretKey,
+          currentFile,
+          callbackOnComplete
+        )
+      }
     }
-    header = JSON.stringify(header)
-    currentFile.encryptedChunks.unshift(
-					'miniLock',
-					miniLock.util.numberToByteArray(header.length),
-					header
-				)
-    return callbackOnComplete(
-					new Blob(currentFile.encryptedChunks),
-					saveName,
-					myMiniLockID
-				)
-  }
-  else {
-    dataPosition += miniLock.crypto.chunkSize
-    return miniLock.crypto.encryptNextChunk(
-					file,
-					dataPosition,
-					saveName,
-					fileKey,
-					fileNonce,
-					miniLockIDs,
-					myMiniLockID,
-					mySecretKey,
-					currentFile,
-					callbackOnComplete
-				)
-  }
-}
-	)
+  )
 }
 
 
@@ -431,16 +431,16 @@ miniLock.crypto.encryptNextChunk = function (
 // Result: Sends file to be decrypted, with the result picked up
 //	and sent to the specified callback.
 miniLock.crypto.decryptFile = function (
-	file,
-	myMiniLockID,
-	mySecretKey,
-	callback
+  file,
+  myMiniLockID,
+  mySecretKey,
+  callback
 ) {
   var currentFile = miniLock.file.new();
   miniLock.file.read(file, 8, 12, function (headerLength) {
     headerLength = miniLock.util.byteArrayToNumber(
-			headerLength.data
-		)
+      headerLength.data
+    )
     miniLock.file.read(file, 12, headerLength + 12, function (header) {
       try {
         header = nacl.util.encodeUTF8(header.data)
@@ -451,90 +451,90 @@ miniLock.crypto.decryptFile = function (
         return false
       }
       if (
-				!header.hasOwnProperty('version')
-				|| header.version !== 1
-			) {
+        !header.hasOwnProperty('version')
+    || header.version !== 1
+      ) {
         throw new Error('miniLock: Decryption failed - invalid header version')
         return false
       }
       if (
-				!header.hasOwnProperty('ephemeral')
-				|| !miniLock.util.validateEphemeral(header.ephemeral)
-			) {
+        !header.hasOwnProperty('ephemeral')
+    || !miniLock.util.validateEphemeral(header.ephemeral)
+      ) {
         throw new Error('miniLock: Decryption failed - could not parse header')
         return false
       }
-			// Attempt decryptInfo decryptions until one succeeds
+      // Attempt decryptInfo decryptions until one succeeds
       var actualDecryptInfo = null
       var actualDecryptInfoNonce = null
       var actualFileInfo = null
       for (var i in header.decryptInfo) {
         if (
-					({}).hasOwnProperty.call(header.decryptInfo, i)
-					&& miniLock.util.validateNonce(i, 24)
-				) {
+          ({}).hasOwnProperty.call(header.decryptInfo, i)
+     && miniLock.util.validateNonce(i, 24)
+        ) {
           actualDecryptInfo = nacl.box.open(
-						nacl.util.decodeBase64(header.decryptInfo[i]),
-						nacl.util.decodeBase64(i),
-						nacl.util.decodeBase64(header.ephemeral),
-						mySecretKey
-					)
+            nacl.util.decodeBase64(header.decryptInfo[i]),
+            nacl.util.decodeBase64(i),
+            nacl.util.decodeBase64(header.ephemeral),
+            mySecretKey
+          )
           if (actualDecryptInfo) {
             actualDecryptInfo = JSON.parse(
-							nacl.util.encodeUTF8(actualDecryptInfo)
-						)
+              nacl.util.encodeUTF8(actualDecryptInfo)
+            )
             actualDecryptInfoNonce = nacl.util.decodeBase64(i)
             break
           }
         }
       }
       if (
-				!actualDecryptInfo
-				|| !({}).hasOwnProperty.call(actualDecryptInfo, 'recipientID')
-				|| actualDecryptInfo.recipientID !== myMiniLockID
-			) {
+        !actualDecryptInfo
+    || !({}).hasOwnProperty.call(actualDecryptInfo, 'recipientID')
+    || actualDecryptInfo.recipientID !== myMiniLockID
+      ) {
         throw new Error('miniLock: Decryption failed - File is not encrypted for this recipient')
         return false
       }
       if (
-				!({}).hasOwnProperty.call(actualDecryptInfo, 'fileInfo')
-				|| !({}).hasOwnProperty.call(actualDecryptInfo, 'senderID')
-				|| !miniLock.util.validateID(actualDecryptInfo.senderID)
-			) {
+        !({}).hasOwnProperty.call(actualDecryptInfo, 'fileInfo')
+    || !({}).hasOwnProperty.call(actualDecryptInfo, 'senderID')
+    || !miniLock.util.validateID(actualDecryptInfo.senderID)
+      ) {
         throw new Error('miniLock: Decryption failed - could not validate sender ID')
         return false
       }
       try {
         actualFileInfo = nacl.box.open(
-					nacl.util.decodeBase64(actualDecryptInfo.fileInfo),
-					actualDecryptInfoNonce,
-					Base58.decode(actualDecryptInfo.senderID).subarray(0, 32),
-					mySecretKey
-				)
+          nacl.util.decodeBase64(actualDecryptInfo.fileInfo),
+          actualDecryptInfoNonce,
+          Base58.decode(actualDecryptInfo.senderID).subarray(0, 32),
+          mySecretKey
+        )
         actualFileInfo = JSON.parse(
-					nacl.util.encodeUTF8(actualFileInfo)
-				)
+          nacl.util.encodeUTF8(actualFileInfo)
+        )
       }
       catch (err) {
         throw new Error('miniLock: Decryption failed - could not parse header')
         return false
       }
-			// Begin actual ciphertext decryption
+      // Begin actual ciphertext decryption
       var dataPosition = 12 + headerLength
       currentFile.streamDecryptor = nacl.stream.createDecryptor(
-				nacl.util.decodeBase64(actualFileInfo.fileKey),
-				nacl.util.decodeBase64(actualFileInfo.fileNonce),
-				miniLock.crypto.chunkSize
-			)
+        nacl.util.decodeBase64(actualFileInfo.fileKey),
+        nacl.util.decodeBase64(actualFileInfo.fileNonce),
+        miniLock.crypto.chunkSize
+      )
       miniLock.crypto.decryptNextChunk(
-				file,
-				dataPosition,
-				actualFileInfo,
-				actualDecryptInfo.senderID,
-				headerLength,
-				currentFile,
-				callback
-			)
+        file,
+        dataPosition,
+        actualFileInfo,
+        actualDecryptInfo.senderID,
+        headerLength,
+        currentFile,
+        callback
+      )
     })
   })
 }
@@ -554,101 +554,101 @@ miniLock.crypto.decryptFile = function (
 //			saveName: File name for saving the file (String),
 //			senderID: Sender's miniLock ID (Base58 string)
 miniLock.crypto.decryptNextChunk = function (
-	file,
-	dataPosition,
-	fileInfo,
-	senderID,
-	headerLength,
-	currentFile,
-	callbackOnComplete
+  file,
+  dataPosition,
+  fileInfo,
+  senderID,
+  headerLength,
+  currentFile,
+  callbackOnComplete
 ) {
   miniLock.file.read(
-		file,
-		dataPosition,
-		dataPosition + 4 + 16 + miniLock.crypto.chunkSize,
-		function (chunk) {
-  chunk = chunk.data
-  var actualChunkLength = miniLock.util.byteArrayToNumber(
-				chunk.subarray(0, 4)
-			)
-  if (actualChunkLength > chunk.length) {
-    throw new Error('miniLock: Decryption failed - general decryption error')
-    return false
-  }
-  chunk = chunk.subarray(
-				0, actualChunkLength + 4 + 16
-			)
-  var decryptedChunk
-  var isLast = false
-  if (
-				dataPosition >= ((file.size) - (4 + 16 + actualChunkLength))
-			) {
-    isLast = true
-  }
-  if (dataPosition === (12 + headerLength)) {
-				// This is the first chunk, containing the filename
-    decryptedChunk = currentFile.streamDecryptor.decryptChunk(
-					chunk,
-					isLast
-				)
-    if (!decryptedChunk) {
-      throw new Error('miniLock: Decryption failed - general decryption error')
-      return false
+    file,
+    dataPosition,
+    dataPosition + 4 + 16 + miniLock.crypto.chunkSize,
+    function (chunk) {
+      chunk = chunk.data
+      var actualChunkLength = miniLock.util.byteArrayToNumber(
+        chunk.subarray(0, 4)
+      )
+      if (actualChunkLength > chunk.length) {
+        throw new Error('miniLock: Decryption failed - general decryption error')
+        return false
+      }
+      chunk = chunk.subarray(
+        0, actualChunkLength + 4 + 16
+      )
+      var decryptedChunk
+      var isLast = false
+      if (
+        dataPosition >= ((file.size) - (4 + 16 + actualChunkLength))
+      ) {
+        isLast = true
+      }
+      if (dataPosition === (12 + headerLength)) {
+        // This is the first chunk, containing the filename
+        decryptedChunk = currentFile.streamDecryptor.decryptChunk(
+          chunk,
+          isLast
+        )
+        if (!decryptedChunk) {
+          throw new Error('miniLock: Decryption failed - general decryption error')
+          return false
+        }
+        var fileName = nacl.util.encodeUTF8(decryptedChunk.subarray(0, 256))
+        while (
+          fileName[fileName.length - 1] === String.fromCharCode(0x00)
+        ) {
+          fileName = fileName.slice(0, -1)
+        }
+        currentFile.fileName = fileName
+        currentFile.hashObject.update(chunk.subarray(0, 256 + 4 + 16))
+      }
+      else {
+        decryptedChunk = currentFile.streamDecryptor.decryptChunk(
+          chunk,
+          isLast
+        )
+        if (!decryptedChunk) {
+          throw new Error('miniLock: Decryption failed - general decryption error')
+          return false
+        }
+        currentFile.decryptedChunks.push(decryptedChunk)
+        currentFile.hashObject.update(chunk)
+      }
+      dataPosition += chunk.length
+      if (isLast) {
+        if (
+          !nacl.verify(
+            new Uint8Array(currentFile.hashObject.digest()),
+            nacl.util.decodeBase64(fileInfo.fileHash)
+          )
+        ) {
+          throw new Error('miniLock: Decryption failed - could not validate file contents after decryption')
+          return false
+        }
+        else {
+          currentFile.streamDecryptor.clean()
+          return callbackOnComplete(
+            new Blob(currentFile.decryptedChunks),
+            currentFile.fileName,
+            senderID
+          )
+        }
+      }
+      else {
+        return miniLock.crypto.decryptNextChunk(
+          file,
+          dataPosition,
+          fileInfo,
+          senderID,
+          headerLength,
+          currentFile,
+          callbackOnComplete
+        )
+      }
     }
-    var fileName = nacl.util.encodeUTF8(decryptedChunk.subarray(0, 256))
-    while (
-					fileName[fileName.length - 1] === String.fromCharCode(0x00)
-				) {
-      fileName = fileName.slice(0, -1)
-    }
-    currentFile.fileName = fileName
-    currentFile.hashObject.update(chunk.subarray(0, 256 + 4 + 16))
-  }
-  else {
-    decryptedChunk = currentFile.streamDecryptor.decryptChunk(
-					chunk,
-					isLast
-				)
-    if (!decryptedChunk) {
-      throw new Error('miniLock: Decryption failed - general decryption error')
-      return false
-    }
-    currentFile.decryptedChunks.push(decryptedChunk)
-    currentFile.hashObject.update(chunk)
-  }
-  dataPosition += chunk.length
-  if (isLast) {
-    if (
-					!nacl.verify(
-						new Uint8Array(currentFile.hashObject.digest()),
-						nacl.util.decodeBase64(fileInfo.fileHash)
-					)
-				) {
-      throw new Error('miniLock: Decryption failed - could not validate file contents after decryption')
-      return false
-    }
-    else {
-      currentFile.streamDecryptor.clean()
-      return callbackOnComplete(
-						new Blob(currentFile.decryptedChunks),
-						currentFile.fileName,
-						senderID
-					)
-    }
-  }
-  else {
-    return miniLock.crypto.decryptNextChunk(
-					file,
-					dataPosition,
-					fileInfo,
-					senderID,
-					headerLength,
-					currentFile,
-					callbackOnComplete
-				)
-  }
-}
-	)
+  )
 }
 
 // -----------------------
