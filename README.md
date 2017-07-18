@@ -43,8 +43,50 @@ Linux distros, run
 
 ``` $ bash debian_install.sh ```
 
+On Fedora and friends you can run
+
+```$ bash fedora_install.sh ```
+
 Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
+
+## Using Docker and Docker compose
+
+Make sure you have Docker installed with Docker Compose. Then run:
+
+``` $ docker-compose up ```
+
+This will pull some images from docker-hub and start the following contaiers:
+- Postgres at port 5432
+- PostgREST at port 3000
+- Adminer at port 8081
+
+Adminer is a web UI for managing SQL databases. After the containers
+are installed and started, go to `localhost:8081`.
+
+From there you can choose postgres as the database engine and the
+login with hostname `postgres`, username and password `superuser` and
+database `leapchat`.  In here you can execute the initial scripts for
+the database. This you only need to do once.
+
+A folder is created at the projects root called
+`_docker-volumes/`. This is where all the data from e.g the postgres
+container are placed.  Here the actual database files will be stored.
+
+Once your conatiners are running and you have setup the initial
+database scripts you can access postgREST at `localhost:3000`.
+
+If you want to shut down the containers just run:
+
+``` $ docker-compose down ```
+
+If you want to force rebuild of the images just run:
+
+``` $ docker-compose up --build ```
+
+If you want to remove the containers just run:
+
+``` $ docker-compose rm ```
 
 
 ## Install and Run
@@ -59,31 +101,30 @@ To install and build static assets:
 
 ``` $ npm run build ```
 
-``` $ npm run dev  # watch asset files and recompile when changed ```
-
-Then, to set up the database and run PostgREST, which our Go code uses
-for persistence:
+Then, _in another terminal, to set up the database and run PostgREST,
+which our Go code uses for persistence, run:
 
 ``` $ cd db/ ```
 
-If you're on Linux, run
+If you're on Linux, now run
 
 ``` $ sudo -u postgres bash init_sql.sh ```
 
 On Mac OS X, instead run
 
-``` $ sudo bash init_sql.sh ```
+``` $ sudo -u $USER bash init_sql.sh ```
 
 (The following commands should be run regardless of whether you're on
 Linux or OS X.)
 
 ``` $ postgrest postgrest.conf ```
 
-Finally, to build and run the Go binary:
+Finally, to build the Go binary, then run Go and the Node webserver
+hosting LeapChat:
 
 ``` $ go build ```
 
-``` $ ./leapchat ```
+``` $ npm run start ```
 
 Then view <http://localhost:8080>.
 

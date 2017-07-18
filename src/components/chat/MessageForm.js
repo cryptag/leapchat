@@ -17,6 +17,23 @@ class MessageForm extends Component {
     }
   }
 
+<<<<<<< HEAD
+=======
+  componentDidMount() {
+    this.resolveFocus();
+  }
+
+  componentDidUpdate() {
+    this.resolveFocus();
+  }
+
+  resolveFocus() {
+    if (this.props.shouldHaveFocus) {
+      this.messageInput.focus();
+    }
+  }
+
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   onMessageUpdate(e) {
     this.setState({
       message: e.target.value
@@ -74,6 +91,7 @@ class MessageForm extends Component {
                 onKeyPress={this.onKeyPress}
                 name="message"
                 value={message}
+                ref={(input) => { this.messageInput = input; }}
                 placeholder="Enter message" required></textarea>
             </div>
 

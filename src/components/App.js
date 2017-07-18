@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import $ from 'jquery';
 import miniLock from '../utils/miniLock';
+=======
+import { connect } from 'react-redux';
+import {
+  addMessage,
+  setUserStatus,
+  clearMessages,
+  setUsername
+} from '../actions/chatActions';
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
 const btoa = require('btoa');
 const atob = require('atob');
@@ -25,20 +35,22 @@ import {
   USER_STATUS_DELAY_MS
 } from '../constants/messaging';
 
+<<<<<<< HEAD
 
 export default class App extends Component {
+=======
+class App extends Component {
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   constructor(props) {
     super(props);
 
     this.state = {
-      username: '',
       showUsernameModal: true,
       authToken: '',
       keyPair: null,
       keyPairReady: false,
       mID: '', // miniLock ID
       wsConnection: null, // WebSockets connection for getting/sending messages
-      messages: [],
       statuses: [],
       status: '',
       alertMessage: '',
@@ -89,6 +101,7 @@ export default class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+<<<<<<< HEAD
     if (!this.state.showUsernameModal) {
       // TODO: Find better way to do
       // this. `findDOMNode(this.refs.messageBox).focus()` doesn't
@@ -102,6 +115,10 @@ export default class App extends Component {
 
     if (prevState.status !== this.state.status ||
       prevState.username !== this.state.username) {
+=======
+    if (prevState.status !== this.state.status ||
+      prevProps.username !== this.props.username) {
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
       this.sendStatusMessage();
     }
   }
@@ -112,7 +129,10 @@ export default class App extends Component {
    * @param {string} alertStyle - {'success', 'info', 'danger', 'warning'}
    */
   displayAlert(message, alertStyle = 'success') {
+<<<<<<< HEAD
     console.log(message);
+=======
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     this.setState({
       alertMessage: message,
@@ -144,7 +164,11 @@ export default class App extends Component {
   }
 
   loadUsername() {
+<<<<<<< HEAD
     let { username } = this.state;
+=======
+    const { username } = this.props;
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     if (!username) {
       this.promptForUsername();
@@ -152,7 +176,13 @@ export default class App extends Component {
   }
 
   getAuthUrl() {
+<<<<<<< HEAD
     return `${BACKEND_URL}/api/login`;
+=======
+    let protocol = document.location.protocol.slice(0, -1);
+    let host = document.location.host;
+    return `${protocol}://${host}/api/login`;
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   }
 
   getAuthHeaders(mID) {
@@ -309,9 +339,13 @@ export default class App extends Component {
 
     ws.onmessage = (event) => {
       if (ws.firstMsg) {
+<<<<<<< HEAD
         this.setState({
           messages: []
         })
+=======
+        this.props.clearAllMessages();
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
         ws.firstMsg = false;
 
         this.userStatusManager(ws);
@@ -385,19 +419,24 @@ export default class App extends Component {
 
         let fromUsername = tagByPrefixStripped(tags, 'from:');
 
+<<<<<<< HEAD
         let maybeSenderID = '';
         if (senderID !== this.state.mID) {
           maybeSenderID = ' (' + senderID + ')';
+=======
+        let maybeSenderId = '';
+        if (senderID !== this.state.mID) {
+          maybeSenderId = ' (' + senderID + ')';
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
         }
 
-        let msg = {
+        this.props.addNewMessage({
           key: msgKey,
-          from: fromUsername + maybeSenderID,
-          msg: obj.msg
-        }
-        this.setState({
-          messages: [...this.state.messages, msg]
-        })
+          fromUsername,
+          maybeSenderId,
+          message: obj.msg
+        });
+
       });
 
       reader.readAsText(fileBlob);  // TODO: Add error handling
@@ -438,7 +477,13 @@ export default class App extends Component {
   }
 
   getWebsocketUrl() {
+<<<<<<< HEAD
     return `${BACKEND_URL}/api/ws/messages/all`;
+=======
+    let host = document.location.host;
+    let wsProtocol = document.location.protocol.replace('http', 'ws');
+    return `${wsProtocol}//${host}/api/ws/messages/all`;
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   }
 
   setWsConnection() {
@@ -497,8 +542,10 @@ export default class App extends Component {
       return;
     }
     localStorage.setItem(USERNAME_KEY, username);
+
+    this.props.setUsername(username);
+
     this.setState({
-      username: username,
       status: 'viewing'
     });
 
@@ -541,8 +588,8 @@ export default class App extends Component {
   sendStatusMessage() {
     // This is in a setInterval because sometimes `this.state.keyPair`
     // isn't quite ready yet
-    let interval = setInterval(() => {
-      let username = this.state.username;
+    const interval = setInterval(() => {
+      const username = this.props.username;
       let status = this.state.status;
 
       if (!username || !status || !this.state.keyPairReady) {
@@ -560,7 +607,11 @@ export default class App extends Component {
 
   createMessage(message) {
     let contents = { msg: message };
+<<<<<<< HEAD
     let tags = ['from:' + this.state.username, 'type:chatmessage'];
+=======
+    let tags = ['from:' + this.props.username, 'type:chatmessage'];
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     this.sendJsonMessage(contents, tags);
   }
@@ -611,17 +662,22 @@ export default class App extends Component {
   }
 
   render() {
+<<<<<<< HEAD
     let { alertMessage, alertStyle } = this.state;
     let { username, showUsernameModal } = this.state;
     let { statuses } = this.state;
     let { messages } = this.state;
+=======
+    const { alertMessage, alertStyle } = this.state;
+    const { showUsernameModal } = this.state;
+    const { statuses } = this.state;
+    const { messages, username } = this.props;
+>>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     let previousUsername = '';
     if (!username) {
       previousUsername = localStorage.getItem(USERNAME_KEY) || '';
     }
-
-    console.log('Rendering...');
 
     return (
       <div className="encloser">
@@ -643,7 +699,8 @@ export default class App extends Component {
             onAlertDismiss={this.onAlertDismiss}
             messages={messages}
             username={username}
-            onSendMessage={this.onSendMessage} />
+            onSendMessage={this.onSendMessage}
+            messageInputFocus={!this.state.showUsernameModal} />
         </main>
       </div>
     );
@@ -651,3 +708,20 @@ export default class App extends Component {
 }
 
 App.propTypes = {}
+
+const mapStateToProps = (reduxState) => {
+  return reduxState.chat;
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addNewMessage: ({ key, fromUsername, maybeSenderId, message }) =>
+      dispatch(addMessage({ key, fromUsername, maybeSenderId, message })),
+    addNewUserStatus: ({ fromUsername, userStatus, created }) =>
+      dispatch(addUserStatus({ fromUsername, userStatus, created })),
+    clearAllMessages: () => dispatch(clearMessages()),
+    setUsername: (username) => dispatch(setUsername(username))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

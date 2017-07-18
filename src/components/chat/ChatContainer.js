@@ -5,7 +5,7 @@ import MessageForm from './MessageForm';
 import AlertContainer from '../general/AlertContainer';
 
 class ChatContainer extends Component {
-  render(){
+  render() {
     let { messages, username, onSendMessage } = this.props;
     let { alertMessage, alertStyle, onAlertDismiss } = this.props;
 
@@ -22,7 +22,8 @@ class ChatContainer extends Component {
           username={username} />
 
         <MessageForm
-          onSendMessage={onSendMessage} />
+          onSendMessage={onSendMessage}
+          shouldHaveFocus={this.props.messageInputFocus} />
 
       </div>
     );
