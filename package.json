@@ -6,7 +6,10 @@
   "scripts": {
     "lint": "eslint ./src",
     "build": "webpack --config webpack.config.prod.js",
+<<<<<<< c20472cb4a8d0cf9dfec16c733153b3c0200105d
     "build-dev": "webpack --config webpack.config.dev.js",
+=======
+>>>>>>> Fixed some webpack config. Did some refactoring. :
     "start": "npm run build && ./leapchat",
     "dev": "webpack --config webpack.config.dev.js --progress",
     "be": "./leapchat",
