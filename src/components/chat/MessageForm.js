@@ -26,7 +26,7 @@ class MessageForm extends Component {
   }
 
   resolveFocus() {
-    if (this.props.hasFocus) {
+    if (this.props.shouldHaveFocus) {
       this.messageInput.focus();
     }
   }
