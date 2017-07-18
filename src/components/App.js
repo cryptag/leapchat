@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import $ from 'jquery';
 import miniLock from '../utils/miniLock';
-=======
 import { connect } from 'react-redux';
 import {
   addMessage,
@@ -10,7 +8,6 @@ import {
   clearMessages,
   setUsername
 } from '../actions/chatActions';
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
 const btoa = require('btoa');
 const atob = require('atob');
@@ -35,12 +32,7 @@ import {
   USER_STATUS_DELAY_MS
 } from '../constants/messaging';
 
-<<<<<<< HEAD
-
-export default class App extends Component {
-=======
 class App extends Component {
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   constructor(props) {
     super(props);
 
@@ -101,24 +93,8 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-<<<<<<< HEAD
-    if (!this.state.showUsernameModal) {
-      // TODO: Find better way to do
-      // this. `findDOMNode(this.refs.messageBox).focus()` doesn't
-      // work here, and `this.refs.messageBox.focus()` doesn't work
-      // here, because we don't have a reference to the component;
-      // it's not in `this.refs`.
-
-      $('.message-form textarea').focus();
-      // this.refs.messageBox.focus();
-    }
-
-    if (prevState.status !== this.state.status ||
-      prevState.username !== this.state.username) {
-=======
     if (prevState.status !== this.state.status ||
       prevProps.username !== this.props.username) {
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
       this.sendStatusMessage();
     }
   }
@@ -129,10 +105,6 @@ class App extends Component {
    * @param {string} alertStyle - {'success', 'info', 'danger', 'warning'}
    */
   displayAlert(message, alertStyle = 'success') {
-<<<<<<< HEAD
-    console.log(message);
-=======
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     this.setState({
       alertMessage: message,
@@ -164,11 +136,7 @@ class App extends Component {
   }
 
   loadUsername() {
-<<<<<<< HEAD
-    let { username } = this.state;
-=======
     const { username } = this.props;
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     if (!username) {
       this.promptForUsername();
@@ -176,13 +144,7 @@ class App extends Component {
   }
 
   getAuthUrl() {
-<<<<<<< HEAD
     return `${BACKEND_URL}/api/login`;
-=======
-    let protocol = document.location.protocol.slice(0, -1);
-    let host = document.location.host;
-    return `${protocol}://${host}/api/login`;
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   }
 
   getAuthHeaders(mID) {
@@ -339,13 +301,7 @@ class App extends Component {
 
     ws.onmessage = (event) => {
       if (ws.firstMsg) {
-<<<<<<< HEAD
-        this.setState({
-          messages: []
-        })
-=======
         this.props.clearAllMessages();
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
         ws.firstMsg = false;
 
         this.userStatusManager(ws);
@@ -419,15 +375,9 @@ class App extends Component {
 
         let fromUsername = tagByPrefixStripped(tags, 'from:');
 
-<<<<<<< HEAD
-        let maybeSenderID = '';
-        if (senderID !== this.state.mID) {
-          maybeSenderID = ' (' + senderID + ')';
-=======
         let maybeSenderId = '';
         if (senderID !== this.state.mID) {
           maybeSenderId = ' (' + senderID + ')';
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
         }
 
         this.props.addNewMessage({
@@ -477,13 +427,7 @@ class App extends Component {
   }
 
   getWebsocketUrl() {
-<<<<<<< HEAD
     return `${BACKEND_URL}/api/ws/messages/all`;
-=======
-    let host = document.location.host;
-    let wsProtocol = document.location.protocol.replace('http', 'ws');
-    return `${wsProtocol}//${host}/api/ws/messages/all`;
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   }
 
   setWsConnection() {
@@ -607,11 +551,7 @@ class App extends Component {
 
   createMessage(message) {
     let contents = { msg: message };
-<<<<<<< HEAD
-    let tags = ['from:' + this.state.username, 'type:chatmessage'];
-=======
     let tags = ['from:' + this.props.username, 'type:chatmessage'];
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     this.sendJsonMessage(contents, tags);
   }
@@ -662,17 +602,10 @@ class App extends Component {
   }
 
   render() {
-<<<<<<< HEAD
-    let { alertMessage, alertStyle } = this.state;
-    let { username, showUsernameModal } = this.state;
-    let { statuses } = this.state;
-    let { messages } = this.state;
-=======
     const { alertMessage, alertStyle } = this.state;
     const { showUsernameModal } = this.state;
     const { statuses } = this.state;
     const { messages, username } = this.props;
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
 
     let previousUsername = '';
     if (!username) {

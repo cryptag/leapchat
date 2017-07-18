@@ -17,8 +17,6 @@ class MessageForm extends Component {
     }
   }
 
-<<<<<<< HEAD
-=======
   componentDidMount() {
     this.resolveFocus();
   }
@@ -33,7 +31,6 @@ class MessageForm extends Component {
     }
   }
 
->>>>>>> 0f37189d21f884e070d3fbd426510e82ad04a784
   onMessageUpdate(e) {
     this.setState({
       message: e.target.value
