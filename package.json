@@ -67,8 +67,12 @@
     "chai": "^3.5.0",
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.4",
+<<<<<<< e3a57697b4466f846c0e344a0fefa6e74e649040
     "eslint": "^4.2.0",
     "eslint-plugin-react": "^7.1.0",
+=======
+    "express": "^4.15.3",
+>>>>>>> Added support to inject env vars in bundle
     "extract-loader": "^0.1.0",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",
@@ -78,7 +82,10 @@
     "jsdom": "^10.1.0",
     "mocha": "^3.3.0",
     "node-env-file": "^0.1.8",
+<<<<<<< e3a57697b4466f846c0e344a0fefa6e74e649040
     "node-sass": "^4.5.3",
+=======
+>>>>>>> Added support to inject env vars in bundle
     "npm-run-all": "^4.0.2",
     "pump": "^1.0.2",
     "redux-devtools": "^3.4.0",
