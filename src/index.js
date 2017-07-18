@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { Provider, compose } from 'react-redux';
-import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { createStore, compose } from 'redux';
 import rootReducer from './reducers';
 import ReduxDevTools from './components/_dev/ReduxDevTools';
 import 'isomorphic-fetch';
@@ -11,22 +11,18 @@ import './static/sass/main.scss';
 import './static/fonts/Lato.ttf';
 import './static/audio/notification_gertz.wav';
 
-/*
+
 const enhancer = compose(
   ReduxDevTools.instrument()
 );
-*/
 
-const store = createStore(rootReducer);// Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
+const store = createStore(rootReducer, enhancer);
 
-/*
 if (module.hot) {
   module.hot.accept('./reducers', () =>
     store.replaceReducer(require('./reducers'))
   );
 }
-*/
-
 
 ReactDOM.render(
   <Provider store={store}>

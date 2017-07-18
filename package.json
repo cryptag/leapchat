@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./src",
-    "build-prod": "webpack --config webpack.config.prod.js",
-    "start": "npm run build-prod && ./leapchat",
-    "build": "webpack --config webpack.config.dev.js",
-    "dev": "npm run build && ./leapchat",
+    "build": "webpack --config webpack.config.prod.js",
+    "start": "npm run build && ./leapchat",
+    "dev": "webpack --config webpack.config.dev.js",
+    "be": "./leapchat",
     "test": "node_modules/.bin/mocha --reporter nyan test/.setup.js test/**/*.test.js"
   },
   "repository": {

@@ -426,8 +426,9 @@ class App extends Component {
     ws.noopified = true;
   }
 
-  getWebsocketUrl() {
-    return `${BACKEND_URL}/api/ws/messages/all`;
+  getWebsocketUrl() {    
+    const wsUrl = BACKEND_URL.replace('http', 'ws');
+    return `${wsUrl}/api/ws/messages/all`;
   }
 
   setWsConnection() {
