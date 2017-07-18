@@ -105,7 +105,7 @@ To build the frontend run the following:
 With the `dev` command, webpack is used to build the frontend and it will automatically rebuild it when you make changes to something in the `./src` directory.
 
 Then, in another terminal, to set up the database and run PostgREST,
-which our Go code uses for persistence, run:
+which our Go code uses for persistence, run (unless you run it in Docker, see above):
 
 ``` $ cd db/ ```
 
