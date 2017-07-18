@@ -12,9 +12,9 @@ class MessageList extends Component {
       <ul>
         {messages.map( (message) => {
           return <Message
-                    key={message.key}
-                    message={message}
-                    username={username} />
+            key={message.key}
+            message={message}
+            username={username} />
         } )}
       </ul>
     );
