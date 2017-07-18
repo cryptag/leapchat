@@ -32,12 +32,6 @@ There is currently one public instance running at
 
 ## Dependencies
 
-If you've yet to install `bower` and `gulp`, run
-
-``` $ npm install -g bower ```
-
-``` $ npm install -g gulp ```
-
 To install Postgres along with the relevant extensions on Debian-based
 Linux distros, run
 
@@ -52,6 +46,7 @@ and put it in your PATH.
 
 ## Using Docker and Docker compose
 
+Instead of intalling Postgres and PostgREST you can run it in docker with docker compose.
 Make sure you have Docker installed with Docker Compose. Then run:
 
 ``` $ docker-compose up ```
@@ -91,17 +86,24 @@ If you want to remove the containers just run:
 
 ## Install and Run
 
+**Environment variables**
+All environment variables that the frontend uses should be declared with standard values for development in `./.env`.
+If no specific value are set for a given environment variable then the value in that file will be used.
+Right now we have the following environment variables:
+ - `BACKEND_URL` This is the url that frontend will use to communicate with the GO backend service.
+
 To install and build static assets:
 
 ``` $ npm install ```
 
-``` $ mkdir build ```
 
-``` $ bower install ```
+To build the frontend run the following:
 
-``` $ npm run build ```
+``` $ npm run dev ```
 
-Then, _in another terminal, to set up the database and run PostgREST,
+Webpack is used to build the frontend and it will automatically rebuild it when you make changes to something in the `./src` directory.
+
+Then, in another terminal, to set up the database and run PostgREST,
 which our Go code uses for persistence, run:
 
 ``` $ cd db/ ```
@@ -119,12 +121,9 @@ Linux or OS X.)
 
 ``` $ postgrest postgrest.conf ```
 
-Finally, to build the Go binary, then run Go and the Node webserver
-hosting LeapChat:
-
+Then, in another terminal session run:
 ``` $ go build ```
-
-``` $ npm run start ```
+``` $ npm run be ```
 
 Then view <http://localhost:8080>.
 
