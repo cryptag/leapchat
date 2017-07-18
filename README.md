@@ -59,16 +59,22 @@ Make sure you have Docker installed with Docker Compose. Then run:
 This will pull some images from docker-hub and start the following contaiers:
 - Postgres at port 5432
 - PostgREST at port 3000
-- Adminter at port 8081
+- Adminer at port 8081
 
-Adminer is a web UI for managing SQL databases. After the containers are installed and started, go to localhost:8081.
-From there you can choose postgres as the database engine and the login with hostname `postgres`, username and password `superuser` and database `leapchat`.
-In here you can execute the initial scripts for the database. This you only need to do once.
+Adminer is a web UI for managing SQL databases. After the containers
+are installed and started, go to `localhost:8081`.
 
-A folder is created at the projects root called `_docker-volumes/`. This is where all the data from e.g the postgres container are placed.
-Here the actual database files will be stored.
+From there you can choose postgres as the database engine and the
+login with hostname `postgres`, username and password `superuser` and
+database `leapchat`.  In here you can execute the initial scripts for
+the database. This you only need to do once.
 
-Once your conatiners are running and you have setup the initial database scripts you can access postgREST at `localhost:3000`.
+A folder is created at the projects root called
+`_docker-volumes/`. This is where all the data from e.g the postgres
+container are placed.  Here the actual database files will be stored.
+
+Once your conatiners are running and you have setup the initial
+database scripts you can access postgREST at `localhost:3000`.
 
 If you want to shut down the containers just run:
 
@@ -81,6 +87,7 @@ If you want to force rebuild of the images just run:
 If you want to remove the containers just run:
 
 ``` $ docker-compose rm ```
+
 
 ## Install and Run
 
