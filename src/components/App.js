@@ -628,7 +628,7 @@ export default class App extends Component {
           statuses={statuses}
           promptForUsername={this.promptForUsername} />
 
-        <main>
+        <main className="encloser">
 
           {showUsernameModal && <UsernameModal
                                   previousUsername={previousUsername}
