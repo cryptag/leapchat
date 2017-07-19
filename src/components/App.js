@@ -626,7 +626,7 @@ class App extends Component {
           promptForUsername={this.promptForUsername}
           toggleInfoModal={this.toggleInfoModal} />
 
-        <main>
+        <main className="encloser">
 
           {showUsernameModal && <UsernameModal
             previousUsername={previousUsername}
