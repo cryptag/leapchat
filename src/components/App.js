@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
+import miniLock from '../utils/miniLock';
 import { connect } from 'react-redux';
 import {
   addMessage,
@@ -23,6 +25,7 @@ import { nowUTC } from '../utils/time';
 import UsernameModal from './modals/Username';
 
 const USERNAME_KEY = 'username';
+const BACKEND_URL = process.env.BACKEND_URL;
 
 import {
   SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
@@ -141,9 +144,7 @@ class App extends Component {
   }
 
   getAuthUrl() {
-    let protocol = document.location.protocol.slice(0, -1);
-    let host = document.location.host;
-    return `${protocol}://${host}/api/login`;
+    return `${BACKEND_URL}/api/login`;
   }
 
   getAuthHeaders(mID) {
@@ -425,10 +426,9 @@ class App extends Component {
     ws.noopified = true;
   }
 
-  getWebsocketUrl() {
-    let host = document.location.host;
-    let wsProtocol = document.location.protocol.replace('http', 'ws');
-    return `${wsProtocol}//${host}/api/ws/messages/all`;
+  getWebsocketUrl() {    
+    const wsUrl = BACKEND_URL.replace('http', 'ws');
+    return `${wsUrl}/api/ws/messages/all`;
   }
 
   setWsConnection() {

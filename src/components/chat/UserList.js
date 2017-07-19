@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import FaGroup from 'react-icons/lib/fa/group';
+import FaCircle from 'react-icons/lib/fa/circle';
+import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
+import $ from 'jquery';
 
 export default class UserList extends Component {
   constructor(props) {
@@ -8,7 +12,7 @@ export default class UserList extends Component {
   }
 
   // TODO: if mobile make this do nothing
-  onClickUsersIcon(){
+  onClickUsersIcon() {
     $(this.refs.menuList).slideToggle('fast');
   }
 
@@ -25,11 +29,11 @@ export default class UserList extends Component {
 
     let usernamesSeen = [];
 
-    for(let i = statuses.length - 1; i >= 0; i--){
+    for (let i = statuses.length - 1; i >= 0; i--) {
       let status = statuses[i];
 
       // Avoid showing a user's status twice
-      if (usernamesSeen.indexOf(status.from) !== -1){
+      if (usernamesSeen.indexOf(status.from) !== -1) {
         continue;
       }
       switch (status.status) {
@@ -56,13 +60,13 @@ export default class UserList extends Component {
     return (
       <div className="users-list">
         <div className="users-icon" onClick={this.onClickUsersIcon}>
-          <i className="fa fa-users fa-2x"></i>
+          <FaGroup size={30} />
         </div>
         <ul ref="menuList">
           {viewing.map(status => {
             return (
               <li key={status.key}>
-                <i className="fa fa-circle" style={styleViewing}></i>
+                <FaCircle style={styleViewing} />
                 {status.from}
               </li>
             )
@@ -71,7 +75,7 @@ export default class UserList extends Component {
           {online.map(status => {
             return (
               <li key={status.key}>
-                <i className="fa fa-circle" style={styleOnline}></i>
+                <FaCircle style={styleOnline} />
                 {status.from}
               </li>
             )
@@ -80,7 +84,7 @@ export default class UserList extends Component {
           {offline.map(status => {
             return (
               <li key={status.key} style={styleOffline}>
-                <i className="fa fa-minus-circle"></i>
+                <FaMinusCircle />
                 {status.from}
               </li>
             )
@@ -96,16 +100,16 @@ const styleDots = {
 }
 
 const styleViewing = Object.assign(
-  {color: 'green'},
+  { color: 'green' },
   styleDots
 )
 
 const styleOnline = Object.assign(
-  {color: 'yellow'},
+  { color: 'yellow' },
   styleDots
 )
 
 const styleOffline = Object.assign(
-  {color: 'gray'},
+  { color: 'gray' },
   styleDots
 )

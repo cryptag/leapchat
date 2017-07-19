@@ -37,12 +37,6 @@ var (
 func NewRouter(m *miniware.Mapper) *mux.Router {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
-		http.FileServer(http.Dir("./static")))).Methods("GET")
-	r.PathPrefix("/build/").Handler(http.StripPrefix("/build/",
-		http.FileServer(http.Dir("./build")))).Methods("GET")
-	r.HandleFunc("/", GetIndex).Methods("GET")
-
 	// pgClient defined in room.go
 	r.HandleFunc("/api/login", Login(m, pgClient)).Methods("GET")
 
@@ -51,6 +45,8 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 		m,
 	)
 	r.HandleFunc("/api/ws/messages/all", msgsHandler).Methods("GET")
+
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build"))).Methods("GET")
 
 	http.Handle("/", r)
 	return r
