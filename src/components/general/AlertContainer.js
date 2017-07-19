@@ -19,7 +19,7 @@ class AlertContainer extends Component {
     }
 
     return (
-      <div className="alert-container" ref="alert_container">
+      <div className="alert-container" ref="alert_container" style={{marginRight: '10px'}}>
         {message && <Alert
                       bsStyle={alertStyle}
                       onDismiss={onAlertDismiss}>
