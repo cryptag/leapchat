@@ -44,7 +44,10 @@ On Fedora and friends you can run
 Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
 
-## Using Docker and Docker compose
+
+## Install and Run Using Docker and Docker Compose
+
+(If you'd rather not use Docker/Docker Compose, see next section.)
 
 Instead of intalling Postgres and PostgREST you can run it in docker with docker compose.
 Make sure you have Docker installed with Docker Compose. Then run:
@@ -96,6 +99,7 @@ Right now we have the following environment variables:
 To install and build static assets:
 
 ``` $ npm install ```
+
 
 
 To build the frontend run the following:
