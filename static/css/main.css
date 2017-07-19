@@ -77,8 +77,9 @@ main {
         border-radius: 10px;
         padding: 5px 10px;
         margin-bottom: 5px;
-        width: 90%;
-        word-wrap: break-word; }
+        width: 55%;
+        word-wrap: break-word;
+        overflow-wrap: break-word; }
         main .content .message-box ul li .username {
           display: block;
           font-weight: bold; }

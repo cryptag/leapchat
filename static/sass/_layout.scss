@@ -118,8 +118,9 @@ main {
           border-radius: 10px;
           padding: 5px 10px;
           margin-bottom: 5px;
-          width: 90%;
+          width: 55%;
           word-wrap: break-word;
+          overflow-wrap: break-word;
 
           .username {
             display: block;
