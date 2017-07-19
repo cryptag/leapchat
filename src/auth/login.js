@@ -38,7 +38,6 @@ function decryptAuthToken(loginCompleteCallback, fileBlob, saveName, senderID) {
   let reader = new FileReader();
   reader.addEventListener("loadend", () => {
     let authToken = reader.result;
-    console.log('authToken:', authToken);
     loginCompleteCallback(authToken);
   });
 
@@ -46,7 +45,6 @@ function decryptAuthToken(loginCompleteCallback, fileBlob, saveName, senderID) {
 }
 
 export function decryptMessage(mID, secretKey, message, decryptFileCallback) {
-  console.log("Trying to decrypt", message);
 
   miniLock.crypto.decryptFile(message,
     mID,
@@ -54,16 +52,16 @@ export function decryptMessage(mID, secretKey, message, decryptFileCallback) {
     decryptFileCallback);
 }
 
-export function minishareLogin(minilockID, secretKey, loginCompleteCallback, loginErrorCallback, displayAlert, authURL=getAuthUrl()) {
+export function minishareLogin(minilockID, secretKey, loginCompleteCallback, loginErrorCallback, displayAlert, authURL = getAuthUrl()) {
   return fetch(authURL, {
     headers: getAuthHeaders(minilockID)
   })
     .then(onLoginSuccess)
     .then((body) => {
       decryptMessage(minilockID,
-                     secretKey,
-                     body,
-                     decryptAuthToken.bind(this, loginCompleteCallback))
+        secretKey,
+        body,
+        decryptAuthToken.bind(this, loginCompleteCallback))
     })
     .catch((reason) => {
       if (reason.then) {

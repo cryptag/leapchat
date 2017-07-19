@@ -11,80 +11,69 @@ class UserList extends Component {
   }
 
   styleUserList = () => {
-    if(this.props.displayUserList) {
-      return { display: 'block'};
+    if (this.props.displayUserList) {
+      return { display: 'block' };
     } else {
-      return { display: 'none'};
+      return { display: 'none' };
     }
   }
 
-  sortByFrom(status1, status2) {
-    return status1.from.toLowerCase().localeCompare(status2.from.toLowerCase());
+  sortByFrom(username1, username2) {
+    return username1.toLowerCase().localeCompare(username2.toLowerCase());
   }
 
   render() {
-    let statuses = this.props.statuses;
+    const { statuses } = this.props;
 
-    let viewing = [];  // green
-    let online = [];   // yellow
-    let offline = [];  // gray
+    const viewing = [];  // green
+    const online = [];   // yellow
+    const offline = [];  // gray
 
-    let usernamesSeen = [];
-
-    for (let i = statuses.length - 1; i >= 0; i--) {
-      let status = statuses[i];
-
-      // Avoid showing a user's status twice
-      if (usernamesSeen.indexOf(status.from) !== -1) {
-        continue;
-      }
-      switch (status.status) {
+    Object.keys(statuses).forEach(username => {
+      const status = statuses[username];
+      switch (status) {
         case 'viewing':
-          viewing.push(status);
+          viewing.push(username);
           break;
         case 'online':
-          online.push(status);
+          online.push(username);
           break;
         case 'offline':
-          offline.push(status);
+          offline.push(username);
           break;
       }
-      console.log('Already seen', status.from);
-      usernamesSeen.push(status.from);
-    }
+    });
 
     viewing.sort(this.sortByFrom);
     online.sort(this.sortByFrom);
     offline.sort(this.sortByFrom);
 
-    console.log('Updating presence/all user statuses:', viewing, online, offline);
-
     return (
       <div className="users-list">
         <ul style={this.styleUserList()}>
-          {viewing.map(status => {
+          {viewing.map((username, i) => {
             return (
-              <li key={status.key}>
+              <li key={i}>
                 <FaCircle style={styleViewing} />
-                {status.from}
+                {username}
               </li>
             )
           })}
 
-          {online.map(status => {
+          {online.map((username, i) => {
             return (
-              <li key={status.key}>
+              <li key={i}>
                 <FaCircle style={styleOnline} />
-                {status.from}
+                {username}
               </li>
             )
           })}
 
-          {offline.map(status => {
+          {offline.map((username, i) => {
             return (
-              <li key={status.key} style={styleOffline}>
+              <li key={i} style={styleOffline}>
                 <FaMinusCircle />
-                {status.from}
+                {username}
               </li>
             )
           })}
