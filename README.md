@@ -50,7 +50,10 @@ On Fedora and friends you can run
 Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
 
-## Using Docker and Docker compose
+
+## Install and Run Using Docker and Docker Compose
+
+(If you'd rather not use Docker/Docker Compose, see next section.)
 
 Make sure you have Docker installed with Docker Compose. Then run:
 
@@ -97,7 +100,9 @@ To install and build static assets:
 
 ``` $ mkdir build ```
 
-``` $ bower install ```
+``` $ bower install --force ```
+
+``` $ git checkout -- static/lib/font-awesome/css/font-awesome.css ```
 
 ``` $ npm run build ```
 
