@@ -32,6 +32,8 @@ There is currently one public instance running at
 
 ## Dependencies
 
+#### Postgres
+
 To install Postgres along with the relevant extensions on Debian-based
 Linux distros, run
 
@@ -45,9 +47,16 @@ On Mac OS, run
 
 ``` $ brew install postgresql ossp-uuid ```
 
-Then, download the latest
+
+#### PostgREST
+
+On Linux, download the latest
 [PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
+
+On Mac OS, either do the same or use `homebrew` to install it with
+
+``` $ brew install postgrest ```
 
 
 ## Install and Run Using Docker and Docker Compose
