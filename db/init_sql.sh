@@ -5,12 +5,11 @@
 set -euo pipefail
 
 # Create 'leapchat' database, associated role
-psql < sql/pre.sql
-
+psql -d postgres < sql/pre.sql
 export pg_user=postgres
 if [ "`uname -s`" != "Linux" ]; then
     # For Mac OS X
-    pg_user=superuser
+    pg_user=$USER
 fi
 
 # More initialization
