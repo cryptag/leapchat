@@ -142,6 +142,10 @@ Linux or OS X.)
 
 Then, in another terminal session run:
 
+``` $ go get ./... ```
+
+(An error about not finding `github.com/cryptag/leapchat` is OK here.)
+
 ``` $ go build ```
 
 ``` $ npm run be ```
