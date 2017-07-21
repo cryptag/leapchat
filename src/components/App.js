@@ -23,6 +23,7 @@ import { detectPageVisible } from '../utils/pagevisibility';
 import { nowUTC } from '../utils/time';
 
 import UsernameModal from './modals/Username';
+import InfoModal from './modals/InfoModal';
 
 const USERNAME_KEY = 'username';
 const BACKEND_URL = process.env.BACKEND_URL;
@@ -38,6 +39,7 @@ class App extends Component {
 
     this.state = {
       showUsernameModal: true,
+      showInfoModal: false,
       authToken: '',
       keyPair: null,
       keyPairReady: false,
@@ -426,7 +428,7 @@ class App extends Component {
     ws.noopified = true;
   }
 
-  getWebsocketUrl() {    
+  getWebsocketUrl() {
     const wsUrl = BACKEND_URL.replace('http', 'ws');
     return `${wsUrl}/api/ws/messages/all`;
   }
@@ -479,6 +481,12 @@ class App extends Component {
     this.setState({
       showUsernameModal: false
     });
+  }
+
+  toggleInfoModal = () => {
+    this.setState((prevState) => {
+      return { showInfoModal: !prevState.showInfoModal }
+    })
   }
 
   onSetUsername(username) {
@@ -603,9 +611,7 @@ class App extends Component {
   }
 
   render() {
-    const { alertMessage, alertStyle } = this.state;
-    const { showUsernameModal } = this.state;
-    const { statuses } = this.state;
+    const { alertMessage, alertStyle, showUsernameModal, statuses, showInfoModal } = this.state;
     const { messages, username } = this.props;
 
     let previousUsername = '';
@@ -617,7 +623,8 @@ class App extends Component {
       <div className="encloser">
         <Header
           statuses={statuses}
-          promptForUsername={this.promptForUsername} />
+          promptForUsername={this.promptForUsername}
+          toggleInfoModal={this.toggleInfoModal} />
 
         <main>
 
@@ -635,6 +642,9 @@ class App extends Component {
             username={username}
             onSendMessage={this.onSendMessage}
             messageInputFocus={!this.state.showUsernameModal} />
+          <InfoModal
+            showModal={showInfoModal}
+            toggleInfoModal={this.toggleInfoModal} />
         </main>
       </div>
     );
