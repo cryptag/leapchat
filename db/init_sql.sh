@@ -16,7 +16,6 @@ fi
 for file in sql/init*.sql; do
     psql -U $pg_user -d leapchat < "$file"
 done
-
 # Create tables
 for file in sql/table*.sql; do
     psql -U $pg_user -d leapchat < "$file"
