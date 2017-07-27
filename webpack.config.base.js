@@ -12,7 +12,7 @@ module.exports = {
   context: __dirname,
   output: {
     path: path.resolve(__dirname, outputFolder),
-    filename: '[name].bundle.js'
+    filename: '[name]_[chunkhash].bundle.js'
   },
   module: {
     rules: [
