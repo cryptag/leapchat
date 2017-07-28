@@ -620,7 +620,8 @@ class App extends Component {
     }
 
     return (
-      <div className="encloser">
+      // <div className="encloser">
+      <div id="page">
         <Header
           statuses={statuses}
           promptForUsername={this.promptForUsername}

@@ -8,6 +8,16 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+@media (min-width: 768px) {
+  #page {
+    display: flex;
+    flex-direction: row;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+}
+
+
 .encloser {
   display: flex;
   flex-direction: row;
@@ -65,7 +75,8 @@ header {
 @media (min-width: 768px) {
   header {
     flex: 1;
-    min-width: 300px;
+    display: inline-flex;
+    max-width: 312px;
     flex-direction: column;
     justify-content: start;
     height: 100vh;
@@ -112,6 +123,7 @@ main {
 
   display: flex;
   flex-grow: 1;
+  max-width: 100vw;
 
   .content {
     display: flex;
@@ -130,7 +142,7 @@ main {
 
       ul {
         li {
-          display: block;
+          display: inline-block;
           border: solid 1px #eee;
           border-radius: 10px;
           padding: 5px 10px;
@@ -207,9 +219,15 @@ main {
 // MAIN - desktop settings
 @media (min-width: 768px) {
   main {
-    flex: 5;
+    display: inline-flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: start;
+    height: 100vh;
+    width: 50vw !important;
 
     .content {
+      max-width: 100%;
       .message-box{
         // scroll with flexbox needs revisiting
         // for now, message box is viewport height
