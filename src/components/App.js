@@ -623,7 +623,6 @@ export default class App extends Component {
     console.log('Rendering...');
 
     return (
-      // <div className="encloser">
       <div id="page">
         <Header
           statuses={statuses}
