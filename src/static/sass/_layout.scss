@@ -8,7 +8,7 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
-// Desktop - Max height * width
+// Desktop - Max height & width
 @media (min-width: 768px) {
   #page {
     display: flex;
@@ -18,12 +18,13 @@ body {
   }
 }
 
-// Mobile
+// Mobile - Max & min height
 @media (max-width: 767px) {
   #page {
     display: flex;
     flex-direction: column;
     max-height: 100vh;
+    min-height: 100vh;
     header {
       flex: 1;
     }
