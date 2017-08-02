@@ -30,6 +30,7 @@ const USERNAME_KEY = 'username';
 const BACKEND_URL = window.location.protocol + "//"
       + window.location.hostname
       + (window.location.port ? ':' + window.location.port : '');
+const PARANOID_USERNAME = ' ';
 
 import {
   SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
@@ -41,7 +42,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      showUsernameModal: true,
+      showUsernameModal: false,
       showInfoModal: false,
       showPincodeModal: false,
       authToken: '',
@@ -72,6 +73,9 @@ class App extends Component {
     this.onClosePincodeModal = this.onClosePincodeModal.bind(this);
     this.onSetPincode = this.onSetPincode.bind(this);
 
+    this.pincodeRequired = this.pincodeRequired.bind(this);
+    this.paranoidMode = this.paranoidMode.bind(this);
+
     this.keypairFromURLHash = this.keypairFromURLHash.bind(this);
     this.decryptMessage = this.decryptMessage.bind(this);
     this.decryptAuthToken = this.decryptAuthToken.bind(this);
@@ -96,6 +100,10 @@ class App extends Component {
   }
 
   componentDidMount() {
+    if (!this.pincodeRequired()) {
+      this.promptForUsername();
+    }
+
     detectPageVisible(this.setStatusViewing,
       this.setStatusOnline,
       this.setStatusOffline);
@@ -458,7 +466,7 @@ class App extends Component {
   keypairFromURLHash(urlHash="") {
     urlHash = urlHash || document.location.hash;
 
-    if (urlHash.endsWith("--")) {
+    if (this.pincodeRequired(urlHash)) {
       this.promptForPincode();
       return;
     }
@@ -492,6 +500,14 @@ class App extends Component {
     })
   }
 
+  paranoidMode(urlHash=document.location.hash) {
+    return urlHash.endsWith('----');
+  }
+
+  pincodeRequired(urlHash=document.location.hash) {
+    return urlHash.endsWith('--');
+  }
+
   promptForPincode() {
     this.setState({
       showPincodeModal: true
@@ -514,6 +530,12 @@ class App extends Component {
     this.keypairFromURLHash(urlHash);
 
     this.onClosePincodeModal();
+
+    if (this.paranoidMode()) {
+      this.props.setUsername(PARANOID_USERNAME);
+    } else {
+      this.promptForUsername();
+    }
   }
 
   onCloseUsernameModal() {
@@ -533,7 +555,10 @@ class App extends Component {
       this.onError('Invalid username!');
       return;
     }
-    localStorage.setItem(USERNAME_KEY, username);
+
+    if (!this.paranoidMode()) {
+      localStorage.setItem(USERNAME_KEY, username);
+    }
 
     this.props.setUsername(username);
 
