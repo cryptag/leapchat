@@ -26,7 +26,9 @@ import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
 
 const USERNAME_KEY = 'username';
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = window.location.protocol + "//"
+      + window.location.hostname
+      + (window.location.port ? ':' + window.location.port : '');
 
 import {
   SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
