@@ -10,7 +10,10 @@ course send (encrypted) messages to the other chat room participants.
 
 ## Security Features
 
-- The server cannot see anyone's usernames
+- All messages are encrypted end-to-end
+
+- The server cannot see anyone's usernames, which are encrypted and
+  attached to each message
 
 - Users can "leap" from one room to the next so that if an adversary
   clicks on an old invite link, it cannot be used to join the room
@@ -61,14 +64,17 @@ On Mac OS, either do the same or use `homebrew` to install it with
 
 ## Install and Run Using Docker and Docker Compose
 
-(If you'd rather not use Docker/Docker Compose, see next section.)
+(If you'd rather not use Docker/Docker Compose, see next section
+instead.)
 
 Instead of intalling Postgres and PostgREST you can run it in docker with docker compose.
 Make sure you have Docker installed with Docker Compose. Then run:
 
 ``` $ docker-compose up ```
 
-This will pull some images from docker-hub and start the following contaiers:
+This will pull some images from Docker Hub and start the following
+containers:
+
 - Postgres at port 5432
 - PostgREST at port 3000
 - Adminer at port 8081
@@ -108,15 +114,17 @@ To install and build static assets:
 ``` $ npm install ```
 
 
-
 To build the frontend run the following:
 
 ``` $ npm run dev ```
 
-With the `dev` command, webpack is used to build the frontend and it will automatically rebuild it when you make changes to something in the `./src` directory.
+With the `dev` command, webpack is used to build the frontend and it
+will automatically rebuild it when you make changes to something in
+the `./src` directory.
 
 Then, in another terminal, to set up the database and run PostgREST,
-which our Go code uses for persistence, run (unless you run it in Docker, see above):
+which our Go code uses for persistence, run (unless you run it in
+Docker, see above):
 
 ``` $ cd db/ ```
 
@@ -148,7 +156,8 @@ Then view <http://localhost:8080>.
 
 ## Testing
 
-We use [mocha](https://mochajs.org/) as the testing framework, with [chai](http://chaijs.com/)'s expect API.
+We use [mocha](https://mochajs.org/) as the testing framework, with
+[chai](http://chaijs.com/)'s expect API.
 
 To run tests:
 
