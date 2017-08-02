@@ -46,9 +46,6 @@ module.exports = {
     new ExtractTextPlugin({
       filename: '[name].css',
       allChunks: true
-    }),
-    new webpack.EnvironmentPlugin({
-      BACKEND_URL: process.env.BACKEND_URL,
     })
   ]
 }
