@@ -103,13 +103,6 @@ If you want to remove the containers just run:
 
 ## Install and Run
 
-**Environment variables**
-
-All environment variables that the frontend uses should be declared with standard values for development in `./.env`.
-If no specific value are set for a given environment variable then the value in that file will be used.
-Right now we have the following environment variables:
- - `BACKEND_URL` This is the url that frontend will use to communicate with the GO backend service.
-
 To install and build static assets:
 
 ``` $ npm install ```
