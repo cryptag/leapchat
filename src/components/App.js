@@ -24,6 +24,7 @@ import { nowUTC } from '../utils/time';
 
 import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
+import PincodeModal from './modals/PincodeModal';
 
 const USERNAME_KEY = 'username';
 const BACKEND_URL = window.location.protocol + "//"
@@ -42,6 +43,7 @@ class App extends Component {
     this.state = {
       showUsernameModal: true,
       showInfoModal: false,
+      showPincodeModal: false,
       authToken: '',
       keyPair: null,
       keyPairReady: false,
@@ -67,6 +69,9 @@ class App extends Component {
     this.onCloseUsernameModal = this.onCloseUsernameModal.bind(this);
     this.onSetUsername = this.onSetUsername.bind(this);
 
+    this.onClosePincodeModal = this.onClosePincodeModal.bind(this);
+    this.onSetPincode = this.onSetPincode.bind(this);
+
     this.keypairFromURLHash = this.keypairFromURLHash.bind(this);
     this.decryptMessage = this.decryptMessage.bind(this);
     this.decryptAuthToken = this.decryptAuthToken.bind(this);
@@ -86,6 +91,7 @@ class App extends Component {
     this.clearConnectError = this.clearConnectError.bind(this);
 
     this.promptForUsername = this.promptForUsername.bind(this);
+    this.promptForPincode = this.promptForPincode.bind(this);
     this.loadUsername = this.loadUsername.bind(this);
   }
 
@@ -449,8 +455,15 @@ class App extends Component {
     });
   }
 
-  keypairFromURLHash() {
-    let { passphrase, isNewRoom } = getPassphrase(document.location.hash);
+  keypairFromURLHash(urlHash="") {
+    urlHash = urlHash || document.location.hash;
+
+    if (urlHash.endsWith("--")) {
+      this.promptForPincode();
+      return;
+    }
+
+    let { passphrase, isNewRoom } = getPassphrase(urlHash);
 
     if (isNewRoom) {
       document.location.hash = '#' + passphrase;
@@ -477,6 +490,30 @@ class App extends Component {
         mID: mID
       }, this.login);
     })
+  }
+
+  promptForPincode() {
+    this.setState({
+      showPincodeModal: true
+    })
+  }
+
+  onClosePincodeModal() {
+    this.setState({
+      showPincodeModal: false
+    });
+  }
+
+  onSetPincode(pincode="") {
+    if (!pincode || pincode.endsWith("--")) {
+      this.onError('Invalid pincode!');
+      return;
+    }
+
+    var urlHash = document.location.hash + pincode;
+    this.keypairFromURLHash(urlHash);
+
+    this.onClosePincodeModal();
   }
 
   onCloseUsernameModal() {
@@ -613,7 +650,8 @@ class App extends Component {
   }
 
   render() {
-    const { alertMessage, alertStyle, showUsernameModal, statuses, showInfoModal } = this.state;
+    const { alertMessage, alertStyle, statuses } = this.state;
+    const { showUsernameModal, showPincodeModal, showInfoModal } = this.state;
     const { messages, username } = this.props;
 
     let previousUsername = '';
@@ -629,6 +667,11 @@ class App extends Component {
           toggleInfoModal={this.toggleInfoModal} />
 
         <main className="encloser">
+
+          {showPincodeModal && <PincodeModal
+            showModal={showPincodeModal}
+            onSetPincode={this.onSetPincode}
+            onCloseModal={this.onClosePincodeModal} />}
 
           {showUsernameModal && <UsernameModal
             previousUsername={previousUsername}
