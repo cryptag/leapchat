@@ -10,7 +10,10 @@ course send (encrypted) messages to the other chat room participants.
 
 ## Security Features
 
-- The server cannot see anyone's usernames
+- All messages are encrypted end-to-end
+
+- The server cannot see anyone's usernames, which are encrypted and
+  attached to each message
 
 - Users can "leap" from one room to the next so that if an adversary
   clicks on an old invite link, it cannot be used to join the room
@@ -32,11 +35,7 @@ There is currently one public instance running at
 
 ## Dependencies
 
-If you've yet to install `bower` and `gulp`, run
-
-``` $ npm install -g bower ```
-
-``` $ npm install -g gulp ```
+#### Postgres
 
 To install Postgres along with the relevant extensions on Debian-based
 Linux distros, run
@@ -47,8 +46,65 @@ On Fedora and friends you can run
 
 ```$ bash fedora_install.sh ```
 
-Then, download the latest [PostgREST release](https://github.com/begriffs/postgrest/releases)
+On Mac OS, run
+
+``` $ brew install postgresql ossp-uuid ```
+
+
+#### PostgREST
+
+On Linux, download the latest
+[PostgREST release](https://github.com/begriffs/postgrest/releases)
 and put it in your PATH.
+
+On Mac OS, either do the same or use `homebrew` to install it with
+
+``` $ brew install postgrest ```
+
+
+## Install and Run Using Docker and Docker Compose
+
+(If you'd rather not use Docker/Docker Compose, see next section
+instead.)
+
+Instead of intalling Postgres and PostgREST you can run it in docker with docker compose.
+Make sure you have Docker installed with Docker Compose. Then run:
+
+``` $ docker-compose up ```
+
+This will pull some images from Docker Hub and start the following
+containers:
+
+- Postgres at port 5432
+- PostgREST at port 3000
+- Adminer at port 8081
+
+Adminer is a web UI for managing SQL databases. After the containers
+are installed and started, go to `localhost:8081`.
+
+From there you can choose postgres as the database engine and the
+login with hostname `postgres`, username and password `superuser` and
+database `leapchat`.  In here you can execute the initial scripts for
+the database. This you only need to do once.
+
+A folder is created at the projects root called
+`_docker-volumes/`. This is where all the data from e.g the postgres
+container are placed.  Here the actual database files will be stored.
+
+Once your conatiners are running and you have setup the initial
+database scripts you can access postgREST at `localhost:3000`.
+
+If you want to shut down the containers just run:
+
+``` $ docker-compose down ```
+
+If you want to force rebuild of the images just run:
+
+``` $ docker-compose up --build ```
+
+If you want to remove the containers just run:
+
+``` $ docker-compose rm ```
 
 
 ## Install and Run
@@ -57,14 +113,18 @@ To install and build static assets:
 
 ``` $ npm install ```
 
-``` $ mkdir build ```
 
-``` $ bower install ```
+To build the frontend run the following:
 
-``` $ npm run build ```
+``` $ npm run dev ```
 
-Then, _in another terminal, to set up the database and run PostgREST,
-which our Go code uses for persistence, run:
+With the `dev` command, webpack is used to build the frontend and it
+will automatically rebuild it when you make changes to something in
+the `./src` directory.
+
+Then, in another terminal, to set up the database and run PostgREST,
+which our Go code uses for persistence, run (unless you run it in
+Docker, see above):
 
 ``` $ cd db/ ```
 
@@ -74,26 +134,30 @@ If you're on Linux, now run
 
 On Mac OS X, instead run
 
-``` $ sudo bash init_sql.sh ```
+``` $ sudo -u $USER bash init_sql.sh ```
 
 (The following commands should be run regardless of whether you're on
 Linux or OS X.)
 
 ``` $ postgrest postgrest.conf ```
 
-Finally, to build the Go binary, then run Go and the Node webserver
-hosting LeapChat:
+Then, in another terminal session run:
+
+``` $ go get ./... ```
+
+(An error about not finding `github.com/cryptag/leapchat` is OK here.)
 
 ``` $ go build ```
 
-``` $ npm run start ```
+``` $ npm run be ```
 
 Then view <http://localhost:8080>.
 
 
 ## Testing
 
-We use [mocha](https://mochajs.org/) as the testing framework, with [chai](http://chaijs.com/)'s expect API.
+We use [mocha](https://mochajs.org/) as the testing framework, with
+[chai](http://chaijs.com/)'s expect API.
 
 To run tests:
 

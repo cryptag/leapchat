@@ -104,6 +104,20 @@ header {
       flex-grow: 0;
     }
 
+    .settings {
+      float: right;
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    .info {
+      margin-top: 5px;
+      margin-left: 10px;
+      float: left;
+      cursor: pointer;
+    }
+
+
     .users-list {
       flex-grow: 0;
 
@@ -115,6 +129,9 @@ header {
         display: block;
       }
     }
+  }
+  .modal-header {
+    border-bottom: none;
   }
 }
 

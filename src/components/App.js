@@ -1,4 +1,13 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
+import miniLock from '../utils/miniLock';
+import { connect } from 'react-redux';
+import {
+  addMessage,
+  setUserStatus,
+  clearMessages,
+  setUsername
+} from '../actions/chatActions';
 
 const btoa = require('btoa');
 const atob = require('atob');
@@ -14,26 +23,30 @@ import { detectPageVisible } from '../utils/pagevisibility';
 import { nowUTC } from '../utils/time';
 
 import UsernameModal from './modals/Username';
+import InfoModal from './modals/InfoModal';
 
 const USERNAME_KEY = 'username';
+const BACKEND_URL = window.location.protocol + "//"
+      + window.location.hostname
+      + (window.location.port ? ':' + window.location.port : '');
 
-import { SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
-         USER_STATUS_DELAY_MS } from '../constants/messaging';
+import {
+  SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
+  USER_STATUS_DELAY_MS
+} from '../constants/messaging';
 
-
-export default class App extends Component {
-  constructor(props){
+class App extends Component {
+  constructor(props) {
     super(props);
 
     this.state = {
-      username: '',
       showUsernameModal: true,
+      showInfoModal: false,
       authToken: '',
       keyPair: null,
       keyPairReady: false,
       mID: '', // miniLock ID
       wsConnection: null, // WebSockets connection for getting/sending messages
-      messages: [],
       statuses: [],
       status: '',
       alertMessage: '',
@@ -76,27 +89,16 @@ export default class App extends Component {
     this.loadUsername = this.loadUsername.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     detectPageVisible(this.setStatusViewing,
-                      this.setStatusOnline,
-                      this.setStatusOffline);
+      this.setStatusOnline,
+      this.setStatusOffline);
     this.keypairFromURLHash();
   }
 
-  componentDidUpdate(prevProps, prevState){
-    if (!this.state.showUsernameModal){
-      // TODO: Find better way to do
-      // this. `findDOMNode(this.refs.messageBox).focus()` doesn't
-      // work here, and `this.refs.messageBox.focus()` doesn't work
-      // here, because we don't have a reference to the component;
-      // it's not in `this.refs`.
-
-      $('.message-form textarea').focus();
-      // this.refs.messageBox.focus();
-    }
-
+  componentDidUpdate(prevProps, prevState) {
     if (prevState.status !== this.state.status ||
-        prevState.username !== this.state.username){
+      prevProps.username !== this.props.username) {
       this.sendStatusMessage();
     }
   }
@@ -106,8 +108,7 @@ export default class App extends Component {
    * @param {string} message - Text to display in the alert.
    * @param {string} alertStyle - {'success', 'info', 'danger', 'warning'}
    */
-  displayAlert(message, alertStyle='success'){
-    console.log(message);
+  displayAlert(message, alertStyle = 'success') {
 
     this.setState({
       alertMessage: message,
@@ -126,39 +127,37 @@ export default class App extends Component {
   /**
    * Closes the alert.
    */
-  onAlertDismiss(){
+  onAlertDismiss() {
     this.setState({
       alertMessage: ''
     });
   }
 
-  promptForUsername(){
+  promptForUsername() {
     this.setState({
       showUsernameModal: true
     });
   }
 
-  loadUsername(){
-    let { username } = this.state;
+  loadUsername() {
+    const { username } = this.props;
 
-    if (!username){
+    if (!username) {
       this.promptForUsername();
     }
   }
 
-  getAuthUrl(){
-    let protocol = document.location.protocol.slice(0, -1);
-    let host = document.location.host;
-    return `${protocol}://${host}/api/login`;
+  getAuthUrl() {
+    return `${BACKEND_URL}/api/login`;
   }
 
-  getAuthHeaders(mID){
+  getAuthHeaders(mID) {
     return {
       'X-Minilock-Id': mID
     }
   }
 
-  login(){
+  login() {
     let authenticationUrl = this.getAuthUrl();
     fetch(authenticationUrl, {
       headers: this.getAuthHeaders(this.state.mID)
@@ -168,7 +167,7 @@ export default class App extends Component {
         this.decryptMessage(body, this.decryptAuthToken)
       })
       .catch((reason) => {
-        if (reason.then){
+        if (reason.then) {
           reason.then((errjson) => {
             this.onLoginError(errjson.error);
           })
@@ -179,9 +178,9 @@ export default class App extends Component {
       });
   }
 
-  onLoginError(reason){
+  onLoginError(reason) {
     console.log("Error logging in:", reason);
-    if (reason.toString() === "TypeError: Failed to fetch"){
+    if (reason.toString() === "TypeError: Failed to fetch") {
       console.log("Trying to log in again");
       setTimeout(this.login, 2000);
       return;
@@ -189,20 +188,20 @@ export default class App extends Component {
     this.displayAlert(reason, 'danger');
   }
 
-  onLoginSuccess(response){
-    if (response.status !== 200){
+  onLoginSuccess(response) {
+    if (response.status !== 200) {
       throw response.json();
     }
     return response.blob();
   }
 
-  decryptMessage(message, decryptFileCallback){
+  decryptMessage(message, decryptFileCallback) {
     console.log("Trying to decrypt", message);
 
     miniLock.crypto.decryptFile(message,
-                                this.state.mID,
-                                this.state.keyPair.secretKey,
-                                decryptFileCallback);
+      this.state.mID,
+      this.state.keyPair.secretKey,
+      decryptFileCallback);
   }
 
   // From https://github.com/kaepora/miniLock/blob/ffea0ecb7a619d921129b8b4aed2081050ec48c1/src/js/miniLock.js#L592-L595 --
@@ -211,7 +210,7 @@ export default class App extends Component {
   //      file: Decrypted file object (blob),
   //      saveName: File name for saving the file (String),
   //      senderID: Sender's miniLock ID (Base58 string)
-  decryptAuthToken(fileBlob, saveName, senderID){
+  decryptAuthToken(fileBlob, saveName, senderID) {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let authToken = reader.result;
@@ -225,28 +224,28 @@ export default class App extends Component {
     reader.readAsText(fileBlob);
   }
 
-  setStatusViewing(){
+  setStatusViewing() {
     this.setState({
       status: 'viewing' // green
     })
   }
 
-  setStatusOnline(){
+  setStatusOnline() {
     this.setState({
       status: 'online' // yellow
     })
   }
 
-  setStatusOffline(){
+  setStatusOffline() {
     this.setState({
       status: 'offline' // gray
     })
   }
 
-  userStatusManager(wsConn){
+  userStatusManager(wsConn) {
     // Every `USER_STATUS_DELAY_MS` seconds, send current status
     let sendStatus = setInterval(() => {
-      if (wsConn.noopified){
+      if (wsConn.noopified) {
         clearInterval(sendStatus);
         return;
       }
@@ -256,7 +255,7 @@ export default class App extends Component {
 
     // Remove old statuses from state.statuses
     let removeOldStatuses = setInterval(() => {
-      if (wsConn.noopified){
+      if (wsConn.noopified) {
         clearInterval(removeOldStatuses);
         return;
       }
@@ -265,15 +264,15 @@ export default class App extends Component {
       let numOld = 0;
       let now = nowUTC();
 
-      for(let i = 0, len = statuses.length; i < len; i++){
-        if (now - statuses[i].created >= USER_STATUS_DELAY_MS + 2000){
+      for (let i = 0, len = statuses.length; i < len; i++) {
+        if (now - statuses[i].created >= USER_STATUS_DELAY_MS + 2000) {
           numOld++;
         } else {
           break;
         }
       }
 
-      if (numOld === 0){
+      if (numOld === 0) {
         return;
       }
 
@@ -288,7 +287,7 @@ export default class App extends Component {
     }, USER_STATUS_DELAY_MS)
   }
 
-  newWebSocket(url){
+  newWebSocket(url) {
     let ws = new WebSocket(url);
     ws.firstMsg = true;
 
@@ -305,19 +304,17 @@ export default class App extends Component {
     }
 
     ws.onmessage = (event) => {
-      if (ws.firstMsg){
-        this.setState({
-          messages: []
-        })
+      if (ws.firstMsg) {
+        this.props.clearAllMessages();
         ws.firstMsg = false;
 
         this.userStatusManager(ws);
       }
       let data = JSON.parse(event.data);
       console.log("Event data:", data);
-      if (data.error){
+      if (data.error) {
         this.onError(SERVER_ERROR_PREFIX + data.error);
-        if (data.error === AUTH_ERROR){
+        if (data.error === AUTH_ERROR) {
           // ws.onclose() is about to be called; will trigger reconnect
         }
         return;
@@ -333,10 +330,10 @@ export default class App extends Component {
         let binStrLength = binStr.length;
         let array = new Uint8Array(binStrLength);
 
-        for(let i = 0; i < binStrLength; i++) {
+        for (let i = 0; i < binStrLength; i++) {
           array[i] = binStr.charCodeAt(i);
         }
-        let msg = new Blob([array], {type: 'application/octet-stream'});
+        let msg = new Blob([array], { type: 'application/octet-stream' });
 
         let messageKey = generateMessageKey(i);
         // basically curries onReceiveMessage with generated messageKey
@@ -348,20 +345,20 @@ export default class App extends Component {
     return ws;
   }
 
-  clearConnectError(){
+  clearConnectError() {
     // Sending worked, therefore we're connected. If we just
     // reconnected, clear the error. (No pun intended.)
     let authErrStr = SERVER_ERROR_PREFIX + AUTH_ERROR;
     let { alertMessage } = this.state;
     let alert = (alertMessage !== authErrStr &&
-                 alertMessage !== ON_CLOSE_RECONNECT_MESSAGE) ? alertMessage : '';
+      alertMessage !== ON_CLOSE_RECONNECT_MESSAGE) ? alertMessage : '';
 
     this.setState({
       alertMessage: alert
     });
   }
 
-  onReceiveMessage(msgKey, fileBlob, saveName, senderID){
+  onReceiveMessage(msgKey, fileBlob, saveName, senderID) {
     console.log(msgKey, fileBlob, saveName, senderID);
 
     let tags = saveName.split('|||');
@@ -374,7 +371,7 @@ export default class App extends Component {
     let isTypeRoomName = tags.includes('type:roomname');
     let isTypeRoomDescription = tags.includes('type:roomdescription');
 
-    if (isTypeChatmessage){
+    if (isTypeChatmessage) {
       let reader = new FileReader();
       reader.addEventListener("loadend", () => {
         let obj = JSON.parse(reader.result);
@@ -382,24 +379,23 @@ export default class App extends Component {
 
         let fromUsername = tagByPrefixStripped(tags, 'from:');
 
-        let maybeSenderID = '';
-        if (senderID !== this.state.mID){
-          maybeSenderID = ' (' + senderID + ')';
+        let maybeSenderId = '';
+        if (senderID !== this.state.mID) {
+          maybeSenderId = ' (' + senderID + ')';
         }
 
-        let msg = {
+        this.props.addNewMessage({
           key: msgKey,
-          from: fromUsername + maybeSenderID,
-          msg: obj.msg
-        }
-        this.setState({
-          messages: [...this.state.messages, msg]
-        })
+          fromUsername,
+          maybeSenderId,
+          message: obj.msg
+        });
+
       });
 
       reader.readAsText(fileBlob);  // TODO: Add error handling
       return;
-    } else if (isTypeUserStatus){
+    } else if (isTypeUserStatus) {
       let fromUsername = tagByPrefixStripped(tags, 'from:');
       let userStatus = tagByPrefixStripped(tags, 'status:');
 
@@ -422,11 +418,11 @@ export default class App extends Component {
     console.log(`onReceiveMessage: got non-chat message with tags ${tags}`);
   }
 
-  noopifyWs(ws){
-    if (!ws){
+  noopifyWs(ws) {
+    if (!ws) {
       return;
     }
-    let noop = function(){};
+    let noop = function () { };
     ws.onopen = noop;
     ws.onclose = noop;
     ws.onerror = noop;
@@ -434,18 +430,17 @@ export default class App extends Component {
     ws.noopified = true;
   }
 
-  getWebsocketUrl(){
-    let host = document.location.host;
-    let wsProtocol = document.location.protocol.replace('http', 'ws');
-    return `${wsProtocol}//${host}/api/ws/messages/all`;
+  getWebsocketUrl() {
+    const wsUrl = BACKEND_URL.replace('http', 'ws');
+    return `${wsUrl}/api/ws/messages/all`;
   }
 
-  setWsConnection(){
+  setWsConnection() {
     let websocketUrl = this.getWebsocketUrl();
     let wsConnection = this.newWebSocket(websocketUrl);
 
     // Kill previous wsConnection connection
-    if (this.state.wsConnection){
+    if (this.state.wsConnection) {
       this.state.wsConnection.close();
     }
 
@@ -454,10 +449,10 @@ export default class App extends Component {
     });
   }
 
-  keypairFromURLHash(){
+  keypairFromURLHash() {
     let { passphrase, isNewRoom } = getPassphrase(document.location.hash);
 
-    if (isNewRoom){
+    if (isNewRoom) {
       document.location.hash = '#' + passphrase;
       this.displayAlert('New room created!', 'success');
     }
@@ -484,72 +479,80 @@ export default class App extends Component {
     })
   }
 
-  onCloseUsernameModal(){
+  onCloseUsernameModal() {
     this.setState({
       showUsernameModal: false
     });
   }
 
-  onSetUsername(username){
-    if (!username){
+  toggleInfoModal = () => {
+    this.setState((prevState) => {
+      return { showInfoModal: !prevState.showInfoModal }
+    })
+  }
+
+  onSetUsername(username) {
+    if (!username) {
       this.onError('Invalid username!');
       return;
     }
     localStorage.setItem(USERNAME_KEY, username);
+
+    this.props.setUsername(username);
+
     this.setState({
-      username: username,
       status: 'viewing'
     });
 
     this.onCloseUsernameModal();
   }
 
-  onSendMessage(message){
+  onSendMessage(message) {
     this.createMessage(message);
   }
 
-  sendJsonMessage(contents, tags, ttl_secs=0){
+  sendJsonMessage(contents, tags, ttl_secs = 0) {
     console.log("Creating message with contents", contents);
 
     let saveName = tags.join('|||');
     let fileBlob = new Blob([JSON.stringify(contents)],
-                            {type: 'application/json'})
+      { type: 'application/json' })
     fileBlob.name = saveName;
 
     console.log("Encrypting file blob");
 
     let mID = this.state.mID;
-    if (this.state.keyPairReady){
+    if (this.state.keyPairReady) {
       miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
-                                  mID, this.state.keyPair.secretKey,
-                                  this.sendMessageToServer.bind(this, ttl_secs));
+        mID, this.state.keyPair.secretKey,
+        this.sendMessageToServer.bind(this, ttl_secs));
     } else {
       let interval = setInterval(() => {
-        if (!this.state.keyPairReady){
+        if (!this.state.keyPairReady) {
           return;
         }
 
         miniLock.crypto.encryptFile(fileBlob, saveName, [mID],
-                                    mID, this.state.keyPair.secretKey,
-                                    this.sendMessageToServer.bind(this, ttl_secs));
+          mID, this.state.keyPair.secretKey,
+          this.sendMessageToServer.bind(this, ttl_secs));
         clearInterval(interval);
       }, 500)
     }
   }
 
-  sendStatusMessage(){
+  sendStatusMessage() {
     // This is in a setInterval because sometimes `this.state.keyPair`
     // isn't quite ready yet
-    let interval = setInterval(() => {
-      let username = this.state.username;
+    const interval = setInterval(() => {
+      const username = this.props.username;
       let status = this.state.status;
 
-      if (!username || !status || !this.state.keyPairReady){
+      if (!username || !status || !this.state.keyPairReady) {
         return;
       }
 
       let contents = {};  // Unused. TODO: Make more efficient?
-      let tags = ['from:'+username, 'type:userstatus', 'status:'+status];
+      let tags = ['from:' + username, 'type:userstatus', 'status:' + status];
       let ttl_secs = USER_STATUS_DELAY_MS / 1000;
 
       this.sendJsonMessage(contents, tags, ttl_secs);
@@ -557,27 +560,27 @@ export default class App extends Component {
     }, 500)
   }
 
-  createMessage(message){
-    let contents = {msg: message};
-    let tags = ['from:'+this.state.username, 'type:chatmessage'];
+  createMessage(message) {
+    let contents = { msg: message };
+    let tags = ['from:' + this.props.username, 'type:chatmessage'];
 
     this.sendJsonMessage(contents, tags);
   }
 
-  sendMessageToServer(ttl_secs, fileBlob, saveName, senderMinilockID){
+  sendMessageToServer(ttl_secs, fileBlob, saveName, senderMinilockID) {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       // From https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string#comment55137593_11562550
       let b64encMinilockFile = btoa([].reduce.call(
         new Uint8Array(reader.result),
-        function(p, c) {
+        function (p, c) {
           return p + String.fromCharCode(c)
         }, ''));
 
       let msgForServer = {
         ephemeral: [b64encMinilockFile]
       };
-      if (ttl_secs > 0){
+      if (ttl_secs > 0) {
         msgForServer.to_server = {
           ttl_secs: ttl_secs
         }
@@ -588,18 +591,18 @@ export default class App extends Component {
     reader.readAsArrayBuffer(fileBlob);  // TODO: Add error handling
   }
 
-  wsSend(payload){
+  wsSend(payload) {
     if (this.state.keyPairReady &&
-        this.state.wsConnection &&
-        this.state.wsConnection.readyState === WebSocket.OPEN){
+      this.state.wsConnection &&
+      this.state.wsConnection.readyState === WebSocket.OPEN) {
       this.state.wsConnection.send(JSON.stringify(payload));
     } else {
       // This is in a setInterval because sometimes
       // `this.state.wsConnection` isn't quite ready yet
       let interval = setInterval(() => {
         if (!this.state.keyPairReady ||
-            !this.state.wsConnection ||
-            this.state.wsConnection.readyState !== WebSocket.OPEN){
+          !this.state.wsConnection ||
+          this.state.wsConnection.readyState !== WebSocket.OPEN) {
           return;
         }
 
@@ -609,40 +612,41 @@ export default class App extends Component {
     }
   }
 
-  render(){
-    let { alertMessage, alertStyle } = this.state;
-    let { username, showUsernameModal } = this.state;
-    let { statuses } = this.state;
-    let { messages } = this.state;
+  render() {
+    const { alertMessage, alertStyle, showUsernameModal, statuses, showInfoModal } = this.state;
+    const { messages, username } = this.props;
 
     let previousUsername = '';
-    if (!username){
+    if (!username) {
       previousUsername = localStorage.getItem(USERNAME_KEY) || '';
     }
-
-    console.log('Rendering...');
 
     return (
       <div id="page">
         <Header
           statuses={statuses}
-          promptForUsername={this.promptForUsername} />
+          promptForUsername={this.promptForUsername}
+          toggleInfoModal={this.toggleInfoModal} />
 
         <main className="encloser">
 
           {showUsernameModal && <UsernameModal
-                                  previousUsername={previousUsername}
-                                  username={username}
-                                  showModal={showUsernameModal}
-                                  onSetUsername={this.onSetUsername}
-                                  onCloseModal={this.onCloseUsernameModal} />}
+            previousUsername={previousUsername}
+            username={username}
+            showModal={showUsernameModal}
+            onSetUsername={this.onSetUsername}
+            onCloseModal={this.onCloseUsernameModal} />}
           <ChatContainer
             alertMessage={alertMessage}
             alertStyle={alertStyle}
             onAlertDismiss={this.onAlertDismiss}
             messages={messages}
             username={username}
-            onSendMessage={this.onSendMessage} />
+            onSendMessage={this.onSendMessage}
+            messageInputFocus={!this.state.showUsernameModal} />
+          <InfoModal
+            showModal={showInfoModal}
+            toggleInfoModal={this.toggleInfoModal} />
         </main>
       </div>
     );
@@ -650,3 +654,20 @@ export default class App extends Component {
 }
 
 App.propTypes = {}
+
+const mapStateToProps = (reduxState) => {
+  return reduxState.chat;
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addNewMessage: ({ key, fromUsername, maybeSenderId, message }) =>
+      dispatch(addMessage({ key, fromUsername, maybeSenderId, message })),
+    addNewUserStatus: ({ fromUsername, userStatus, created }) =>
+      dispatch(addUserStatus({ fromUsername, userStatus, created })),
+    clearAllMessages: () => dispatch(clearMessages()),
+    setUsername: (username) => dispatch(setUsername(username))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

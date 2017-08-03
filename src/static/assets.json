@@ -1,7 +1,6 @@
 {
 	"stylesheets": [
 		"static/lib/bootstrap/dist/css/bootstrap.css",
-		"static/lib/font-awesome/css/font-awesome.css",
 		"static/css/main.css"
 	],
 	"scripts": [
