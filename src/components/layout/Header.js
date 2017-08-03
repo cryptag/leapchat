@@ -14,8 +14,10 @@ export default class Header extends Component {
     return (
       <header>
         <div className="logo-container">
-          <Logo />
-          <Info toggleInfoModal={this.props.toggleInfoModal}/>
+          <div id="logo-info">
+            <Logo />
+            <Info toggleInfoModal={this.props.toggleInfoModal}/>
+          </div>
           <Settings
             promptForUsername={this.props.promptForUsername} />
         </div>
