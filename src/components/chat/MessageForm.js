@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from 'react-bootstrap';
 import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
+import FaSmileO from 'react-icons/lib/fa/smile-o';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -81,6 +82,7 @@ class MessageForm extends Component {
               <FaArrowCircleRight size={30} />
             </Button>
 
+
             <div className="message">
               <textarea
                 className="form-control"
@@ -90,6 +92,7 @@ class MessageForm extends Component {
                 value={message}
                 ref={(input) => { this.messageInput = input; }}
                 placeholder="Enter message" required></textarea>
+              <FaSmileO size={18} className="emojiPicker"/>
             </div>
 
           </div>

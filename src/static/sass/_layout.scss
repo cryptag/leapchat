@@ -105,6 +105,17 @@ header {
   .modal-header {
     border-bottom: none;
   }
+  .message{
+    display: flex;
+    flex-direction: row;
+  }
+  .form-control {
+    flex-grow: 2;
+    border: none;
+  }
+  .emojiPicker {
+    float: right;
+  }
 }
 
 // MAIN - mobile settings
