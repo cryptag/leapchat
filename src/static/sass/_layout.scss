@@ -111,9 +111,7 @@ header {
     }
 
     .info {
-      margin-left: 10px;
       float: left;
-      cursor: pointer;
     }
 
 
@@ -280,9 +278,10 @@ main {
 #logo-info {
   display: inherit;
   .info {
-    padding-left: 10px;
+    padding-left: 15px;
     svg {
       vertical-align: top;
+      cursor: pointer;
     }
   }
 }
