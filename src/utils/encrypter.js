@@ -9,21 +9,21 @@ export function getEmail(passphrase){
 }
 
 export function getPassphrase(documentHash){
-  let isNewRoom = false;
+  let isNewPassphrase = false;
 
   let passphrase = documentHash || '#';
   passphrase = passphrase.slice(1);
 
-  // Generate new room for user if none specified (that is, if the
+  // Generate new passphrase for user if none specified (that is, if the
   // URL hash is blank)
   if (!passphrase){
     passphrase = genPassphrase();
-    isNewRoom = true;
+    isNewPassphrase = true;
   }
 
   return {
     passphrase,
-    isNewRoom
+    isNewPassphrase
   };
 }
 

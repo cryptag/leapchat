@@ -470,9 +470,9 @@ class App extends Component {
       return;
     }
 
-    let { passphrase, isNewRoom } = getPassphrase(urlHash);
+    let { passphrase, isNewPassphrase } = getPassphrase(urlHash);
 
-    if (isNewRoom) {
+    if (isNewPassphrase) {
       document.location.hash = '#' + passphrase;
       this.displayAlert('New room created!', 'success');
     }
