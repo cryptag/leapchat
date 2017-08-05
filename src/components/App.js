@@ -21,6 +21,7 @@ import { tagByPrefixStripped } from '../utils/tags';
 import { getEmail, getPassphrase, generateMessageKey } from '../utils/encrypter';
 import { detectPageVisible } from '../utils/pagevisibility';
 import { nowUTC } from '../utils/time';
+import { minishareLogin, decryptMessage } from '../auth/login';
 
 import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
@@ -76,12 +77,8 @@ class App extends Component {
     this.paranoidMode = this.paranoidMode.bind(this);
 
     this.keypairFromURLHash = this.keypairFromURLHash.bind(this);
-    this.decryptMessage = this.decryptMessage.bind(this);
-    this.decryptAuthToken = this.decryptAuthToken.bind(this);
 
-    // authentication methods
     this.login = this.login.bind(this);
-    this.onLoginError = this.onLoginError.bind(this);
 
     this.userStatusManager = this.userStatusManager.bind(this);
     this.setStatusViewing = this.setStatusViewing.bind(this);
@@ -160,81 +157,23 @@ class App extends Component {
     }
   }
 
-  getAuthUrl() {
-    return window.location.origin + '/api/login';
-  }
-
-  getAuthHeaders(mID) {
-    return {
-      'X-Minilock-Id': mID
-    }
-  }
-
   login() {
-    let authenticationUrl = this.getAuthUrl();
-    fetch(authenticationUrl, {
-      headers: this.getAuthHeaders(this.state.mID)
-    })
-      .then(this.onLoginSuccess)
-      .then((body) => {
-        this.decryptMessage(body, this.decryptAuthToken)
-      })
-      .catch((reason) => {
-        if (reason.then) {
-          reason.then((errjson) => {
-            this.onLoginError(errjson.error);
-          })
-          return;
-        }
-        this.onLoginError(reason);
-        return;
-      });
-  }
-
-  onLoginError(reason) {
-    console.log("Error logging in:", reason);
-    if (reason.toString() === "TypeError: Failed to fetch") {
-      console.log("Trying to log in again");
-      setTimeout(this.login, 2000);
-      return;
-    }
-    this.displayAlert(reason, 'danger');
-  }
-
-  onLoginSuccess(response) {
-    if (response.status !== 200) {
-      throw response.json();
-    }
-    return response.blob();
-  }
-
-  decryptMessage(message, decryptFileCallback) {
-    console.log("Trying to decrypt", message);
-
-    miniLock.crypto.decryptFile(message,
-      this.state.mID,
-      this.state.keyPair.secretKey,
-      decryptFileCallback);
-  }
-
-  // From https://github.com/kaepora/miniLock/blob/ffea0ecb7a619d921129b8b4aed2081050ec48c1/src/js/miniLock.js#L592-L595 --
-  //
-  //    miniLock.crypto.decryptFile's callback is passed these parameters:
-  //      file: Decrypted file object (blob),
-  //      saveName: File name for saving the file (String),
-  //      senderID: Sender's miniLock ID (Base58 string)
-  decryptAuthToken(fileBlob, saveName, senderID) {
-    let reader = new FileReader();
-    reader.addEventListener("loadend", () => {
-      let authToken = reader.result;
-      console.log('authToken:', authToken);
+    const loginCompleteCallback = (authToken) => {
       this.setState({
         authToken: authToken
       })
       this.setWsConnection();
-    });
+    }
 
-    reader.readAsText(fileBlob);
+    const loginErrorCallback = () => {
+      setTimeout(this.login, 2000);
+    }
+
+    return minishareLogin(this.state.mID,
+                          this.state.keyPair.secretKey,
+                          loginCompleteCallback,
+                          loginErrorCallback,
+                          this.displayAlert)
   }
 
   setStatusViewing() {
@@ -335,6 +274,8 @@ class App extends Component {
 
       this.clearConnectError();
 
+      const { mID, keyPair } = this.state;
+
       // TODO: Ensure that incoming messages are correctly ordered in
       // the DOM; this code is racy, since onReceiveMessage() is a
       // callback and is what adds messages to `this.state.messages`.
@@ -351,7 +292,7 @@ class App extends Component {
         let messageKey = generateMessageKey(i);
         // basically curries onReceiveMessage with generated messageKey
         const decryptCallback = this.onReceiveMessage.bind(this, messageKey);
-        this.decryptMessage(msg, decryptCallback);
+        decryptMessage(mID, keyPair.secretKey, msg, decryptCallback);
       }
     };
 
