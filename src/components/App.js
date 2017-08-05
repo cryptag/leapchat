@@ -26,10 +26,9 @@ import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
 import PincodeModal from './modals/PincodeModal';
 
+import '../utils/origin_polyfill';  // window.location.origin polyfill
+
 const USERNAME_KEY = 'username';
-const BACKEND_URL = window.location.protocol + "//"
-      + window.location.hostname
-      + (window.location.port ? ':' + window.location.port : '');
 const PARANOID_USERNAME = ' ';
 
 import {
@@ -162,7 +161,7 @@ class App extends Component {
   }
 
   getAuthUrl() {
-    return `${BACKEND_URL}/api/login`;
+    return window.location.origin + '/api/login';
   }
 
   getAuthHeaders(mID) {
@@ -445,7 +444,7 @@ class App extends Component {
   }
 
   getWebsocketUrl() {
-    const wsUrl = BACKEND_URL.replace('http', 'ws');
+    const wsUrl = window.location.origin.replace('http', 'ws');
     return `${wsUrl}/api/ws/messages/all`;
   }
 
