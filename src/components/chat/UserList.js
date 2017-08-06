@@ -59,8 +59,8 @@ export default class UserList extends Component {
 
     return (
       <div className="users-list">
-        <div className="users-icon" onClick={this.onClickUsersIcon}>
-          <FaGroup size={30} />
+        <div className="users-icon">
+          <FaGroup size={30} onClick={this.onClickUsersIcon} />
         </div>
         <ul ref="menuList">
           {viewing.map(status => {

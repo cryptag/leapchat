@@ -64,7 +64,9 @@ header {
     flex-grow: 1;
 
     .users-icon {
-      cursor: pointer;
+      svg {
+        cursor: pointer;
+      }
     }
 
     ul {
@@ -124,6 +126,12 @@ header {
 
       ul {
         display: block;
+        li {
+          word-wrap: break-word;
+          svg {
+            float: left;
+          }
+        }
       }
     }
   }
@@ -283,5 +291,12 @@ main {
       vertical-align: top;
       cursor: pointer;
     }
+  }
+}
+
+// Cursor effect over Settings button
+.settings {
+  svg {
+    cursor: pointer;
   }
 }
