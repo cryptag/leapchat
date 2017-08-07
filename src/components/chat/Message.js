@@ -12,7 +12,7 @@ class Message extends Component {
     let messageClass = fromMe ? 'chat-outgoing' : 'chat-incoming';
     
     return (
-      <li className={messageClass} key={message.key}>
+      <li className={'chat-message ' + messageClass} key={message.key}>
         <span className="username">{message.from}</span>
         <ReactMarkdown
           source={message.msg}

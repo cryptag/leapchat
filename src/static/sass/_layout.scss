@@ -46,10 +46,6 @@ body {
   }
 }
 
-ul {
-  list-style: none;
-}
-
 // HEADER - mobile settings
 header {
   display: flex;
@@ -155,7 +151,7 @@ main {
         padding-top: 5px;
 
       ul {
-        li {
+        li.chat-message {
           display: inline-block;
           border: solid 1px #eee;
           border-radius: 10px;
@@ -187,7 +183,11 @@ main {
           &.chat-incoming {
             float: left;
             color: #333;
+          }
 
+          ul {
+            list-style-type: disc;
+            margin-left: 20px;
           }
         }
       }
