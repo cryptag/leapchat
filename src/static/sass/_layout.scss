@@ -141,8 +141,15 @@ header {
     flex-grow: 2;
     border: none;
   }
-  .emojiPicker {
-    float: right;
+  .chat-icons {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+  }
+  .emoji-picker-icon {
+    float: left;
+    margin-left: 8px;
+    cursor: pointer;
   }
 }
 
@@ -218,7 +225,8 @@ main {
       margin-top: auto;
 
       .message {
-        margin-right: 40px;
+        // margin-right: 40px;
+        display: flex;
 
         textarea {
           /* this font-size disables zooming
