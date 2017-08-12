@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import FaGroup from 'react-icons/lib/fa/group';
 import FaCircle from 'react-icons/lib/fa/circle';
 import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
 import $ from 'jquery';
 
-export default class UserList extends Component {
+class UserList extends Component {
   constructor(props) {
     super(props);
-
-    this.onClickUsersIcon = this.onClickUsersIcon.bind(this);
   }
 
-  // TODO: if mobile make this do nothing
-  onClickUsersIcon() {
-    $(this.refs.menuList).slideToggle('fast');
+  displayUserList = () => {
+    if(this.props.displayUserList) {
+      return { display: 'block'};
+    }
+    else {
+      return { display: 'none'};
+    }
   }
 
   sortByFrom(status1, status2) {
@@ -59,10 +62,7 @@ export default class UserList extends Component {
 
     return (
       <div className="users-list">
-        <div className="users-icon">
-          <FaGroup size={30} onClick={this.onClickUsersIcon} />
-        </div>
-        <ul ref="menuList">
+        <ul style={this.displayUserList()}>
           {viewing.map(status => {
             return (
               <li key={status.key}>
@@ -96,7 +96,8 @@ export default class UserList extends Component {
 }
 
 const styleDots = {
-  marginRight: '.2em'
+  marginRight: '.2em',
+  marginTop: '.2em'
 }
 
 const styleViewing = Object.assign(
@@ -113,3 +114,5 @@ const styleOffline = Object.assign(
   { color: 'gray' },
   styleDots
 )
+
+export default UserList;

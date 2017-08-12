@@ -10,10 +10,7 @@ class UsernameModal extends Component {
   constructor() {
     super(...arguments);
 
-    this.state = {
-      displayAlert: false,
-      failMessage: ''
-    };
+    this.state = { failMessage: '' };
 
     this.onUsernameKeyPress = this.onUsernameKeyPress.bind(this);
     this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
@@ -49,17 +46,11 @@ class UsernameModal extends Component {
 
   isUsernameValid(username) {
     if (!username || username.length === 0) {
-      this.setState({
-        displayAlert: true,
-        failMessage: 'Must Not Be Empty'
-      });
+      this.setState({ failMessage: 'Must not be empty' });
       return false;
     }
     else if (username.length > 45) {
-      this.setState({
-        displayAlert: true,
-        failMessage: 'Length May Not Exceed 45'
-      });
+      this.setState({ failMessage: 'Length must not exceed 45' });
       return false;
     }
     else {
@@ -81,7 +72,7 @@ class UsernameModal extends Component {
   }
 
   displayFailAlert = () => {
-    if(this.state.displayAlert) {
+    if(!!this.state.failMessage) {
       return { display: 'block' };
     }
     else {
