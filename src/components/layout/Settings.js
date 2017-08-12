@@ -15,8 +15,8 @@ export default class Settings extends Component {
 
   render() {
     return (
-      <div className="settings" onClick={this.onClickSettings}>
-        <FaCog size={30} />
+      <div className="settings" >
+        <FaCog size={30} onClick={this.onClickSettings} />
       </div>
     );
   }
