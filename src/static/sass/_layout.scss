@@ -54,17 +54,26 @@ header {
   padding: 10px 10px 5px;
   flex-direction: row;
   justify-content: space-between;
+  flex-wrap: wrap;
 
-  .users-list {
+  .users-icon {
     order: -1;
     flex-grow: 1;
-
-    .users-icon {
+    svg {
       cursor: pointer;
     }
+  }
+
+  .users-list {
+    flex: 0 1 100%;
 
     ul {
       display: none;
+      li {
+        svg {
+          float: left;
+        }
+      }
     }
   }
 
@@ -110,16 +119,23 @@ header {
       float: left;
     }
 
+    .users-icon {
+      display: none;
+    }
 
     .users-list {
       flex-grow: 0;
-
-      .users-icon {
-        display: none;
-      }
+      flex: none;
 
       ul {
-        display: block;
+        display: block !important;
+        li {
+          word-wrap: break-word;
+          svg {
+            float: left;
+            margin-top: 0.2em;
+          }
+        }
       }
     }
   }
@@ -225,9 +241,7 @@ main {
         }
       }
     }
-
   } // end .content
-
 } // end main
 
 // MAIN - desktop settings
@@ -269,7 +283,6 @@ main {
       .close {
         right: auto;
       }
-
     }
   }
 }
@@ -283,5 +296,12 @@ main {
       vertical-align: top;
       cursor: pointer;
     }
+  }
+}
+
+// Cursor effect over Settings button
+.settings {
+  svg {
+    cursor: pointer;
   }
 }

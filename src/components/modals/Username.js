@@ -10,6 +10,8 @@ class UsernameModal extends Component {
   constructor() {
     super(...arguments);
 
+    this.state = { failMessage: '' };
+
     this.onUsernameKeyPress = this.onUsernameKeyPress.bind(this);
     this.onSetUsernameClick = this.onSetUsernameClick.bind(this);
     this.setRandomUsernameInForm = this.setRandomUsernameInForm.bind(this);
@@ -44,17 +46,22 @@ class UsernameModal extends Component {
 
   isUsernameValid(username) {
     if (!username || username.length === 0) {
+      this.setState({ failMessage: 'Must not be empty' });
       return false;
     }
-    return true;
+    else if (username.length > 45) {
+      this.setState({ failMessage: 'Length must not exceed 45' });
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 
   onSetUsernameClick(e) {
     let username = this.getUsernameInputValue()
 
-    if (!this.isUsernameValid(username)) {
-      alert('Invalid username!');
-    } else {
+    if (this.isUsernameValid(username)) {
       this.props.onSetUsername(username);
     }
   }
@@ -62,6 +69,15 @@ class UsernameModal extends Component {
   setRandomUsernameInForm() {
     let randomUsername = generateRandomUsername();
     this.setUsernameInputValue(randomUsername);
+  }
+
+  displayFailAlert = () => {
+    if(!!this.state.failMessage) {
+      return { display: 'block' };
+    }
+    else {
+      return { display: 'none' };
+    }
   }
 
   render() {
@@ -77,6 +93,10 @@ class UsernameModal extends Component {
             <div className="form-group">
               <input type="text" className="form-control" ref="username" defaultValue={username || previousUsername} placeholder="Enter username (e.g., trinity)" onKeyPress={this.onUsernameKeyPress} />
               <br />
+              <div className="alert alert-danger" role="alert" style={this.displayFailAlert()} >
+                <strong>Invalid Username: </strong>
+                {this.state.failMessage}
+              </div>
               <Button bsSize="xsmall" bsStyle="primary" onClick={this.setRandomUsernameInForm}>Generate Random Username</Button>
             </div>
           </Modal.Body>
