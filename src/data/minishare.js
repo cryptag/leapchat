@@ -1,6 +1,6 @@
 const crypto = window.crypto || window.msCrypto;
 
-import { effWordlist } from './constants';
+import effWordlist from './effWordlist';
 
 // Excluding max
 //

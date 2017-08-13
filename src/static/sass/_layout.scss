@@ -111,10 +111,7 @@ header {
     }
 
     .info {
-      margin-top: 5px;
-      margin-left: 10px;
       float: left;
-      cursor: pointer;
     }
 
 
@@ -292,6 +289,18 @@ main {
         right: auto;
       }
 
+    }
+  }
+}
+
+// Info Positioning relative to Logo
+#logo-info {
+  display: inherit;
+  .info {
+    padding-left: 15px;
+    svg {
+      vertical-align: top;
+      cursor: pointer;
     }
   }
 }

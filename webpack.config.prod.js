@@ -30,6 +30,15 @@ config.module.rules = [
 
 config.plugins = [
   ...config.plugins,
+  new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify('production')
+    }
+  }),
+  new webpack.optimize.UglifyJsPlugin({
+    minimize: true,
+    compress: true
+  }),
   new webpack.optimize.CommonsChunkPlugin({
     names: ['vendor', 'manifest']
   }),
