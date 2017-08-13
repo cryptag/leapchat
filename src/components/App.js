@@ -597,6 +597,7 @@ class App extends Component {
     if (this.state.keyPairReady &&
       this.state.wsConnection &&
       this.state.wsConnection.readyState === WebSocket.OPEN) {
+
       this.state.wsConnection.send(JSON.stringify(payload));
     } else {
       // This is in a setInterval because sometimes

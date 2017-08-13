@@ -27,6 +27,16 @@ export function tagByPrefixStripped(plaintags, ...prefixes) {
   return '';
 }
 
+export function tagsByPrefix(plaintags, prefix) {
+  let tags = [];
+  for (let i = 0; i < plaintags.length; i++) {
+    if (plaintags[i].startsWith(prefix)) {
+      tags.push(plaintags[i]);
+    }
+  }
+  return tags;
+}
+
 export function tagsByPrefixStripped(plaintags, prefix) {
   let stripped = [];
   for (let i = 0; i < plaintags.length; i++) {
