@@ -55,6 +55,7 @@ header {
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
+  min-height: fit-content;
 
   .users-icon {
     order: -1;
@@ -304,4 +305,11 @@ main {
   svg {
     cursor: pointer;
   }
+}
+
+// Allows textarea to by dynamic instead of static
+textarea {
+  box-sizing: border-box !important;
+  max-height: 40vh !important;
+  width: 100% !important;
 }
