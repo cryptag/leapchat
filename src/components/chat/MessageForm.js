@@ -100,7 +100,7 @@ class MessageForm extends Component {
     this.setState((prevState) => {
       let beforeCursor = prevState.message.slice(0, cursorIndex);
       let afterCursor = prevState.message.slice(cursorIndex);
-      return {message: beforeCursor + emoji.colons + afterCursor};
+      return {message: beforeCursor + emoji.colons + ' ' + afterCursor};
     });
   }
 
