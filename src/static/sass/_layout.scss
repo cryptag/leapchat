@@ -143,6 +143,24 @@ header {
   .modal-header {
     border-bottom: none;
   }
+  .message{
+    display: flex;
+    flex-direction: row;
+  }
+  .form-control {
+    flex-grow: 2;
+    border: none;
+  }
+  .chat-icons {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+  }
+  .emoji-picker-icon {
+    float: left;
+    margin-left: 8px;
+    cursor: pointer;
+  }
 }
 
 // MAIN - mobile settings
@@ -206,6 +224,14 @@ main {
             list-style-type: disc;
             margin-left: 20px;
           }
+
+          img[src^='/static/img/emoji'] {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-size: 100%;
+            vertical-align: bottom;
+          }
         }
       }
     }
@@ -221,7 +247,7 @@ main {
       margin-top: auto;
 
       .message {
-        margin-right: 40px;
+        display: flex;
 
         textarea {
           /* this font-size disables zooming
