@@ -27,7 +27,7 @@ class Message extends Component {
     )
 
     // Render escaped HTML/Markdown
-    let linked = md.renderInline(emojiMD);
+    let linked = md.render(emojiMD);
 
     return (
       <li className={'chat-message ' + messageClass} key={message.key}>
