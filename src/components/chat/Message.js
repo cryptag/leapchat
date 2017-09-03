@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { format, formatRelative } from 'date-fns';
+import { formatRelative } from 'date-fns';
 
 import emoji from '../../utils/emoji_convertor';
 import md from '../../utils/link_attr_blank';
@@ -11,7 +11,7 @@ class Message extends Component {
     let messageClass = fromMe ? 'chat-outgoing' : 'chat-incoming';
     
     let RFCDate = message.key.split('-')[0];
-    let date = formatRelative(Date.parse(RFCDate), new Date());
+    let date = formatRelative(Date.parse('Fri, 01 Sep 2016 03:42:50 GMT'), new Date());
 
     let emojified = emoji.replace_colons(message.msg);
 
@@ -33,7 +33,6 @@ class Message extends Component {
 
     // Render escaped HTML/Markdown
     let linked = md.render(emojiMD);
-
 
     return (
       <li className={'chat-message ' + messageClass} key={message.key}>
