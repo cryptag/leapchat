@@ -12,11 +12,11 @@ import './static/fonts/Lato.ttf';
 import './static/audio/notification_gertz.wav';
 
 
-const enhancer = compose(
-  ReduxDevTools.instrument()
-);
+// const enhancer = compose(
+//   ReduxDevTools.instrument(), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+// );
 
-const store = createStore(rootReducer, enhancer);
+const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 if (module.hot) {
   module.hot.accept('./reducers', () =>

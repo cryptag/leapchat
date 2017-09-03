@@ -14,3 +14,18 @@ export const addUserStatus = ({ fromUsername, userStatus, created }) =>
 
 export const setUsername = (username) =>
   ({ type: CHAT_SET_USERNAME, username });
+
+export const messageUpdate = (e) =>
+  ({type: 'CHAT_MESSAGE_UPDATE', message: e.target.value});
+
+export const clearMessage = () =>
+  ({type: 'CHAT_MESSAGE_CLEAR'});
+
+export const togglePicker = () =>
+  ({type: 'CHAT_TOGGLE_PICKER'});
+
+export const addEmoji = (emoji, selectionStart) =>
+  ({type: 'CHAT_ADD_EMOJI', emoji, selectionStart});
+
+export const closePicker = () =>
+  ({type: 'CHAT_CLOSE_PICKER'});
