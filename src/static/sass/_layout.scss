@@ -195,6 +195,11 @@ main {
           width: 90%;
           word-wrap: break-word;
 
+          .message-header {
+            display: flex;
+            justify-content: space-between;
+          }
+
           .username {
             display: block;
             font-weight: bold;
