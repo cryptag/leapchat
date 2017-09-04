@@ -77,10 +77,10 @@ containers:
 
 - Postgres at port 5432
 - PostgREST at port 3000
-- Adminer at port 8081
+- Adminer at port 8082
 
 Adminer is a web UI for managing SQL databases. After the containers
-are installed and started, go to `localhost:8081`.
+are installed and started, go to `localhost:8082`.
 
 From there you can choose postgres as the database engine and the
 login with hostname `postgres`, username and password `superuser` and
