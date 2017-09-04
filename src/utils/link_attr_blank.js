@@ -4,20 +4,25 @@ const md = require('markdown-it')({
   typographer: false
 });
 
+const assignAttributes = (tokens, idx, attrObj) => {
+  Object.keys(attrObj).forEach((attr) => {
+    const aIndex = tokens[idx].attrIndex(attr);
+    if (aIndex < 0) {
+      tokens[idx].attrPush([attr, attrObj[attr]]); // add new attribute
+    } else {
+      tokens[idx].attrs[aIndex][1] = attrObj[attr]; // replace value of existing attr
+    }
+  });
+}
 const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };
 
 md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-  // If you are sure other plugins can't add `target` - drop check below
-  var aIndex = tokens[idx].attrIndex('target');
-
-  if (aIndex < 0) {
-    tokens[idx].attrPush(['target', '_blank']); // add new attribute
-  } else {
-    tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
-  }
-
+  assignAttributes(tokens, idx, {
+    target: '_blank',
+    rel: 'nofollow noreferrer noopener'
+   });
   // pass token to default renderer.
   return defaultRender(tokens, idx, options, env, self);
 };
