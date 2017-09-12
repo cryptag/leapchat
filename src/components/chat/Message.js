@@ -11,7 +11,7 @@ class Message extends Component {
     let messageClass = fromMe ? 'chat-outgoing' : 'chat-incoming';
     
     let RFCDate = message.key.split('-')[0];
-    let date = formatRelative(Date.parse('Fri, 01 Sep 2016 03:42:50 GMT'), new Date());
+    let date = formatRelative(Date.parse(RFCDate), new Date());
 
     let emojified = emoji.replace_colons(message.msg);
 
