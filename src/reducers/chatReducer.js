@@ -10,7 +10,9 @@ const initialState = {
   messages: [],
   statuses: [],
   message: '',
-  showEmojiPicker: false
+  showEmojiPicker: false,
+  suggestionStart: null,
+  suggestions: []
 };
 
 function chatReducer(state = initialState, action) {
@@ -55,21 +57,31 @@ function chatReducer(state = initialState, action) {
       message: ''
     });
 
-  case 'TOGGLE_PICKER':
+  case 'CHAT_TOGGLE_PICKER':
     return Object.assign({}, state, {
       showEmojiPicker: !state.showEmojiPicker
   });
 
-  case 'ADD_EMOJI':
+  case 'CHAT_ADD_EMOJI':
     return Object.assign({}, state, {
       showEmojiPicker: false,
       message: `${state.message.slice(0, action.selectionStart)}${action.emoji}${state.message.slice(action.selectionStart)}`
   });
 
-  case 'CLOSE_PICKER':
+  case 'CHAT_CLOSE_PICKER':
     return Object.assign({}, state, {
       showEmojiPicker: false
   });
+
+  case 'CHAT_START_SUGGESTIONS':
+    return Object.assign({}, state, {
+      suggestionStart: action.cursorIndex
+    });
+
+  case 'CHAT_SHOW_SUGGESTIONS':
+    return Object.assign({}, state, {
+        suggestions: action.suggestions
+    })
 
   default:
     return state;

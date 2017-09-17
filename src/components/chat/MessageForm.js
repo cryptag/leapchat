@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import { Button } from 'react-bootstrap';
 import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
 import FaSmileO from 'react-icons/lib/fa/smile-o';
-import { Picker } from 'emoji-mart';
+import { Picker, emojiIndex } from 'emoji-mart';
 import { connect } from 'react-redux'
 import emoji from '../../constants/emoji';
-import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker } from '../../actions/chatActions';
+import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, showSuggestions } from '../../actions/chatActions';
 
+const searchEmojis = emojiIndex.search
+
+console.log(searchEmojis, 'search')
 class MessageForm extends Component {
   constructor(props) {
     super(props);
@@ -28,10 +31,19 @@ class MessageForm extends Component {
   }
 
   onKeyPress = (e) => {
+    const cursorIndex = this.messageInput.selectionStart;
+    const suggestionStart = this.props.chat.suggestionStart
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
       this.onSendMessage(e);
       this.props.closePicker();
+    }
+    if (e.key === ':' && !this.props.chat.suggestionStart) {
+      this.props.emojiSuggestions(cursorIndex);
+      this.props.showSuggestions(suggestionStart,this.props.chat.message);
+    }
+    if(this.props.chat.suggestionStart) {
+      this.props.showSuggestions(suggestionStart,this.props.chat.message);
     }
   }
 
@@ -117,4 +129,4 @@ class MessageForm extends Component {
   }
 }
 
-export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker } )(MessageForm);
+export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, showSuggestions } )(MessageForm);
