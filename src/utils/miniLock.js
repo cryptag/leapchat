@@ -40,7 +40,7 @@ miniLock.util.validateID = function (id) {
   )
   if (
     (id.length > 55) ||
-  (id.length < 40)
+    (id.length < 40)
   ) {
     return false
   }
@@ -68,7 +68,7 @@ miniLock.util.validateNonce = function (nonce, expectedLength) {
   )
   if (
     (nonce.length > 40) ||
-  (nonce.length < 10)
+    (nonce.length < 10)
   ) {
     return false
   }
@@ -88,7 +88,7 @@ miniLock.util.validateKey = function (key) {
   )
   if (
     (key.length > 50) ||
-  (key.length < 40)
+    (key.length < 40)
   ) {
     return false
   }
@@ -452,14 +452,14 @@ miniLock.crypto.decryptFile = function (
       }
       if (
         !header.hasOwnProperty('version')
-    || header.version !== 1
+        || header.version !== 1
       ) {
         throw new Error('miniLock: Decryption failed - invalid header version')
         return false
       }
       if (
         !header.hasOwnProperty('ephemeral')
-    || !miniLock.util.validateEphemeral(header.ephemeral)
+        || !miniLock.util.validateEphemeral(header.ephemeral)
       ) {
         throw new Error('miniLock: Decryption failed - could not parse header')
         return false
@@ -471,7 +471,7 @@ miniLock.crypto.decryptFile = function (
       for (var i in header.decryptInfo) {
         if (
           ({}).hasOwnProperty.call(header.decryptInfo, i)
-     && miniLock.util.validateNonce(i, 24)
+          && miniLock.util.validateNonce(i, 24)
         ) {
           actualDecryptInfo = nacl.box.open(
             nacl.util.decodeBase64(header.decryptInfo[i]),
@@ -490,16 +490,16 @@ miniLock.crypto.decryptFile = function (
       }
       if (
         !actualDecryptInfo
-    || !({}).hasOwnProperty.call(actualDecryptInfo, 'recipientID')
-    || actualDecryptInfo.recipientID !== myMiniLockID
+        || !({}).hasOwnProperty.call(actualDecryptInfo, 'recipientID')
+        || actualDecryptInfo.recipientID !== myMiniLockID
       ) {
         throw new Error('miniLock: Decryption failed - File is not encrypted for this recipient')
         return false
       }
       if (
         !({}).hasOwnProperty.call(actualDecryptInfo, 'fileInfo')
-    || !({}).hasOwnProperty.call(actualDecryptInfo, 'senderID')
-    || !miniLock.util.validateID(actualDecryptInfo.senderID)
+        || !({}).hasOwnProperty.call(actualDecryptInfo, 'senderID')
+        || !miniLock.util.validateID(actualDecryptInfo.senderID)
       ) {
         throw new Error('miniLock: Decryption failed - could not validate sender ID')
         return false
