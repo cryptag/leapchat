@@ -3,13 +3,6 @@ const config = require('./webpack.config.base');
 
 config.entry = {
   main: './src',
-  vendor: [
-    'jquery',
-    'react',
-    'react-dom',
-    'react-redux',
-    'redux'
-  ]
 };
 
 config.module.rules = [
@@ -40,7 +33,7 @@ config.plugins = [
     compress: true
   }),
   new webpack.optimize.CommonsChunkPlugin({
-    names: ['vendor', 'manifest']
+    names: ['manifest']
   }),
 ]
 

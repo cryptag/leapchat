@@ -5,17 +5,17 @@ import Message from './Message';
 
 class MessageList extends Component {
 
-  render(){
+  render() {
     let { messages, username } = this.props;
 
     return (
       <ul>
-        {messages.map( (message) => {
+        {messages.map((message, i) => {
           return <Message
-            key={message.key}
+            key={i}
             message={message}
             username={username} />
-        } )}
+        })}
       </ul>
     );
   }

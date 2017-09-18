@@ -25,7 +25,7 @@ export default class Header extends Component {
             <Info toggleInfoModal={this.props.toggleInfoModal}/>
           </div>
           <Settings
-            promptForUsername={this.props.promptForUsername} />
+            showSettings={this.props.showSettings} />
         </div>
         <UserIcon toggleUserList={this.toggleUserList} />
         <UserList
