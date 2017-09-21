@@ -40,3 +40,6 @@ export const emojiSuggestions = (cursorIndex) =>
 
 export const showSuggestions = (cursorIndex, value) =>
   ({type: 'CHAT_SHOW_SUGGESTIONS', suggestions: filterSuggestions(cursorIndex, value)});
+
+export const stopSuggestions = () =>
+  ({type: 'CHAT_STOP_SUGGESTIONS'})

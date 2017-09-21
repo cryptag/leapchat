@@ -81,6 +81,11 @@ function chatReducer(state = initialState, action) {
   case 'CHAT_SHOW_SUGGESTIONS':
     return Object.assign({}, state, {
         suggestions: action.suggestions
+    });
+
+  case 'CHAT_STOP_SUGGESTIONS':
+    return Object.assign({}, state, {
+      suggestionStart: null
     })
 
   default:

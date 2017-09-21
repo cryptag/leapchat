@@ -6,7 +6,7 @@ import FaSmileO from 'react-icons/lib/fa/smile-o';
 import { Picker, emojiIndex } from 'emoji-mart';
 import { connect } from 'react-redux'
 import emoji from '../../constants/emoji';
-import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, showSuggestions } from '../../actions/chatActions';
+import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions } from '../../actions/chatActions';
 
 const searchEmojis = emojiIndex.search
 
@@ -40,10 +40,9 @@ class MessageForm extends Component {
     }
     if (e.key === ':' && !this.props.chat.suggestionStart) {
       this.props.emojiSuggestions(cursorIndex);
-      this.props.showSuggestions(suggestionStart,this.props.chat.message);
     }
-    if(this.props.chat.suggestionStart) {
-      this.props.showSuggestions(suggestionStart,this.props.chat.message);
+    if(e.nativeEvent.keyCode === 32 && this.props.chat.suggestionStart) {
+      this.props.stopSuggestions();
     }
   }
 
@@ -129,4 +128,4 @@ class MessageForm extends Component {
   }
 }
 
-export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, showSuggestions } )(MessageForm);
+export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions } )(MessageForm);
