@@ -18,15 +18,19 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/if';
-import { showSuggestions } from '../actions/chatActions';
+import 'rxjs/add/operator/takeUntil';
+import { showSuggestions, stopSuggestions } from '../actions/chatActions';
 
-const messageEpic = (action$) => {
-  return action$.ofType('CHAT_START_SUGGESTIONS')
+const messageEpic = (action$) =>
+  action$.ofType('CHAT_START_SUGGESTIONS')
     .mergeMap((cursor) => {
       return action$.ofType('CHAT_MESSAGE_UPDATE')
       .map((msg) => showSuggestions(cursor.cursorIndex, msg.message))
-      // .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
+      .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
     })
-}
 
-export default combineEpics(messageEpic)
+const suggestionEpic = (action$) =>
+  action$.ofType('CHAT_ADD_SUGGESTION')
+    .map(() => stopSuggestions())
+
+export default combineEpics(messageEpic, suggestionEpic);

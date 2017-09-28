@@ -4,8 +4,6 @@ export const CHAT_CLEAR_MESSAGES = 'CHAT_CLEAR_MESSAGES';
 export const CHAT_SET_USERNAME = 'CHAT_SET_USERNAME';
 import { emojiIndex } from 'emoji-mart';
 const filterSuggestions = (start, value) => {
-  console.log(value.slice(start), 'start', start, value)
-  // return list.filter((suggestion) => suggestion.startsWith(value.slice(start)))
   return emojiIndex.search(value.slice(start + 1));
 }
 export const addMessage = ({ key, fromUsername, maybeSenderId, message }) =>
@@ -21,25 +19,34 @@ export const setUsername = (username) =>
   ({ type: CHAT_SET_USERNAME, username });
 
 export const messageUpdate = (e) =>
-  ({type: 'CHAT_MESSAGE_UPDATE', message: e.target.value});
+  ({ type: 'CHAT_MESSAGE_UPDATE', message: e.target.value });
 
 export const clearMessage = () =>
-  ({type: 'CHAT_MESSAGE_CLEAR'});
+  ({ type: 'CHAT_MESSAGE_CLEAR' });
 
 export const togglePicker = () =>
-  ({type: 'CHAT_TOGGLE_PICKER'});
+  ({ type: 'CHAT_TOGGLE_PICKER' });
 
 export const addEmoji = (emoji, selectionStart) =>
-  ({type: 'CHAT_ADD_EMOJI', emoji, selectionStart});
+  ({ type: 'CHAT_ADD_EMOJI', emoji, selectionStart });
 
 export const closePicker = () =>
-  ({type: 'CHAT_CLOSE_PICKER'});
+  ({ type: 'CHAT_CLOSE_PICKER' });
 
 export const emojiSuggestions = (cursorIndex) =>
-  ({type: 'CHAT_START_SUGGESTIONS', cursorIndex });
+  ({ type: 'CHAT_START_SUGGESTIONS', cursorIndex });
 
 export const showSuggestions = (cursorIndex, value) =>
-  ({type: 'CHAT_SHOW_SUGGESTIONS', suggestions: filterSuggestions(cursorIndex, value)});
+  ({ type: 'CHAT_SHOW_SUGGESTIONS', suggestions: filterSuggestions(cursorIndex, value) });
+
+export const addSuggestion = (suggestion) =>
+  ({ type: 'CHAT_ADD_SUGGESTION', suggestion });
 
 export const stopSuggestions = () =>
-  ({type: 'CHAT_STOP_SUGGESTIONS'})
+  ({ type: 'CHAT_STOP_SUGGESTIONS' });
+
+export const downSuggestion = () =>
+  ({ type: 'CHAT_DOWN_SUGGESTION' })
+
+export const upSuggestion = () =>
+  ({ type: 'CHAT_UP_SUGGESTION' })

@@ -6,11 +6,8 @@ import FaSmileO from 'react-icons/lib/fa/smile-o';
 import { Picker, emojiIndex } from 'emoji-mart';
 import { connect } from 'react-redux'
 import emoji from '../../constants/emoji';
-import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions } from '../../actions/chatActions';
+import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions, downSuggestion, upSuggestion, addSuggestion } from '../../actions/chatActions';
 
-const searchEmojis = emojiIndex.search
-
-console.log(searchEmojis, 'search')
 class MessageForm extends Component {
   constructor(props) {
     super(props);
@@ -32,16 +29,21 @@ class MessageForm extends Component {
 
   onKeyPress = (e) => {
     const cursorIndex = this.messageInput.selectionStart;
-    const suggestionStart = this.props.chat.suggestionStart
+    const { suggestionStart, suggestions, highlightedSuggestion } = this.props.chat;
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
+      if (suggestions.length > 0) {
+        e.preventDefault();
+        this.props.addSuggestion(suggestions[highlightedSuggestion].colons);
+        return;
+      }
       this.onSendMessage(e);
       this.props.closePicker();
     }
-    if (e.key === ':' && !this.props.chat.suggestionStart) {
+    if (e.key === ':' && suggestionStart >= 0) {
       this.props.emojiSuggestions(cursorIndex);
     }
-    if(e.nativeEvent.keyCode === 32 && this.props.chat.suggestionStart) {
+    if(e.nativeEvent.keyCode === 32 && suggestionStart >= 0) {
       this.props.stopSuggestions();
     }
   }
@@ -79,6 +81,21 @@ class MessageForm extends Component {
     this.props.addEmoji(emoji.colons, cursorIndex);
   }
 
+  handleKeyDown = (e) => {
+    const { suggestions, suggestionStart } = this.props.chat;
+    const cursorIndex = this.messageInput.selectionStart;
+    if (e.key === 'Backspace' && cursorIndex - suggestionStart === 1) {
+      this.props.stopSuggestions();
+    }
+    if (e.key === 'ArrowUp' && suggestions) {
+      e.preventDefault();
+      this.props.upSuggestion();
+    }
+    if (e.key === 'ArrowDown' && suggestions) {
+      e.preventDefault();
+      this.props.downSuggestion();
+    }
+  }
   render() {
     const { message, showEmojiPicker } = this.props.chat;
     const { messageUpdate, togglePicker } = this.props;
@@ -106,7 +123,7 @@ class MessageForm extends Component {
                 onClick={togglePicker} />
             </div>
 
-            <div className="message">
+            <div className="message" onKeyDown={this.handleKeyDown}>
               <textarea
                 className="form-control"
                 onChange={this.props.messageUpdate}
@@ -128,4 +145,4 @@ class MessageForm extends Component {
   }
 }
 
-export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions } )(MessageForm);
+export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions, downSuggestion, upSuggestion, addSuggestion } )(MessageForm);
