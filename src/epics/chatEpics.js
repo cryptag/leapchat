@@ -27,10 +27,12 @@ const messageEpic = (action$) =>
       return action$.ofType('CHAT_MESSAGE_UPDATE')
       .map((msg) => showSuggestions(cursor.cursorIndex, msg.message))
       .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
+      .catch((err) => console.error(err))
     })
 
 const suggestionEpic = (action$) =>
   action$.ofType('CHAT_ADD_SUGGESTION')
     .map(() => stopSuggestions())
+    .catch((err) => console.error(err))
 
 export default combineEpics(messageEpic, suggestionEpic);
