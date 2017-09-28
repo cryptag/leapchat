@@ -1,42 +1,23 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 
 import { Modal, Button } from 'react-bootstrap';
 
 import { genPassphrase } from '../../data/minishare';
 
-class PincodeModal extends Component {
-  constructor() {
-    super(...arguments);
-
-    this.onPincodeKeyPress = this.onPincodeKeyPress.bind(this);
-    this.onSetPincodeClick = this.onSetPincodeClick.bind(this);
-    this.setRandomPincodeInForm = this.setRandomPincodeInForm.bind(this);
-  }
-
+class PincodeModal extends PureComponent {
+ 
   componentDidMount() {
-    this.giveFormFocus()
+    this.pincodeInput.focus();
+  }
+  
+  componentDidUpdate(){
+    if(this.props.showModal){
+      this.pincodeInput.focus();
+    }
   }
 
-  // TODO: destroy this madness when possible, very un-React.
-  getPincodeInputElement() {
-    return $(this.refs.pincode);
-  }
-
-  giveFormFocus() {
-    this.getPincodeInputElement().focus()
-  }
-
-  getPincodeInputValue() {
-    return this.getPincodeInputElement().val();
-  }
-
-  setPincodeInputValue(newPincode) {
-    this.getPincodeInputElement().val(newPincode);
-  }
-
-  onPincodeKeyPress(e) {
+  onPincodeKeyPress = (e) => {
     if (e.which === 13) {
       this.onSetPincodeClick();
     }
@@ -49,8 +30,8 @@ class PincodeModal extends Component {
     return true;
   }
 
-  onSetPincodeClick(e) {
-    let pincode = this.getPincodeInputValue()
+  onSetPincodeClick = (e) => {
+    const pincode = this.pincodeInput.value;
 
     if (!this.isPincodeValid(pincode)) {
       alert('Invalid pincode!');
@@ -59,9 +40,8 @@ class PincodeModal extends Component {
     }
   }
 
-  setRandomPincodeInForm() {
-    let randomPincode = genPassphrase(2);
-    this.setPincodeInputValue(randomPincode);
+  setRandomPincodeInForm = () => {
+    this.pincodeInput.value = genPassphrase(2);
   }
 
   render() {
@@ -75,7 +55,14 @@ class PincodeModal extends Component {
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">
-              <input type="text" className="form-control" ref="pincode" defaultValue={pincode} placeholder="Enter pincode or password" onKeyPress={this.onPincodeKeyPress} />
+              <input 
+                type="text" 
+                className="form-control" 
+                ref={(input) => { this.pincodeInput = input; }}
+                defaultValue={pincode} 
+                placeholder="Enter pincode or password" 
+                onKeyPress={this.onPincodeKeyPress} 
+                autoFocus={true} />
               <br />
               <Button bsSize="xsmall" bsStyle="primary" onClick={this.setRandomPincodeInForm}>Generate Random Pincode</Button>
             </div>
