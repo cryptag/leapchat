@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import FaGroup from 'react-icons/lib/fa/group';
 import FaCircle from 'react-icons/lib/fa/circle';
 import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
-import $ from 'jquery';
 
 class UserList extends Component {
   constructor(props) {
