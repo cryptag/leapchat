@@ -10,7 +10,7 @@ export default class Settings extends Component {
 
   // only one settings options for now
   onClickSettings() {
-    this.props.promptForUsername();
+    this.props.showSettings();
   }
 
   render() {

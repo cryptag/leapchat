@@ -4,3 +4,6 @@ export const ON_CLOSE_RECONNECT_MESSAGE = "Message WebSocket closed. Reconnectin
 export const ONE_MINUTE = 60 * 1000;
 
 export const USER_STATUS_DELAY_MS = 10 * ONE_MINUTE;
+
+export const PARANOID_USERNAME = ' ';
+export const USERNAME_KEY = 'username';

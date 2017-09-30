@@ -6,11 +6,20 @@ const AutoSuggest = ({ addSuggestion, chat }) => {
 
   const list = (
     <ul>
-      {chat.suggestions.map((emoji, i) =>
-        <li key={i} onClick={(e) => addSuggestion(emoji.colons)} className={chat.highlightedSuggestion === i ? 'active': ''}>
-          {emoji.native} {emoji.colons}
-        </li>
-      )}
+      {chat.suggestions.map((emoji, i) => {
+        const activeItem = chat.highlightedSuggestion === i;
+        let props = {
+          key : i,
+          onClick : (e) => addSuggestion(emoji.colons),
+          className : activeItem ? 'active': '',
+        }
+        if (activeItem) {
+          props.ref = (item) => {
+            if (item) item.scrollIntoView({behavior: "smooth"});
+          }
+        }
+        return (<li {...props}>{emoji.native} {emoji.colons}</li>)
+      })}
     </ul>
   );
 
