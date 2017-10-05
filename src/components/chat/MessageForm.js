@@ -6,7 +6,18 @@ import FaSmileO from 'react-icons/lib/fa/smile-o';
 import { Picker, emojiIndex } from 'emoji-mart';
 import { connect } from 'react-redux'
 import emoji from '../../constants/emoji';
-import { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions, downSuggestion, upSuggestion, addSuggestion } from '../../actions/chatActions';
+import {
+  messageUpdate,
+  clearMessage,
+  togglePicker,
+  addEmoji,
+  closePicker,
+  emojiSuggestions,
+  stopSuggestions,
+  downSuggestion,
+  upSuggestion,
+  addSuggestion
+} from '../../actions/chatActions';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -40,11 +51,21 @@ class MessageForm extends Component {
       this.onSendMessage(e);
       this.props.closePicker();
     }
-    if (e.key === ':' && suggestionStart >= 0) {
+    if (e.key === ':' && suggestionStart === null) {
       this.props.emojiSuggestions(cursorIndex);
     }
     if(e.nativeEvent.keyCode === 32 && suggestionStart >= 0) {
       this.props.stopSuggestions();
+    }
+  }
+
+  onKeyDown = (e) => {
+    const cursorIndex = this.messageInput.selectionStart;
+    const before = this.props.chat.message.slice(0, cursorIndex - 1);
+    const word = this.props.chat.suggestionWord.trimRight();
+    if (e.key === 'Backspace' && before.endsWith(word)) {
+      const start = before.length - word.length;
+      this.props.emojiSuggestions(start)
     }
   }
 
@@ -128,6 +149,7 @@ class MessageForm extends Component {
                 className="form-control"
                 onChange={this.props.messageUpdate}
                 onKeyPress={this.onKeyPress}
+                onKeyDown={this.onKeyDown}
                 name="message"
                 value={message}
                 ref={(input) => { this.messageInput = input; }}
@@ -145,4 +167,15 @@ class MessageForm extends Component {
   }
 }
 
-export default connect(({chat}) => ({chat}), { messageUpdate, clearMessage, togglePicker, addEmoji, closePicker, emojiSuggestions, stopSuggestions, downSuggestion, upSuggestion, addSuggestion } )(MessageForm);
+export default connect(({chat}) => ({chat}), {
+  messageUpdate,
+  clearMessage,
+  togglePicker,
+  addEmoji,
+  closePicker,
+  emojiSuggestions,
+  stopSuggestions,
+  downSuggestion,
+  upSuggestion,
+  addSuggestion
+})(MessageForm);

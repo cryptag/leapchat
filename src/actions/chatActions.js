@@ -11,11 +11,7 @@ export const CHAT_USER_STATUS_SENT = 'CHAT_USER_STATUS_SENT';
 export const CHAT_SET_USERNAME = 'CHAT_SET_USERNAME';
 export const CHAT_USERNAME_SET = 'CHAT_USERNAME_SET';
 
-import { emojiIndex } from 'emoji-mart';
-
-const filterSuggestions = (start, value) => {
-  return emojiIndex.search(value.slice(start + 1));
-}
+import { filterSuggestions } from '../utils/suggestions';
 
 export const initChat = () => ({ type: CHAT_INIT_CHAT })
 

@@ -101,9 +101,11 @@ function chatReducer(state = initialState, action) {
   });
 
   case 'CHAT_ADD_EMOJI':
+    const beforeEmoji = state.message.slice(0, action.selectionStart);
+    const afterEmoji = state.message.slice(action.selectionStart);
     return Object.assign({}, state, {
       showEmojiPicker: false,
-      message: `${state.message.slice(0, action.selectionStart)}${action.emoji}${state.message.slice(action.selectionStart)}`
+      message: beforeEmoji + action.emoji + ' ' + afterEmoji
   });
 
   case 'CHAT_CLOSE_PICKER':
@@ -124,8 +126,11 @@ function chatReducer(state = initialState, action) {
     }) : state;
 
   case 'CHAT_ADD_SUGGESTION':
+  const beforeSuggestion = state.message.slice(0, state.suggestionStart);
+  const afterSuggestion = state.message.slice(state.suggestionStart)
+  const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion)
     return Object.assign({}, state, {
-      message: `${state.message.slice(0, state.suggestionStart)}${state.message.slice(state.suggestionStart).replace(state.suggestionWord, action.suggestion)}`
+      message: beforeSuggestion + formattedSuggestion
     });
 
   case 'CHAT_STOP_SUGGESTIONS':

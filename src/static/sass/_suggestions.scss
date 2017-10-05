@@ -15,9 +15,15 @@
     list-style-type: none;
     padding: 0 5px;
   }
+  img {
+    width: 20px;
+    margin-right: 5px;
+  }
   li {
     margin: 5px;
     cursor: pointer;
+    padding: 3px;
+    font-size: 15px;
   }
   li:hover {
     background-color: rgba(35, 154, 220, .5);
