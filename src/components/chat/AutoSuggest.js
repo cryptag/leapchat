@@ -9,7 +9,7 @@ const AutoSuggest = ({ addSuggestion, chat }) => {
   const list = (
     <ul>
       {chat.suggestions.map((emoj, i) => {
-        const suggestion = emoji.replace_colons(emoj.colons) + (emoj.colons);
+        const suggestion = emoji.replace_colons(emoj.colons) + emoj.colons;
         const suggestionMD = suggestion.replace(/<span class="emoji emoji-sizer" style="background-image:url\((\/static\/img\/emoji\/apple\/64\/.*?)\)" data-codepoints="(?:.*?)"><\/span>/g, '![emoji]($1)');
         const renderItem = md.renderInline(suggestionMD);
         const activeItem = chat.highlightedSuggestion === i;
@@ -33,8 +33,8 @@ const AutoSuggest = ({ addSuggestion, chat }) => {
       <div className="suggestions-header">
         Emoji matching <strong>"{chat.suggestionWord}"</strong>
         <span className="header-help">
-	  	    <strong>↑</strong><strong>↓ </strong> to navigate
-  	  		<span className="inline-margin"><strong> ↵ </strong> to select</span>
+           <strong>↑</strong><strong>↓ </strong> to navigate
+           <span className="inline-margin"><strong> ↵ </strong> to select</span>
         </span>
       </div>
       {list}

@@ -21,8 +21,8 @@ class Message extends Component {
         // $3 == .png
         // emoji.data[$2][3][0] == smile
         // return '![:smile:](/static/img/emoji/apple/64/1f604.png)'
-        // const twoSimple = ($2).split('-')[0];
-        return '![:' + 'emoji' + ':](' + $1 + $2 + $3 + ')';
+        const twoSimple = ($2).split('-')[0];
+        return '![:' + emoji.data[twoSimple][3][0] + ':](' + $1 + $2 + $3 + ')';
       }
     )
 
