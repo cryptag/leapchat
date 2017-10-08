@@ -100,7 +100,7 @@ function chatReducer(state = initialState, action) {
       showEmojiPicker: !state.showEmojiPicker
   });
 
-  case 'CHAT_ADD_EMOJI':
+  case 'CHAT_PICKER_ADD_EMOJI':
     const beforeEmoji = state.message.slice(0, action.selectionStart);
     const afterEmoji = state.message.slice(action.selectionStart);
     return Object.assign({}, state, {
@@ -126,11 +126,11 @@ function chatReducer(state = initialState, action) {
     }) : state;
 
   case 'CHAT_ADD_SUGGESTION':
-  const beforeSuggestion = state.message.slice(0, state.suggestionStart);
-  const afterSuggestion = state.message.slice(state.suggestionStart)
-  const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion)
+    const beforeSuggestion = state.message.slice(0, state.suggestionStart);
+    const afterSuggestion = state.message.slice(state.suggestionStart)
+    const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion + ' ')
     return Object.assign({}, state, {
-      message: beforeSuggestion + formattedSuggestion
+        message: beforeSuggestion + formattedSuggestion
     });
 
   case 'CHAT_STOP_SUGGESTIONS':

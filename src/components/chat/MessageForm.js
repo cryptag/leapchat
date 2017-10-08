@@ -54,7 +54,7 @@ class MessageForm extends Component {
     if (e.key === ':' && suggestionStart === null) {
       this.props.emojiSuggestions(cursorIndex);
     }
-    if(e.nativeEvent.keyCode === 32 && suggestionStart >= 0) {
+    if(e.nativeEvent.code === 'Space' && suggestionStart >= 0) {
       this.props.stopSuggestions();
     }
   }
@@ -108,11 +108,11 @@ class MessageForm extends Component {
     if (e.key === 'Backspace' && cursorIndex - suggestionStart === 1) {
       this.props.stopSuggestions();
     }
-    if (e.key === 'ArrowUp' && suggestions) {
+    if (e.key === 'ArrowUp' && suggestions.length > 0) {
       e.preventDefault();
       this.props.upSuggestion();
     }
-    if (e.key === 'ArrowDown' && suggestions) {
+    if (e.key === 'ArrowDown' && suggestions.length > 0) {
       e.preventDefault();
       this.props.downSuggestion();
     }

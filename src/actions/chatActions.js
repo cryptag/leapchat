@@ -55,7 +55,7 @@ export const togglePicker = () =>
   ({ type: 'CHAT_TOGGLE_PICKER' });
 
 export const addEmoji = (emoji, selectionStart) =>
-  ({ type: 'CHAT_ADD_EMOJI', emoji, selectionStart });
+  ({ type: 'CHAT_PICKER_ADD_EMOJI', emoji, selectionStart });
 
 export const closePicker = () =>
   ({ type: 'CHAT_CLOSE_PICKER' });
