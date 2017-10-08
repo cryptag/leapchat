@@ -3,17 +3,25 @@ import ReactDOM from 'react-dom';
 import { Button } from 'react-bootstrap';
 import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
 import FaSmileO from 'react-icons/lib/fa/smile-o';
-import { Picker } from 'emoji-mart';
+import { Picker, emojiIndex } from 'emoji-mart';
+import { connect } from 'react-redux'
 import emoji from '../../constants/emoji';
+import {
+  messageUpdate,
+  clearMessage,
+  togglePicker,
+  addEmoji,
+  closePicker,
+  emojiSuggestions,
+  stopSuggestions,
+  downSuggestion,
+  upSuggestion,
+  addSuggestion
+} from '../../actions/chatActions';
 
 class MessageForm extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      message: '',
-      showEmojiPicker: false
-    }
   }
 
   componentDidMount() {
@@ -30,17 +38,34 @@ class MessageForm extends Component {
     }
   }
 
-  onMessageUpdate = (e) => {
-    this.setState({
-      message: e.target.value
-    });
-  }
-
   onKeyPress = (e) => {
+    const cursorIndex = this.messageInput.selectionStart;
+    const { suggestionStart, suggestions, highlightedSuggestion } = this.props.chat;
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
+      if (suggestions.length > 0) {
+        e.preventDefault();
+        this.props.addSuggestion(suggestions[highlightedSuggestion].colons);
+        return;
+      }
       this.onSendMessage(e);
-      this.closePicker();
+      this.props.closePicker();
+    }
+    if (e.key === ':' && suggestionStart === null) {
+      this.props.emojiSuggestions(cursorIndex);
+    }
+    if(e.nativeEvent.code === 'Space' && suggestionStart >= 0) {
+      this.props.stopSuggestions();
+    }
+  }
+
+  onKeyDown = (e) => {
+    const cursorIndex = this.messageInput.selectionStart;
+    const before = this.props.chat.message.slice(0, cursorIndex - 1);
+    const word = this.props.chat.suggestionWord.trimRight();
+    if (e.key === 'Backspace' && before.endsWith(word)) {
+      const start = before.length - word.length;
+      this.props.emojiSuggestions(start)
     }
   }
 
@@ -51,34 +76,17 @@ class MessageForm extends Component {
     return false;
   }
 
-  clearMessage = () => {
-    this.setState({
-      message: ''
-    });
-  }
-
   onSendMessage = (e) => {
     e.preventDefault();
 
-    let { message } = this.state;
+    const { message } = this.props.chat;
 
     if (!this.isPayloadValid(message)) {
       return false;
     }
 
     this.props.onSendMessage(message);
-    this.clearMessage();
-  }
-
-  togglePicker = () => {
-    this.setState((prevState) => {
-      return {showEmojiPicker: !prevState.showEmojiPicker};
-    })
-  }
-
-  onClickPicker = (emoji, event) => {
-    this.addEmoji(emoji);
-    this.closePicker();
+    this.props.clearMessage();
   }
 
   backgroundImageFn = (set, sheetSize) => {
@@ -89,23 +97,29 @@ class MessageForm extends Component {
     return '/' + emoji.EMOJI_APPLE_64_SHEET;
   }
 
-  closePicker = () => {
-    this.setState({
-      showEmojiPicker: false
-    });
-  }
-
   addEmoji = (emoji) => {
-    let cursorIndex = this.messageInput.selectionStart;
-    this.setState((prevState) => {
-      let beforeCursor = prevState.message.slice(0, cursorIndex);
-      let afterCursor = prevState.message.slice(cursorIndex);
-      return {message: beforeCursor + emoji.colons + ' ' + afterCursor};
-    });
+    const cursorIndex = this.messageInput.selectionStart;
+    this.props.addEmoji(emoji.colons, cursorIndex);
   }
 
+  handleKeyDown = (e) => {
+    const { suggestions, suggestionStart } = this.props.chat;
+    const cursorIndex = this.messageInput.selectionStart;
+    if (e.key === 'Backspace' && cursorIndex - suggestionStart === 1) {
+      this.props.stopSuggestions();
+    }
+    if (e.key === 'ArrowUp' && suggestions.length > 0) {
+      e.preventDefault();
+      this.props.upSuggestion();
+    }
+    if (e.key === 'ArrowDown' && suggestions.length > 0) {
+      e.preventDefault();
+      this.props.downSuggestion();
+    }
+  }
   render() {
-    let { message, showEmojiPicker } = this.state;
+    const { message, showEmojiPicker } = this.props.chat;
+    const { messageUpdate, togglePicker } = this.props;
 
     return (
       <div className="message-form">
@@ -121,20 +135,21 @@ class MessageForm extends Component {
             emoji={""}
             title={"LeapChat"}
             backgroundImageFn={this.backgroundImageFn}
-            onClick={this.onClickPicker} />}
+            onClick={this.addEmoji} />}
 
           <div>
             <div className="chat-icons">
               <FaSmileO size={24}
                 className="emoji-picker-icon"
-                onClick={this.togglePicker} />
+                onClick={togglePicker} />
             </div>
 
-            <div className="message">
+            <div className="message" onKeyDown={this.handleKeyDown}>
               <textarea
                 className="form-control"
-                onChange={this.onMessageUpdate}
+                onChange={this.props.messageUpdate}
                 onKeyPress={this.onKeyPress}
+                onKeyDown={this.onKeyDown}
                 name="message"
                 value={message}
                 ref={(input) => { this.messageInput = input; }}
@@ -152,4 +167,15 @@ class MessageForm extends Component {
   }
 }
 
-export default MessageForm;
+export default connect(({chat}) => ({chat}), {
+  messageUpdate,
+  clearMessage,
+  togglePicker,
+  addEmoji,
+  closePicker,
+  emojiSuggestions,
+  stopSuggestions,
+  downSuggestion,
+  upSuggestion,
+  addSuggestion
+})(MessageForm);

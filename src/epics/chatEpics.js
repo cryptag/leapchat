@@ -1,3 +1,4 @@
+
 import {
   CHAT_SET_USERNAME,
   CHAT_INIT_CONNECTION,
@@ -11,7 +12,9 @@ import {
   messageSent,
   setUserStatus,
   userStatusSent,
-  usernameSet
+  usernameSet,
+  showSuggestions,
+  stopSuggestions
 } from '../actions/chatActions';
 
 import {
@@ -53,6 +56,22 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/if';
+import 'rxjs/add/operator/takeUntil';
+
+const messageEpic = (action$) =>
+  action$.ofType('CHAT_START_SUGGESTIONS')
+    .mergeMap((cursor) => {
+      return action$.ofType('CHAT_MESSAGE_UPDATE')
+      .map((msg) => showSuggestions(cursor.cursorIndex, msg.message))
+      .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
+      .catch((err) => console.error(err))
+    })
+
+const suggestionEpic = (action$) =>
+  action$.ofType('CHAT_ADD_SUGGESTION')
+    .map(() => stopSuggestions())
+    .catch((err) => console.error(err))
+
 
 function createKeyPairObservable({ pincode = '' }) {
   return Observable.create(function (observer) {
@@ -206,5 +225,7 @@ export default combineEpics(
   setUsernameEpic,
   ownUserStatusEpic,
   initConnectionEpic,
-  sendMessageEpic
+  sendMessageEpic,
+  messageEpic,
+  suggestionEpic
 );
