@@ -6,13 +6,14 @@ import FaSmileO from 'react-icons/lib/fa/smile-o';
 import { Picker, emojiIndex } from 'emoji-mart';
 import { connect } from 'react-redux'
 import emoji from '../../constants/emoji';
+import { emojiSuggestions, mentionSuggestions } from '../../utils/suggestions';
 import {
   messageUpdate,
   clearMessage,
   togglePicker,
   addEmoji,
   closePicker,
-  emojiSuggestions,
+  startSuggestions,
   stopSuggestions,
   downSuggestion,
   upSuggestion,
@@ -40,32 +41,39 @@ class MessageForm extends Component {
 
   onKeyPress = (e) => {
     const cursorIndex = this.messageInput.selectionStart;
-    const { suggestionStart, suggestions, highlightedSuggestion } = this.props.chat;
+    const { suggestionStart, suggestions, highlightedSuggestion, statuses} = this.props.chat;
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
       if (suggestions.length > 0) {
+        const selected = suggestions[highlightedSuggestion];
         e.preventDefault();
-        this.props.addSuggestion(suggestions[highlightedSuggestion].colons);
-        return;
+        return this.props.addSuggestion(selected.colons || '@' + selected.name);
       }
       this.onSendMessage(e);
       this.props.closePicker();
     }
     if (e.key === ':' && suggestionStart === null) {
-      this.props.emojiSuggestions(cursorIndex);
+      this.props.startSuggestions(cursorIndex, emojiSuggestions);
     }
-    if(e.nativeEvent.keyCode === 32 && suggestionStart >= 0) {
+    if (e.key === '@' && suggestionStart === null) {
+      this.props.startSuggestions(cursorIndex, mentionSuggestions, statuses);
+    }
+    if(e.nativeEvent.keyCode === 32 && suggestionStart !== null) {
       this.props.stopSuggestions();
     }
   }
 
   onKeyDown = (e) => {
+    const { message, suggestionWord, statuses } = this.props.chat;
     const cursorIndex = this.messageInput.selectionStart;
-    const before = this.props.chat.message.slice(0, cursorIndex - 1);
-    const word = this.props.chat.suggestionWord.trimRight();
+    const before = message.slice(0, cursorIndex);
+    const word = suggestionWord;
+    const filterSuggestions = word[0] === '@'
+    ? mentionSuggestions
+    : emojiSuggestions;
     if (e.key === 'Backspace' && before.endsWith(word)) {
       const start = before.length - word.length;
-      this.props.emojiSuggestions(start)
+      this.props.startSuggestions(start, filterSuggestions, statuses);
     }
   }
 
@@ -173,7 +181,7 @@ export default connect(({chat}) => ({chat}), {
   togglePicker,
   addEmoji,
   closePicker,
-  emojiSuggestions,
+  startSuggestions,
   stopSuggestions,
   downSuggestion,
   upSuggestion,

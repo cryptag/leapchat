@@ -60,9 +60,9 @@ import 'rxjs/add/operator/takeUntil';
 
 const messageEpic = (action$) =>
   action$.ofType('CHAT_START_SUGGESTIONS')
-    .mergeMap((cursor) => {
+    .mergeMap(({ cursorIndex, filterSuggestions, list }) => {
       return action$.ofType('CHAT_MESSAGE_UPDATE')
-      .map((msg) => showSuggestions(cursor.cursorIndex, msg.message))
+      .map((msg) => showSuggestions(cursorIndex, msg.message, filterSuggestions, list))
       .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
       .catch((err) => console.error(err))
     })

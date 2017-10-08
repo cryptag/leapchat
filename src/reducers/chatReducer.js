@@ -120,7 +120,7 @@ function chatReducer(state = initialState, action) {
 
   case 'CHAT_SHOW_SUGGESTIONS':
     return  action.suggestions ? Object.assign({}, state, {
-        suggestions: action.suggestions.slice(0, 25),
+        suggestions: action.suggestions.slice(0, 25) || [],
         suggestionWord: state.message.slice(state.suggestionStart),
         highlightedSuggestion: 0
     }) : state;
@@ -130,7 +130,8 @@ function chatReducer(state = initialState, action) {
   const afterSuggestion = state.message.slice(state.suggestionStart)
   const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion)
     return Object.assign({}, state, {
-      message: beforeSuggestion + formattedSuggestion
+      message: beforeSuggestion + formattedSuggestion,
+      suggestionWord: action.suggestion
     });
 
   case 'CHAT_STOP_SUGGESTIONS':
@@ -141,14 +142,16 @@ function chatReducer(state = initialState, action) {
 
   case 'CHAT_DOWN_SUGGESTION':
     return Object.assign({}, state, {
-      highlightedSuggestion: state.suggestions[state.highlightedSuggestion + 1] ?
-        ++state.highlightedSuggestion : 0
+      highlightedSuggestion: state.suggestions[state.highlightedSuggestion + 1]
+      ? ++state.highlightedSuggestion
+      : 0
     });
 
   case 'CHAT_UP_SUGGESTION':
     return Object.assign({}, state, {
-      highlightedSuggestion: state.suggestions[state.highlightedSuggestion - 1] ?
-        --state.highlightedSuggestion : state.suggestions.length - 1
+      highlightedSuggestion: state.suggestions[state.highlightedSuggestion - 1]
+      ? --state.highlightedSuggestion
+      : state.suggestions.length - 1
     });
 
   default:

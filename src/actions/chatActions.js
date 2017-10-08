@@ -11,8 +11,6 @@ export const CHAT_USER_STATUS_SENT = 'CHAT_USER_STATUS_SENT';
 export const CHAT_SET_USERNAME = 'CHAT_SET_USERNAME';
 export const CHAT_USERNAME_SET = 'CHAT_USERNAME_SET';
 
-import { filterSuggestions } from '../utils/suggestions';
-
 export const initChat = () => ({ type: CHAT_INIT_CHAT })
 
 export const initConnection = (pincode = '') =>
@@ -60,11 +58,11 @@ export const addEmoji = (emoji, selectionStart) =>
 export const closePicker = () =>
   ({ type: 'CHAT_CLOSE_PICKER' });
 
-export const emojiSuggestions = (cursorIndex) =>
-  ({ type: 'CHAT_START_SUGGESTIONS', cursorIndex });
+export const startSuggestions = (cursorIndex, filterSuggestions, list) =>
+  ({ type: 'CHAT_START_SUGGESTIONS', cursorIndex, filterSuggestions, list });
 
-export const showSuggestions = (cursorIndex, value) =>
-  ({ type: 'CHAT_SHOW_SUGGESTIONS', suggestions: filterSuggestions(cursorIndex, value) });
+export const showSuggestions = (cursorIndex, value, filterSuggestions, list) =>
+  ({ type: 'CHAT_SHOW_SUGGESTIONS', suggestions: filterSuggestions(cursorIndex, value, list) });
 
 export const addSuggestion = (suggestion) =>
   ({ type: 'CHAT_ADD_SUGGESTION', suggestion });
