@@ -6,16 +6,21 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { createEpicMiddleware } from 'redux-observable'
 import rootReducer from './reducers';
 import rootEpic from './epics';
-import ReduxDevTools from './components/_dev/ReduxDevTools';
 import 'bootstrap/dist/css/bootstrap.css';
 import './static/sass/main.scss';
 import './static/fonts/Lato.ttf';
 import './static/audio/notification_gertz.wav';
 
+const composeEnhancers =
+typeof window === 'object' &&
+window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+    // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+  }) : compose;
+
 const epicMiddleware = createEpicMiddleware(rootEpic)
-const enhancer = compose(
-  applyMiddleware(epicMiddleware),
-  ReduxDevTools.instrument()
+const enhancer = composeEnhancers(
+  applyMiddleware(epicMiddleware)
 );
 
 const store = createStore(rootReducer, enhancer);
