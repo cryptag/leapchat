@@ -43,6 +43,16 @@ class ChatHandler {
         .catch(error => console.error('An error occurred in ChatHandler', error))
         .subscribe();
     }
+
+    if (data && data.pg_messages && data.pg_messages.length && data.pg_messages.length > 0) {
+        Observable.from(data.pg_messages)
+          .mergeMap(pg_messages =>
+            this.createDecryptPGMessagesObservable({ pg_messages, mID: this.mID, secretKey: this.secretKey }))
+          .mergeMap(this.resolveIncomingMessageTypeObservable)
+          .catch(error => console.error('An error occurred in ChatHandler', error))
+          .subscribe();
+      }
+    }
   }
 
   resolveIncomingMessageTypeObservable = (message) => {
@@ -77,6 +87,38 @@ class ChatHandler {
 
   createDecryptEphemeralObservable = ({ ephemeral, mID, secretKey }) => {
     return Observable.create(function (observer) {
+      const binStr = atob(ephemeral);
+      const binStrLength = binStr.length;
+      const array = new Uint8Array(binStrLength);
+
+      for (let i = 0; i < binStrLength; i++) {
+        array[i] = binStr.charCodeAt(i);
+      }
+      const msg = new Blob([array], { type: 'application/octet-stream' });
+      miniLock.crypto.decryptFile(msg,
+        mID,
+        secretKey,
+        (fileBlob, saveName, senderID) => {
+          // NOTE: One tag can have several values. Talk to Steven
+          const tags = saveName.split('|||')
+            .reduce((acc, tag) => {
+              const tagKeyPair = tag.split(':');
+              acc[tagKeyPair[0]] = tagKeyPair[1];
+              return acc;
+            }, {})
+          let maybeSenderId = '';
+          if (senderID !== this.mID) {
+            maybeSenderId = ' (' + senderID + ')';
+          }
+          observer.next({ fileBlob, saveName, tags, senderID, maybeSenderId });
+        });
+
+    });
+  }
+
+  createDecryptPGMessagesObservable = ({ pg_messages, mID, secretKey }) => {
+    return Observable.create(function (observer) {
+      // FIXME/TODO(elimisteve): use msg.message_enc for msg in pg_messages
       const binStr = atob(ephemeral);
       const binStrLength = binStr.length;
       const array = new Uint8Array(binStrLength);

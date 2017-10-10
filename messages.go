@@ -13,7 +13,8 @@ import (
 type Message []byte
 
 type OutgoingPayload struct {
-	Ephemeral []Message `json:"ephemeral"`
+	Ephemeral  []Message  `json:"ephemeral"`
+	PGMessages PGMessages `json:"pg_messages"`
 }
 
 type ToServer struct {
@@ -76,13 +77,13 @@ func messageReader(room *Room, client *Client) {
 				continue
 			}
 
-			err = room.AddMessages(payload.Ephemeral, payload.ToServer.TTL)
+			msgs, err := room.AddMessages(payload.Ephemeral, payload.ToServer.TTL)
 			if err != nil {
 				log.Debugf("Error from AddMessages: %v", err)
 				continue
 			}
 
-			room.BroadcastMessages(client, payload.Ephemeral...)
+			room.BroadcastMessages(client, []*PGMessage(msgs)...)
 
 		case websocket.BinaryMessage:
 			log.Debug("Binary messages are unsupported")

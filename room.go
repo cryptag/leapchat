@@ -33,14 +33,16 @@ type RoomManager struct {
 func NewRoomManager(pgClient *PGClient) *RoomManager {
 	go func() {
 		tick := time.Tick(DELETE_EXPIRED_MESSAGES_PERIOD)
+		var resp *http.Response
 		var err error
 		for {
-			err = pgClient.PostWanted("/rpc/delete_expired_messages", nil,
+			resp, err = pgClient.PostWanted("/rpc/delete_expired_messages", nil,
 				http.StatusOK)
 			if err != nil {
 				log.Infof("Error deleting expired messages: %v", err)
 			} else {
 				log.Debugf("Just deleted expired messages")
+				resp.Body.Close()
 			}
 			<-tick
 		}
@@ -81,7 +83,7 @@ func NewRoom(roomID string, pgClient *PGClient) *Room {
 	}
 }
 
-func (r *Room) GetMessages() ([]Message, error) {
+func (r *Room) GetMessages() ([]*PGMessage, error) {
 	var pgMessages PGMessages
 	err := r.pgClient.GetInto(
 		"/messages?select=message_enc&order=created.desc&limit=100&room_id=eq."+r.ID,
@@ -90,25 +92,30 @@ func (r *Room) GetMessages() ([]Message, error) {
 		return nil, err
 	}
 
-	msgs := make([]Message, len(pgMessages))
-
 	var bindata []byte
 
-	// Grab just the message_enc field, reverse the order, and turn
-	// PostgREST's hex string response back into base64
+	// Grab just the message_enc field, and turn PostgREST's hex
+	// string response back into bytes
 	for i := 0; i < len(pgMessages); i++ {
 		bindata, err = byteaToBytes(pgMessages[i].MessageEnc)
 		if err != nil {
 			log.Debugf("Error from byteaToBytes: %s", err)
+			pgMessages[i].MessageEnc = nil
 			continue
 		}
-		msgs[len(pgMessages)-i-1] = bindata
+		pgMessages[i].MessageEnc = bindata
 	}
 
-	return msgs, nil
+	// Reverse the order so they're chronological
+	for i := 0; i < len(pgMessages)/2; i++ {
+		pgMessages[i], pgMessages[len(pgMessages)-i-1] =
+			pgMessages[len(pgMessages)-i-1], pgMessages[i]
+	}
+
+	return pgMessages, nil
 }
 
-func (r *Room) AddMessages(msgs []Message, ttlSecs *int) error {
+func (r *Room) AddMessages(msgs []Message, ttlSecs *int) (PGMessages, error) {
 	post := make(PGMessages, len(msgs))
 
 	for i := 0; i < len(msgs); i++ {
@@ -165,7 +172,7 @@ func (r *Room) RemoveClient(c *Client) {
 }
 
 // If it is a message from the room, make the sender nil.
-func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
+func (r *Room) BroadcastMessages(sender *Client, msgs ...*PGMessage) {
 	r.clientLock.RLock()
 	defer r.clientLock.RUnlock()
 
@@ -186,10 +193,10 @@ type Client struct {
 	room *Room
 }
 
-func (c *Client) SendMessages(msgs ...Message) error {
+func (c *Client) SendMessages(msgs ...*PGMessage) error {
 	c.writeLock.Lock()
 	defer c.writeLock.Unlock()
-	outgoing := OutgoingPayload{Ephemeral: msgs}
+	outgoing := OutgoingPayload{PGMessages: msgs}
 
 	body, err := json.Marshal(outgoing)
 	if err != nil {
