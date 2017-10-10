@@ -1,5 +1,6 @@
 import atob from 'atob';
 import btoa from 'btoa';
+import guid from 'guid';
 import miniLock from '../../utils/miniLock';
 import { nowUTC } from '../../utils/time';
 import { Subject } from 'rxjs/Subject';
@@ -54,6 +55,7 @@ class ChatHandler {
           .map(JSON.parse)
           .do(contents => {
             this.wsMessageSubject.next({
+              id: guid.create(),
               fromUsername: message.tags.from,
               maybeSenderId: message.maybeSenderId,
               message: contents.msg
