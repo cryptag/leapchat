@@ -126,9 +126,9 @@ function chatReducer(state = initialState, action) {
     }) : state;
 
   case 'CHAT_ADD_SUGGESTION':
-  const beforeSuggestion = state.message.slice(0, state.suggestionStart);
-  const afterSuggestion = state.message.slice(state.suggestionStart)
-  const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion)
+    const beforeSuggestion = state.message.slice(0, state.suggestionStart);
+    const afterSuggestion = state.message.slice(state.suggestionStart)
+    const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion)
     return Object.assign({}, state, {
       message: beforeSuggestion + formattedSuggestion,
       suggestionWord: action.suggestion

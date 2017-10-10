@@ -7,20 +7,18 @@
   border-bottom: none;
   z-index: 100094;
   position: absolute;
-  overflow-y: scroll;
   border-radius: 5px;
-  max-height: 40vh;
   background: #fff;
   ul {
+    overflow-y: scroll;
+    max-height: 40vh;
     list-style-type: none;
-    padding: 0 5px;
   }
   img {
     width: 20px;
     margin-right: 5px;
   }
   li {
-    margin: 5px;
     cursor: pointer;
     padding: 3px;
     font-size: 15px;

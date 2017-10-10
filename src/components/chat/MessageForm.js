@@ -66,7 +66,7 @@ class MessageForm extends Component {
   onKeyDown = (e) => {
     const { message, suggestionWord, statuses } = this.props.chat;
     const cursorIndex = this.messageInput.selectionStart;
-    const before = message.slice(0, cursorIndex);
+    const before = message.slice(0, cursorIndex - 1);
     const word = suggestionWord;
     const filterSuggestions = word[0] === '@'
     ? mentionSuggestions
@@ -175,7 +175,7 @@ class MessageForm extends Component {
   }
 }
 
-export default connect(({chat}) => ({chat}), {
+export default connect(({ chat }) => ({chat}), {
   messageUpdate,
   clearMessage,
   togglePicker,
