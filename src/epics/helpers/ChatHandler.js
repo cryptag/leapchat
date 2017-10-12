@@ -1,5 +1,6 @@
 import atob from 'atob';
 import btoa from 'btoa';
+import guid from 'guid';
 import miniLock from '../../utils/miniLock';
 import { nowUTC } from '../../utils/time';
 import { Subject } from 'rxjs/Subject';
@@ -54,6 +55,7 @@ class ChatHandler {
           .map(JSON.parse)
           .do(contents => {
             this.wsMessageSubject.next({
+              id: guid.create(),
               fromUsername: message.tags.from,
               maybeSenderId: message.maybeSenderId,
               message: contents.msg
@@ -90,7 +92,8 @@ class ChatHandler {
           // NOTE: One tag can have several values. Talk to Steven
           const tags = saveName.split('|||')
             .reduce((acc, tag) => {
-              const tagKeyPair = tag.split(':');
+              const colonIndex = tag.indexOf(':');
+              const tagKeyPair = [tag.slice(0, colonIndex), tag.slice(colonIndex+1)];
               acc[tagKeyPair[0]] = tagKeyPair[1];
               return acc;
             }, {})

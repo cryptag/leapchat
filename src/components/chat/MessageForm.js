@@ -125,6 +125,11 @@ class MessageForm extends Component {
       this.props.downSuggestion();
     }
   }
+
+  setMessageInput = (input) => {
+    this.messageInput = input;
+  }
+
   render() {
     const { message, showEmojiPicker } = this.props.chat;
     const { messageUpdate, togglePicker } = this.props;
@@ -160,7 +165,7 @@ class MessageForm extends Component {
                 onKeyDown={this.onKeyDown}
                 name="message"
                 value={message}
-                ref={(input) => { this.messageInput = input; }}
+                ref={this.setMessageInput}
                 placeholder="Enter message" required>
               </textarea>
               <Button onClick={this.onSendMessage}>
