@@ -104,6 +104,10 @@ class MessageForm extends Component {
     });
   }
 
+  setMessageInput = (input) => {
+    this.messageInput = input;
+  }
+
   render() {
     let { message, showEmojiPicker } = this.state;
 
@@ -137,7 +141,7 @@ class MessageForm extends Component {
                 onKeyPress={this.onKeyPress}
                 name="message"
                 value={message}
-                ref={(input) => { this.messageInput = input; }}
+                ref={this.setMessageInput}
                 placeholder="Enter message" required>
               </textarea>
               <Button onClick={this.onSendMessage}>
