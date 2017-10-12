@@ -90,7 +90,8 @@ class ChatHandler {
           // NOTE: One tag can have several values. Talk to Steven
           const tags = saveName.split('|||')
             .reduce((acc, tag) => {
-              const tagKeyPair = tag.split(':');
+              const colonIndex = tag.indexOf(':');
+              const tagKeyPair = [tag.slice(0, colonIndex), tag.slice(colonIndex+1)];
               acc[tagKeyPair[0]] = tagKeyPair[1];
               return acc;
             }, {})
