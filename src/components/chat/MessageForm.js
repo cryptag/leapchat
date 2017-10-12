@@ -47,7 +47,7 @@ class MessageForm extends Component {
       if (suggestions.length > 0) {
         const selected = suggestions[highlightedSuggestion];
         e.preventDefault();
-        return this.props.addSuggestion(selected.colons || '@' + selected.name);
+        return this.props.addSuggestion(selected.name);
       }
       this.onSendMessage(e);
       this.props.closePicker();
@@ -58,7 +58,7 @@ class MessageForm extends Component {
     if (e.key === '@' && suggestionStart === null) {
       this.props.startSuggestions(cursorIndex, mentionSuggestions, statuses);
     }
-    if(e.nativeEvent.keyCode === 32 && suggestionStart !== null) {
+    if(e.nativeEvent.code === 'Space' && suggestionStart !== null) {
       this.props.stopSuggestions();
     }
   }
@@ -69,9 +69,9 @@ class MessageForm extends Component {
     const before = message.slice(0, cursorIndex - 1);
     const word = suggestionWord;
     const filterSuggestions = word[0] === '@'
-    ? mentionSuggestions
-    : emojiSuggestions;
-    if (e.key === 'Backspace' && before.endsWith(word)) {
+      ? mentionSuggestions
+      : emojiSuggestions;
+    if (e.key === 'Backspace' && before.endsWith(word) && word) {
       const start = before.length - word.length;
       this.props.startSuggestions(start, filterSuggestions, statuses);
     }
@@ -116,11 +116,11 @@ class MessageForm extends Component {
     if (e.key === 'Backspace' && cursorIndex - suggestionStart === 1) {
       this.props.stopSuggestions();
     }
-    if (e.key === 'ArrowUp' && suggestions) {
+    if (e.key === 'ArrowUp' && suggestions.length > 0) {
       e.preventDefault();
       this.props.upSuggestion();
     }
-    if (e.key === 'ArrowDown' && suggestions) {
+    if (e.key === 'ArrowDown' && suggestions.length > 0) {
       e.preventDefault();
       this.props.downSuggestion();
     }

@@ -29,6 +29,9 @@
   .active {
     background-color: rgba(35, 154, 220, .5);
   }
+  ::-webkit-scrollbar-track {
+    background-color: rgba(128, 128, 128, .5);
+  }
 }
 .suggestions-header {
   border-bottom: 1px solid #ccc;

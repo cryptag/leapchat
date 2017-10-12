@@ -70,7 +70,9 @@ function chatReducer(state = initialState, action) {
            key: action.key,
            from: action.fromUsername,
            msg: action.message
-         }]
+         }],
+         suggestionStart: null,
+         suggestions: []
        });
 
   case CHAT_SET_USER_STATUS:
@@ -128,7 +130,7 @@ function chatReducer(state = initialState, action) {
   case 'CHAT_ADD_SUGGESTION':
     const beforeSuggestion = state.message.slice(0, state.suggestionStart);
     const afterSuggestion = state.message.slice(state.suggestionStart)
-    const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion)
+    const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion + ' ')
     return Object.assign({}, state, {
       message: beforeSuggestion + formattedSuggestion,
       suggestionWord: action.suggestion

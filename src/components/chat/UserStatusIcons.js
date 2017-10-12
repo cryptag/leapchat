@@ -10,7 +10,7 @@ export const OfflineUserIcon = () => <FaMinusCircle style={styleOffline} />
 
 const styleDots = {
   marginRight: '.2em',
-  marginTop: '.2em'
+  marginBottom: '.2em'
 }
 
 const styleViewing = Object.assign(

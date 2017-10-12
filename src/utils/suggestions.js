@@ -10,29 +10,34 @@ export const emojiSuggestions = (cursorStart, value) => {
   for (var i = 0; i < emojiSuggestions.length; i++) {
     suggestion = emojiSuggestions[i];
     if (suggestion.colons.startsWith(colonInput)) {
-      begin.push(suggestion);
+      begin.push({name: suggestion.colons});
     } else {
-      end.push(suggestion);
+      end.push({name: suggestion.colons});
     }
   }
-  begin.sort(sortBySuggestColons);
-  end.sort(sortBySuggestColons);
+  begin.sort(sortBySuggest);
+  end.sort(sortBySuggest);
   return begin.concat(end);
 }
 
 export const mentionSuggestions = (start, value, obj) => {
   const users = Object.keys(obj);
-  const upperCaseVal = value.slice( start + 1).toUpperCase();
+  const lowerCaseVal = value.slice( start + 1).toLowerCase();
   let filteredMentions = [];
   users.forEach((user) => {
-    const upperCaseUser = user.toUpperCase();
-    if(upperCaseUser.startsWith(upperCaseVal)) {
-      filteredMentions.push({name: user, status: obj[user]});
+    const lowerCaseUser = user.toLowerCase();
+    if(lowerCaseUser.startsWith(lowerCaseVal)) {
+      filteredMentions.push({name: '@' + user, status: obj[user]});
     }
   });
-  return filteredMentions;
+  return filteredMentions.sort(sortBySuggest);
 }
 
-const sortBySuggestColons = (suggest1, suggest2) => {
-  return suggest1.colons.localeCompare(suggest2.colons);
+const sortBySuggest = (suggest1, suggest2) => {
+  return suggest1.name.localeCompare(suggest2.name);
+}
+
+export const scrollIntoViewOptions = {behavior: 'instant', block: 'nearest'};
+if (window.browser === 'Firefox') {
+  delete(scrollIntoViewOptions.block);
 }
