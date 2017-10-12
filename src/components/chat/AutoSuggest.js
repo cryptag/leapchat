@@ -17,8 +17,8 @@ const AutoSuggest = ({ chat }) => {
           :'Emoji'
         } matching <strong>"{chat.suggestionWord}"</strong>
         <span className="header-help">
-	  	    <strong>↑</strong><strong>↓ </strong> to navigate
-  	  		<span className="inline-margin"><strong> ↵ </strong> to select</span>
+          <strong>↑</strong><strong>↓ </strong> to navigate
+          <span className="inline-margin"><strong> ↵ </strong> to select</span>
         </span>
       </div>
       { isMentions
