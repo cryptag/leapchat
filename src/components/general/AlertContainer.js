@@ -14,7 +14,7 @@ class AlertContainer extends Component {
 
   render(){
     let { message, alertStyle, onAlertDismiss } = this.props;
-    if (!alertStyles.includes(alertStyle)){
+    if (alertStyles.indexOf(alertStyle) === -1){
       alertStyle = 'success';
     }
 

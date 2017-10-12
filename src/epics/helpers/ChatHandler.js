@@ -3,6 +3,7 @@ import btoa from 'btoa';
 import guid from 'guid';
 import miniLock from '../../utils/miniLock';
 import { nowUTC } from '../../utils/time';
+import { extractMessageMetadata } from '../../utils/chat';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { ajax } from 'rxjs/observable/dom/ajax';
@@ -46,7 +47,7 @@ class ChatHandler {
   }
 
   resolveIncomingMessageTypeObservable = (message) => {
-    if (message.tags.type === 'chatmessage') {
+    if (message.meta.isChatMessage) {
 
       const reader = new FileReader();
       const chatMessageObservable =
@@ -56,20 +57,24 @@ class ChatHandler {
           .do(contents => {
             this.wsMessageSubject.next({
               id: guid.create(),
-              fromUsername: message.tags.from,
+              fromUsername: message.meta.from,
               maybeSenderId: message.maybeSenderId,
               message: contents.msg
             })
           })
 
       reader.readAsText(message.fileBlob);
+
       return chatMessageObservable;
-    } else if (message.tags.type === 'userstatus') {
+
+    } else if (message.meta.isUserStatus) {
+
       return Observable.of({
-        username: message.tags.from,
-        status: message.tags.status,
+        username: message.meta.from,
+        status: message.meta.status,
         created: nowUTC()
       }).do(status => this.wsUserStatusSubject.next(status));
+
     } else {
       return Observable.throw(new Error('Unrecognized data with type ' + message.tags.type))
     }
@@ -89,19 +94,16 @@ class ChatHandler {
         mID,
         secretKey,
         (fileBlob, saveName, senderID) => {
-          // NOTE: One tag can have several values. Talk to Steven
-          const tags = saveName.split('|||')
-            .reduce((acc, tag) => {
-              const colonIndex = tag.indexOf(':');
-              const tagKeyPair = [tag.slice(0, colonIndex), tag.slice(colonIndex+1)];
-              acc[tagKeyPair[0]] = tagKeyPair[1];
-              return acc;
-            }, {})
+
+          const tags = saveName.split('|||');
+          const meta = extractMessageMetadata(tags);
+
           let maybeSenderId = '';
           if (senderID !== this.mID) {
             maybeSenderId = ' (' + senderID + ')';
           }
-          observer.next({ fileBlob, saveName, tags, senderID, maybeSenderId });
+
+          observer.next({ fileBlob, saveName, meta, senderID, maybeSenderId });
         });
 
     });

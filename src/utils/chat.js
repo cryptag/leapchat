@@ -1,16 +1,14 @@
 import { tagByPrefix, tagByPrefixStripped, parseJSON, sortRowByCreated } from './tags';
 
-export function formatMessages(rawMessages){
-  let messages = rawMessages.map(msgRow => {
-    let messageObj = parseJSON(msgRow);
-    return {
-      key: tagByPrefix(msgRow.plaintags, 'id:'),
-      msg: messageObj.msg,
-      from: tagByPrefixStripped(msgRow.plaintags, 'from:'),
-      to: tagByPrefixStripped(msgRow.plaintags, 'to:'),
-      tags: msgRow.plaintags
-    };
-  });
-
-  return messages.sort(sortRowByCreated);
+export function extractMessageMetadata(tags) {
+  return {
+    isChatMessage: tags.indexOf('type:chatmessage') !== -1,
+    isUserStatus: tags.indexOf('type:userstatus') !== -1,
+    isPicture: tags.indexOf('type:picture') !== -1,
+    isRoomName: tags.indexOf('type:roomname') !== -1,
+    isRoomDescription: tags.indexOf('type:roomdescription') !== -1,
+    from: tagByPrefixStripped(tags, 'from:'),
+    to: tagByPrefixStripped(tags, 'to:'),
+    status: tagByPrefixStripped(tags, 'status:')
+  }
 }
