@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import MessageBox from './MessageBox';
 import MessageForm from './MessageForm';
 import AlertContainer from '../general/AlertContainer';
+import AutoSuggest from './AutoSuggest';
 
 class ChatContainer extends Component {
   render() {
-    let { messages, username, onSendMessage } = this.props;
-    let { alertMessage, alertStyle, onAlertDismiss } = this.props;
+    const { messages, username, onSendMessage, alertMessage, alertStyle, onAlertDismiss, chat } = this.props;
 
     return (
       <div className="content">
@@ -21,6 +22,8 @@ class ChatContainer extends Component {
           messages={messages}
           username={username} />
 
+        {chat.suggestions.length > 0 && <AutoSuggest />}
+
         <MessageForm
           onSendMessage={onSendMessage}
           shouldHaveFocus={this.props.messageInputFocus} />
@@ -30,4 +33,4 @@ class ChatContainer extends Component {
   }
 }
 
-export default ChatContainer;
+export default connect(({ chat }) => ({chat}))(ChatContainer);
