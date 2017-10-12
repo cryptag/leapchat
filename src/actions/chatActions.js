@@ -43,4 +43,35 @@ export const setUsername = (username) =>
 export const usernameSet = (username) =>
   ({ type: CHAT_USERNAME_SET, username });
 
+export const messageUpdate = (e) =>
+  ({ type: 'CHAT_MESSAGE_UPDATE', message: e.target.value });
 
+export const clearMessage = () =>
+  ({ type: 'CHAT_MESSAGE_CLEAR' });
+
+export const togglePicker = () =>
+  ({ type: 'CHAT_TOGGLE_PICKER' });
+
+export const addEmoji = (emoji, selectionStart) =>
+  ({ type: 'CHAT_ADD_EMOJI', emoji, selectionStart });
+
+export const closePicker = () =>
+  ({ type: 'CHAT_CLOSE_PICKER' });
+
+export const startSuggestions = (cursorIndex, filterSuggestions, list) =>
+  ({ type: 'CHAT_START_SUGGESTIONS', cursorIndex, filterSuggestions, list });
+
+export const showSuggestions = (cursorIndex, value, filterSuggestions, list) =>
+  ({ type: 'CHAT_SHOW_SUGGESTIONS', suggestions: filterSuggestions(cursorIndex, value, list) });
+
+export const addSuggestion = (suggestion) =>
+  ({ type: 'CHAT_ADD_SUGGESTION', suggestion });
+
+export const stopSuggestions = () =>
+  ({ type: 'CHAT_STOP_SUGGESTIONS' });
+
+export const downSuggestion = () =>
+  ({ type: 'CHAT_DOWN_SUGGESTION' });
+
+export const upSuggestion = () =>
+  ({ type: 'CHAT_UP_SUGGESTION' });

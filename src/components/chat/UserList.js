@@ -3,6 +3,12 @@ import { connect } from 'react-redux';
 import FaGroup from 'react-icons/lib/fa/group';
 import FaCircle from 'react-icons/lib/fa/circle';
 import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
+import $ from 'jquery';
+import {
+  ViewingUserIcon,
+  OnlineUserIcon,
+  OfflineUserIcon
+} from './UserStatusIcons'
 
 class UserList extends Component {
   constructor(props) {
@@ -53,7 +59,7 @@ class UserList extends Component {
           {viewing.map((username, i) => {
             return (
               <li key={i}>
-                <FaCircle style={styleViewing} />
+                <ViewingUserIcon />
                 {username}
               </li>
             )
@@ -62,7 +68,7 @@ class UserList extends Component {
           {online.map((username, i) => {
             return (
               <li key={i}>
-                <FaCircle style={styleOnline} />
+                <OnlineUserIcon />
                 {username}
               </li>
             )
@@ -70,8 +76,8 @@ class UserList extends Component {
 
           {offline.map((username, i) => {
             return (
-              <li key={i} style={styleOffline}>
-                <FaMinusCircle />
+              <li key={i}>
+                <OfflineUserIcon />
                 {username}
               </li>
             )
@@ -81,25 +87,5 @@ class UserList extends Component {
     );
   }
 }
-
-const styleDots = {
-  marginRight: '.2em',
-  marginTop: '.2em'
-}
-
-const styleViewing = Object.assign(
-  { color: 'green' },
-  styleDots
-)
-
-const styleOnline = Object.assign(
-  { color: 'yellow' },
-  styleDots
-)
-
-const styleOffline = Object.assign(
-  { color: 'gray' },
-  styleDots
-)
 
 export default UserList;
