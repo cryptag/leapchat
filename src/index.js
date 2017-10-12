@@ -13,10 +13,16 @@ import './utils/detect_browser';
 import './utils/origin_polyfill';
 import App from './components/App';
 
-const epicMiddleware = createEpicMiddleware(rootEpic);
-const enhancer = compose(
-  applyMiddleware(epicMiddleware),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+const composeEnhancers =
+  typeof window === 'object' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+      }) : compose;
+
+const epicMiddleware = createEpicMiddleware(rootEpic)
+const enhancer = composeEnhancers(
+  applyMiddleware(epicMiddleware)
 );
 
 const store = createStore(rootReducer, enhancer);
