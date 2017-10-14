@@ -15,7 +15,6 @@ import Header from './layout/Header';
 
 import ChatContainer from './chat/ChatContainer';
 
-import { formatMessages } from '../utils/chat';
 import { tagByPrefixStripped } from '../utils/tags';
 
 import UsernameModal from './modals/Username';
@@ -46,12 +45,12 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     this.connectIfNeeded();
   }
-  
+
   connectIfNeeded() {
     if (!this.props.pincodeRequired && this.props.shouldConnect) {
       this.props.initConnection();
     }
-  } 
+  }
 
   handleShowSettings = () => {
     this.setState({
@@ -100,15 +99,15 @@ class App extends Component {
 
   render() {
     const { showInfoModal, showUsernameModal } = this.state;
-    const { 
-      messages, 
-      username, 
-      alertMessage, 
-      alertStyle, 
-      statuses, 
-      pincodeRequired, 
+    const {
+      messages,
+      username,
+      alertMessage,
+      alertStyle,
+      statuses,
+      pincodeRequired,
       previousUsername } = this.props;
-    
+
     const displaySettings = !pincodeRequired && (showUsernameModal || username === '');
     const chatInputFocus = !pincodeRequired && !showUsernameModal && username !== '';
 
@@ -146,7 +145,7 @@ class App extends Component {
           <InfoModal
             showModal={showInfoModal}
             toggleInfoModal={this.toggleInfoModal} />
-        
+
         </main>
       </div>
     );
