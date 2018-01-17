@@ -13,7 +13,7 @@ func GetHandler(origin string) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("X-Frame-Options", "ALLOW-FROM https://"+origin)
-			w.Header().Set("Content-Security-Policy", "frame-ancestors 'self' 'https://"+origin+"'")
+			w.Header().Set("Content-Security-Policy", "frame-ancestors 'self' https://"+origin)
 			h.ServeHTTP(w, req)
 		})
 	}
