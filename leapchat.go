@@ -30,6 +30,9 @@ func main() {
 	httpsAddr := flag.String("https", "127.0.0.1:8443",
 		"Address to listen on HTTPS")
 	domain := flag.String("domain", "", "Domain of this service")
+	iframeOrigin := flag.String("iframe-origin", "",
+		"Origin that may embed this LeapChat instance into an iframe."+
+			" May include port. Only used with -prod flag.")
 	prod := flag.Bool("prod", false, "Run in Production mode.")
 	flag.Parse()
 
@@ -51,7 +54,7 @@ func main() {
 		httpsPort := strings.SplitN(*httpsAddr, ":", 2)[1]
 		go redirectToHTTPS(*httpAddr, httpsPort)
 		// Production modifications to server
-		ProductionServer(srv, *httpsAddr, *domain)
+		ProductionServer(srv, *httpsAddr, *domain, *iframeOrigin)
 		log.Infof("Listening on %v", *httpsAddr)
 		log.Fatal(srv.ListenAndServeTLS("", ""))
 	} else {

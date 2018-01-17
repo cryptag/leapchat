@@ -64,12 +64,12 @@ func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 	}
 }
 
-func ProductionServer(srv *http.Server, httpsAddr string, domain string) {
+func ProductionServer(srv *http.Server, httpsAddr, domain, iframeOrigin string) {
 	gotWarrant := false
 	middleware := alice.New(canary.GetHandler(&gotWarrant),
 		csp.GetCustomHandlerStyleUnsafeInline(domain, domain),
-		hsts.PreloadHandler, frame.DenyHandler, content.GetHandler,
-		xss.GetHandler, referrer.NoHandler)
+		hsts.PreloadHandler, frame.GetHandler(iframeOrigin),
+		content.GetHandler, xss.GetHandler, referrer.NoHandler)
 
 	srv.Handler = middleware.Then(srv.Handler)
 

@@ -35,7 +35,7 @@
     "set",
     "xss"
   ]
-  revision = "1f52a46e08581b1ebc2bad7a630e5d42f35b5d6f"
+  revision = "6c34b5b2b8967a571f9c460fc6393762d5443c1a"
 
 [[projects]]
   branch = "master"
