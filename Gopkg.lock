@@ -64,8 +64,8 @@
 [[projects]]
   name = "github.com/gorilla/mux"
   packages = ["."]
-  revision = "7f08801859139f86dfafd1c296e2cba9a80d292e"
-  version = "v1.6.0"
+  revision = "53c1911da2b537f792e7cafcb446b05ffe33b996"
+  version = "v1.6.1"
 
 [[projects]]
   name = "github.com/gorilla/websocket"
@@ -94,8 +94,8 @@
 [[projects]]
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
-  version = "v1.2.0"
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
 
 [[projects]]
   branch = "master"
@@ -112,7 +112,7 @@
     "scrypt",
     "ssh/terminal"
   ]
-  revision = "b3c9a1d25cfbbbab0ff4780b71c4f54e6e92a0de"
+  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
 
 [[projects]]
   branch = "master"
@@ -121,7 +121,7 @@
     "unix",
     "windows"
   ]
-  revision = "810d7000345868fc619eb81f46307107118f4ae1"
+  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [solve-meta]
   analyzer-name = "dep"
