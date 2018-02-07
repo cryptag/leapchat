@@ -22,7 +22,7 @@ const initialState = {
   shouldConnect: true,
   pincodeRequired,
   paranoidMode,
-  username: paranoidMode ? PARANOID_USERNAME : '',
+  username: paranoidMode ? PARANOID_USERNAME : previousUsername,
   previousUsername: previousUsername,
   status: '',
   messages: [],
