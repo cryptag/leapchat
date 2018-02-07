@@ -14,6 +14,7 @@ import {
 
 const paranoidMode = document && document.location.hash.endsWith('----') || false;
 const pincodeRequired = document && document.location.hash.endsWith('--') || false;
+const previousUsername = localStorage && localStorage.getItem(USERNAME_KEY) || '';
 
 const initialState = {
   connecting: false,
@@ -22,7 +23,7 @@ const initialState = {
   pincodeRequired,
   paranoidMode,
   username: paranoidMode ? PARANOID_USERNAME : '',
-  previousUsername: localStorage && localStorage.getItem(USERNAME_KEY) || '',
+  previousUsername: previousUsername,
   status: '',
   messages: [],
   statuses: [],
