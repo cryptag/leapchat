@@ -71,7 +71,7 @@ func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autoc
 		hsts.PreloadHandler, frame.GetHandler(iframeOrigin),
 		content.GetHandler, xss.GetHandler, referrer.NoHandler)
 
-	srv.Handler = middleware.Then(srv.Handler)
+	srv.Handler = middleware.Then(manager.HTTPHandler(srv.Handler))
 
 	srv.Addr = httpsAddr
 	srv.TLSConfig = getTLSConfig(domain, manager)
@@ -148,12 +148,12 @@ func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
-		Handler: manager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Connection", "close")
 			domain := strings.SplitN(req.Host, ":", 2)[0]
 			url := "https://" + domain + ":" + httpsPort + req.URL.String()
 			http.Redirect(w, req, url, http.StatusFound)
-		})),
+		}),
 	}
 	log.Infof("Listening on %v\n", httpAddr)
 	log.Fatal(srv.ListenAndServe())
