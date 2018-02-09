@@ -64,7 +64,7 @@ func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 	}
 }
 
-func ProductionServer(srv *http.Server, httpsAddr, domain, iframeOrigin string) {
+func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autocert.Manager, iframeOrigin string) {
 	gotWarrant := false
 	middleware := alice.New(canary.GetHandler(&gotWarrant),
 		csp.GetCustomHandlerStyleUnsafeInline(domain, domain),
@@ -74,7 +74,7 @@ func ProductionServer(srv *http.Server, httpsAddr, domain, iframeOrigin string) 
 	srv.Handler = middleware.Then(srv.Handler)
 
 	srv.Addr = httpsAddr
-	srv.TLSConfig = getTLSConfig(domain)
+	srv.TLSConfig = getTLSConfig(domain, manager)
 }
 
 func GetIndex(w http.ResponseWriter, req *http.Request) {
@@ -143,29 +143,31 @@ func parseMinilockID(req *http.Request) (string, *taber.Keys, error) {
 	return mID, keypair, nil
 }
 
-func redirectToHTTPS(httpAddr, httpsPort string) {
+func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 	srv := &http.Server{
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		Handler: manager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Connection", "close")
 			domain := strings.SplitN(req.Host, ":", 2)[0]
 			url := "https://" + domain + ":" + httpsPort + req.URL.String()
 			http.Redirect(w, req, url, http.StatusFound)
-		}),
+		})),
 	}
 	log.Infof("Listening on %v\n", httpAddr)
 	log.Fatal(srv.ListenAndServe())
 }
 
-func getTLSConfig(domain string) *tls.Config {
-	m := autocert.Manager{
+func getAutocertManager(domain string) *autocert.Manager {
+	return &autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist(domain),
 		Cache:      autocert.DirCache("./" + domain),
 	}
+}
 
+func getTLSConfig(domain string, manager *autocert.Manager) *tls.Config {
 	return &tls.Config{
 		PreferServerCipherSuites: true,
 		CurvePreferences: []tls.CurveID{
@@ -181,6 +183,6 @@ func getTLSConfig(domain string) *tls.Config {
 			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
 			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
 		},
-		GetCertificate: m.GetCertificate,
+		GetCertificate: manager.GetCertificate,
 	}
 }
