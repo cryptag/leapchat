@@ -153,9 +153,7 @@ const initConnectionEpic = (action$) =>
               .map(addMessage),
 
             chatHandler.getUserStatusSubject()
-              .map(setUserStatus),
-
-            Observable.of(connectionInitiated(), alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`))
+              .map(setUserStatus)
           )
         ).catch(error => {
           console.error(error);
