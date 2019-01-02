@@ -104,6 +104,7 @@
     "acme",
     "acme/autocert",
     "curve25519",
+    "internal/subtle",
     "nacl/box",
     "nacl/secretbox",
     "pbkdf2",
@@ -112,7 +113,7 @@
     "scrypt",
     "ssh/terminal"
   ]
-  revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
+  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
 
 [[projects]]
   branch = "master"
