@@ -3,6 +3,7 @@ package mux
 import (
 	"bytes"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -150,7 +151,7 @@ func TestMiddlewareExecution(t *testing.T) {
 	// Test handler-only call
 	router.ServeHTTP(rw, req)
 
-	if bytes.Compare(rw.Body.Bytes(), handlerStr) != 0 {
+	if !bytes.Equal(rw.Body.Bytes(), handlerStr) {
 		t.Fatal("Handler response is not what it should be")
 	}
 
@@ -165,7 +166,7 @@ func TestMiddlewareExecution(t *testing.T) {
 	})
 
 	router.ServeHTTP(rw, req)
-	if bytes.Compare(rw.Body.Bytes(), append(mwStr, handlerStr...)) != 0 {
+	if !bytes.Equal(rw.Body.Bytes(), append(mwStr, handlerStr...)) {
 		t.Fatal("Middleware + handler response is not what it should be")
 	}
 }
@@ -332,5 +333,105 @@ func TestMiddlewareMethodMismatchSubrouter(t *testing.T) {
 
 	if bytes.Contains(rw.Body.Bytes(), mwStr) {
 		t.Fatal("Middleware was called for a method mismatch")
+	}
+}
+
+func TestCORSMethodMiddleware(t *testing.T) {
+	router := NewRouter()
+
+	cases := []struct {
+		path                   string
+		response               string
+		method                 string
+		testURL                string
+		expectedAllowedMethods string
+	}{
+		{"/g/{o}", "a", "POST", "/g/asdf", "POST,PUT,GET,OPTIONS"},
+		{"/g/{o}", "b", "PUT", "/g/bla", "POST,PUT,GET,OPTIONS"},
+		{"/g/{o}", "c", "GET", "/g/orilla", "POST,PUT,GET,OPTIONS"},
+		{"/g", "d", "POST", "/g", "POST,OPTIONS"},
+	}
+
+	for _, tt := range cases {
+		router.HandleFunc(tt.path, stringHandler(tt.response)).Methods(tt.method)
+	}
+
+	router.Use(CORSMethodMiddleware(router))
+
+	for _, tt := range cases {
+		rr := httptest.NewRecorder()
+		req := newRequest(tt.method, tt.testURL)
+
+		router.ServeHTTP(rr, req)
+
+		if rr.Body.String() != tt.response {
+			t.Errorf("Expected body '%s', found '%s'", tt.response, rr.Body.String())
+		}
+
+		allowedMethods := rr.Header().Get("Access-Control-Allow-Methods")
+
+		if allowedMethods != tt.expectedAllowedMethods {
+			t.Errorf("Expected Access-Control-Allow-Methods '%s', found '%s'", tt.expectedAllowedMethods, allowedMethods)
+		}
+	}
+}
+
+func TestMiddlewareOnMultiSubrouter(t *testing.T) {
+	first := "first"
+	second := "second"
+	notFound := "404 not found"
+
+	router := NewRouter()
+	firstSubRouter := router.PathPrefix("/").Subrouter()
+	secondSubRouter := router.PathPrefix("/").Subrouter()
+
+	router.NotFoundHandler = http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		rw.Write([]byte(notFound))
+	})
+
+	firstSubRouter.HandleFunc("/first", func(w http.ResponseWriter, r *http.Request) {
+
+	})
+
+	secondSubRouter.HandleFunc("/second", func(w http.ResponseWriter, r *http.Request) {
+
+	})
+
+	firstSubRouter.Use(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(first))
+			h.ServeHTTP(w, r)
+		})
+	})
+
+	secondSubRouter.Use(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(second))
+			h.ServeHTTP(w, r)
+		})
+	})
+
+	rw := NewRecorder()
+	req := newRequest("GET", "/first")
+
+	router.ServeHTTP(rw, req)
+	if rw.Body.String() != first {
+		t.Fatalf("Middleware did not run: expected %s middleware to write a response (got %s)", first, rw.Body.String())
+	}
+
+	rw = NewRecorder()
+	req = newRequest("GET", "/second")
+
+	router.ServeHTTP(rw, req)
+	if rw.Body.String() != second {
+		t.Fatalf("Middleware did not run: expected %s middleware to write a response (got %s)", second, rw.Body.String())
+	}
+
+	rw = NewRecorder()
+	req = newRequest("GET", "/second/not-exist")
+
+	router.ServeHTTP(rw, req)
+	if rw.Body.String() != notFound {
+		t.Fatalf("Notfound handler did not run: expected %s for not-exist, (got %s)", notFound, rw.Body.String())
 	}
 }
