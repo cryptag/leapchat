@@ -148,12 +148,12 @@ func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		Handler: manager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Connection", "close")
 			domain := strings.SplitN(req.Host, ":", 2)[0]
 			url := "https://" + domain + ":" + httpsPort + req.URL.String()
 			http.Redirect(w, req, url, http.StatusFound)
-		}),
+		})),
 	}
 	log.Infof("Listening on %v\n", httpAddr)
 	log.Fatal(srv.ListenAndServe())
@@ -168,21 +168,5 @@ func getAutocertManager(domain string) *autocert.Manager {
 }
 
 func getTLSConfig(domain string, manager *autocert.Manager) *tls.Config {
-	return &tls.Config{
-		PreferServerCipherSuites: true,
-		CurvePreferences: []tls.CurveID{
-			tls.CurveP256,
-			tls.X25519,
-		},
-		MinVersion: tls.VersionTLS12,
-		CipherSuites: []uint16{
-			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-		},
-		GetCertificate: manager.GetCertificate,
-	}
+	return manager.TLSConfig()
 }
