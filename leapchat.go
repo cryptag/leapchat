@@ -50,11 +50,15 @@ func main() {
 		if *domain == "" {
 			log.Fatal("You must specify a -domain when using the -prod flag.")
 		}
+
+		manager := getAutocertManager(*domain)
+
 		// Setup http->https redirection
 		httpsPort := strings.SplitN(*httpsAddr, ":", 2)[1]
-		go redirectToHTTPS(*httpAddr, httpsPort)
+		go redirectToHTTPS(*httpAddr, httpsPort, manager)
+
 		// Production modifications to server
-		ProductionServer(srv, *httpsAddr, *domain, *iframeOrigin)
+		ProductionServer(srv, *httpsAddr, *domain, manager, *iframeOrigin)
 		log.Infof("Listening on %v", *httpsAddr)
 		log.Fatal(srv.ListenAndServeTLS("", ""))
 	} else {
