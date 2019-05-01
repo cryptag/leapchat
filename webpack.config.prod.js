@@ -28,10 +28,10 @@ config.plugins = [
       NODE_ENV: JSON.stringify('production')
     }
   }),
-  new webpack.optimize.UglifyJsPlugin({
-    minimize: true,
-    compress: true
-  }),
+  //new webpack.optimize.UglifyJsPlugin({
+  //  minimize: true,
+  //  compress: true
+  //}),
   new webpack.optimize.CommonsChunkPlugin({
     names: ['manifest']
   }),
