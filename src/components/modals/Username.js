@@ -16,7 +16,7 @@ class UsernameModal extends PureComponent {
   }
 
   componentDidUpdate(){
-    if(this.props.showModal){
+    if (this.props.showModal) {
       this.usernameInput.focus();
     }
   }
@@ -52,7 +52,7 @@ class UsernameModal extends PureComponent {
   }
 
   displayFailAlert = () => {
-    if(!!this.state.failMessage) {
+    if (!!this.state.failMessage) {
       return { display: 'block' };
     } else {
       return { display: 'none' };

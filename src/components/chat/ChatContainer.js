@@ -33,4 +33,4 @@ class ChatContainer extends Component {
   }
 }
 
-export default connect(({ chat }) => ({chat}))(ChatContainer);
+export default connect(({ chat }) => ({ chat }))(ChatContainer);

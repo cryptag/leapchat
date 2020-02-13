@@ -189,6 +189,7 @@ type Client struct {
 func (c *Client) SendMessages(msgs ...Message) error {
 	c.writeLock.Lock()
 	defer c.writeLock.Unlock()
+
 	outgoing := OutgoingPayload{Ephemeral: msgs}
 
 	body, err := json.Marshal(outgoing)

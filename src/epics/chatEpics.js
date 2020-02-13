@@ -91,7 +91,7 @@ function createKeyPairObservable({ pincode = '' }) {
       let mID = miniLock.crypto.getMiniLockID(keyPair.publicKey);
       // 4. When we have keypair, login:
 
-      if(isNewPassphrase){
+      if (isNewPassphrase) {
         document.location.hash = '#' + passphrase;
       }
 
