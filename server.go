@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strings"
 	"time"
@@ -28,10 +27,6 @@ import (
 
 const (
 	MINILOCK_ID_KEY = "minilock_id"
-)
-
-var (
-	templates = template.Must(template.ParseFiles("build/index.html"))
 )
 
 func NewRouter(m *miniware.Mapper) *mux.Router {
@@ -75,10 +70,6 @@ func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autoc
 
 	srv.Addr = httpsAddr
 	srv.TLSConfig = getTLSConfig(domain, manager)
-}
-
-func GetIndex(w http.ResponseWriter, req *http.Request) {
-	_ = templates.ExecuteTemplate(w, "index.html", nil)
 }
 
 func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
