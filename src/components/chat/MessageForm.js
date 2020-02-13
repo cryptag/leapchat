@@ -166,7 +166,7 @@ class MessageForm extends Component {
                 name="message"
                 value={message}
                 ref={this.setMessageInput}
-                placeholder="Enter message" required>
+                placeholder="Enter message">
               </textarea>
               <Button onClick={this.onSendMessage}>
                 <FaArrowCircleRight size={30} />
