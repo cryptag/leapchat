@@ -70,6 +70,7 @@ header {
 
     ul {
       display: none;
+      list-style-type: none;
       li {
         svg {
           float: left;
@@ -203,7 +204,7 @@ main {
           &.chat-outgoing {
             float: right;
             color: white;
-            background-color: #827cd2;
+            background-color: #663399;
 
             a {
               text-decoration: underline;
