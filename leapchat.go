@@ -12,6 +12,7 @@ import (
 
 var (
 	randomServerKey *taber.Keys
+	BUILD_DIR = "build"
 )
 
 func init() {
@@ -34,7 +35,13 @@ func main() {
 		"Origin that may embed this LeapChat instance into an iframe."+
 			" May include port. Only used with -prod flag.")
 	prod := flag.Bool("prod", false, "Run in Production mode.")
+	onionPush := flag.Bool("onionpush", false, "Serve OnionPush instead of LeapChat")
 	flag.Parse()
+
+	if *onionPush {
+		*httpAddr = "127.0.0.1:5001"
+		BUILD_DIR = "public"
+	}
 
 	if *prod {
 		log.SetLevel(log.FatalLevel)

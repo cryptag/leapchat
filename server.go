@@ -46,7 +46,7 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 	)
 	r.HandleFunc("/api/ws/messages/all", msgsHandler).Methods("GET")
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build"))).Methods("GET")
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + BUILD_DIR))).Methods("GET")
 
 	http.Handle("/", r)
 	return r
