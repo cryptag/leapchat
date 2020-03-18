@@ -41,7 +41,7 @@
   branch = "master"
   name = "github.com/cryptag/minishare"
   packages = ["miniware"]
-  revision = "e39b6809c682bf48abdfa1c7b0d189509c896685"
+  revision = "aba392b33ec0ddd6ce6bde31e938cfb9e764257c"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"

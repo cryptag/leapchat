@@ -58,8 +58,9 @@ func (m *Mapper) SetMinilockID(authToken, mID string) error {
 }
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:   1024,
+	WriteBufferSize:  1024,
+	HandshakeTimeout: 45 * time.Second,
 }
 
 func Auth(h http.Handler, m *Mapper) func(w http.ResponseWriter, req *http.Request) {
