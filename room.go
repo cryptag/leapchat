@@ -159,6 +159,7 @@ func (r *Room) RemoveClient(c *Client) {
 	for i, client := range r.Clients {
 		if client == c {
 			r.Clients = append(r.Clients[:i], r.Clients[i+1:]...)
+			client.wsConn.Close()
 			break
 		}
 	}

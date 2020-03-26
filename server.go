@@ -139,6 +139,7 @@ func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
+		IdleTimeout:  5 * time.Second,
 		Handler: manager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Connection", "close")
 			domain := strings.SplitN(req.Host, ":", 2)[0]
