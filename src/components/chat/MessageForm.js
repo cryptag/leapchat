@@ -133,7 +133,9 @@ class MessageForm extends Component {
   }
 
   onDeleteAllMsgs = (e) => {
-    chatHandler.sendDeleteAllMessagesSignalToServer();
+    if (window.confirm("Are you sure you want to delete every existing chat message from this chat room?")) {
+      chatHandler.sendDeleteAllMessagesSignalToServer();
+    }
   }
 
   render() {
@@ -169,7 +171,7 @@ class MessageForm extends Component {
                   className="delete-all-msgs"
                   onClick={this.onDeleteAllMsgs}
                 >
-                  Delete All Messages Forever Now
+                  Delete All Messages Forever
                 </button>
               </div>
             </div>
