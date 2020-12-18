@@ -50,7 +50,7 @@
     "react-dom": "^15.7.0",
     "react-icons": "^2.2.7",
     "react-redux": "^5.1.2",
-    "redux": "^3.7.1",
+    "redux": "^3.7.2",
     "utf8": "^2.1.2"
   },
   "devDependencies": {
