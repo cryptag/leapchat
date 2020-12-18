@@ -59,6 +59,10 @@ module.exports = {
         from: 'node_modules/emoji-datasource-apple/img/apple/sheets/64.png',
         to: emoji.EMOJI_APPLE_64_SHEET
       },
+      {
+        from: 'src/static/js/emoji-fixed.js',
+        to: '../node_modules/emoji-js/lib/emoji.js'
+      }
     ])
   ]
 }
