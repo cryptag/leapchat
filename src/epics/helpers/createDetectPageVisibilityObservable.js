@@ -26,10 +26,7 @@ export default function createDetectPageVisibilityObservable() {
         } else {
           return 'viewing';
         }
-      }),
-    Observable.fromEvent(window, 'beforeunload')
-      .do(e => e.returnValue = 'Do you really want to quit?')
-      .map(() => 'offline')
+      })
   );
 
   return detectPageVisibilityObservable;
