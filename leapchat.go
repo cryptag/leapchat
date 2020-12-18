@@ -4,15 +4,14 @@ import (
 	"flag"
 	"strings"
 
-	"github.com/cryptag/minishare/miniware"
-
-	log "github.com/Sirupsen/logrus"
 	"github.com/cathalgarvey/go-minilock/taber"
+	"github.com/cryptag/leapchat/miniware"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
 	randomServerKey *taber.Keys
-	BUILD_DIR = "build"
+	BUILD_DIR       = "build"
 )
 
 func init() {

@@ -14,14 +14,14 @@ import (
 	"github.com/cryptag/gosecure/hsts"
 	"github.com/cryptag/gosecure/referrer"
 	"github.com/cryptag/gosecure/xss"
-	"github.com/cryptag/minishare/miniware"
+	"github.com/cryptag/leapchat/miniware"
 
-	log "github.com/Sirupsen/logrus"
 	minilock "github.com/cathalgarvey/go-minilock"
 	"github.com/cathalgarvey/go-minilock/taber"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 	uuid "github.com/nu7hatch/gouuid"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -41,7 +41,7 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 	)
 	r.HandleFunc("/api/ws/messages/all", msgsHandler).Methods("GET")
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + BUILD_DIR))).Methods("GET")
+	r.PathPrefix("/").Handler(gzipHandler(http.FileServer(http.Dir("./" + BUILD_DIR)))).Methods("GET")
 
 	http.Handle("/", r)
 	return r
