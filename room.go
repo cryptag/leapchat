@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -159,6 +159,7 @@ func (r *Room) RemoveClient(c *Client) {
 	for i, client := range r.Clients {
 		if client == c {
 			r.Clients = append(r.Clients[:i], r.Clients[i+1:]...)
+			client.wsConn.Close()
 			break
 		}
 	}
@@ -189,6 +190,7 @@ type Client struct {
 func (c *Client) SendMessages(msgs ...Message) error {
 	c.writeLock.Lock()
 	defer c.writeLock.Unlock()
+
 	outgoing := OutgoingPayload{Ephemeral: msgs}
 
 	body, err := json.Marshal(outgoing)

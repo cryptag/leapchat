@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strings"
 	"time"
@@ -15,23 +14,19 @@ import (
 	"github.com/cryptag/gosecure/hsts"
 	"github.com/cryptag/gosecure/referrer"
 	"github.com/cryptag/gosecure/xss"
-	"github.com/cryptag/minishare/miniware"
+	"github.com/cryptag/leapchat/miniware"
 
-	log "github.com/Sirupsen/logrus"
 	minilock "github.com/cathalgarvey/go-minilock"
 	"github.com/cathalgarvey/go-minilock/taber"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 	uuid "github.com/nu7hatch/gouuid"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
 )
 
 const (
 	MINILOCK_ID_KEY = "minilock_id"
-)
-
-var (
-	templates = template.Must(template.ParseFiles("build/index.html"))
 )
 
 func NewRouter(m *miniware.Mapper) *mux.Router {
@@ -46,7 +41,7 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 	)
 	r.HandleFunc("/api/ws/messages/all", msgsHandler).Methods("GET")
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./build"))).Methods("GET")
+	r.PathPrefix("/").Handler(gzipHandler(http.FileServer(http.Dir("./" + BUILD_DIR)))).Methods("GET")
 
 	http.Handle("/", r)
 	return r
@@ -64,20 +59,17 @@ func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 	}
 }
 
-func ProductionServer(srv *http.Server, httpsAddr string, domain string) {
+func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autocert.Manager, iframeOrigin string) {
 	gotWarrant := false
 	middleware := alice.New(canary.GetHandler(&gotWarrant),
-		csp.GetHandler(domain), hsts.PreloadHandler, frame.DenyHandler,
+		csp.GetCustomHandlerStyleUnsafeInline(domain, domain),
+		hsts.PreloadHandler, frame.GetHandler(iframeOrigin),
 		content.GetHandler, xss.GetHandler, referrer.NoHandler)
 
-	srv.Handler = middleware.Then(srv.Handler)
+	srv.Handler = middleware.Then(manager.HTTPHandler(srv.Handler))
 
 	srv.Addr = httpsAddr
-	srv.TLSConfig = getTLSConfig(domain)
-}
-
-func GetIndex(w http.ResponseWriter, req *http.Request) {
-	_ = templates.ExecuteTemplate(w, "index.html", nil)
+	srv.TLSConfig = getTLSConfig(domain, manager)
 }
 
 func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
@@ -142,44 +134,31 @@ func parseMinilockID(req *http.Request) (string, *taber.Keys, error) {
 	return mID, keypair, nil
 }
 
-func redirectToHTTPS(httpAddr, httpsPort string) {
+func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 	srv := &http.Server{
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		IdleTimeout:  5 * time.Second,
+		Handler: manager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Connection", "close")
 			domain := strings.SplitN(req.Host, ":", 2)[0]
 			url := "https://" + domain + ":" + httpsPort + req.URL.String()
 			http.Redirect(w, req, url, http.StatusFound)
-		}),
+		})),
 	}
 	log.Infof("Listening on %v\n", httpAddr)
 	log.Fatal(srv.ListenAndServe())
 }
 
-func getTLSConfig(domain string) *tls.Config {
-	m := autocert.Manager{
+func getAutocertManager(domain string) *autocert.Manager {
+	return &autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist(domain),
 		Cache:      autocert.DirCache("./" + domain),
 	}
+}
 
-	return &tls.Config{
-		PreferServerCipherSuites: true,
-		CurvePreferences: []tls.CurveID{
-			tls.CurveP256,
-			tls.X25519,
-		},
-		MinVersion: tls.VersionTLS12,
-		CipherSuites: []uint16{
-			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-		},
-		GetCertificate: m.GetCertificate,
-	}
+func getTLSConfig(domain string, manager *autocert.Manager) *tls.Config {
+	return manager.TLSConfig()
 }

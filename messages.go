@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/cryptag/minishare/miniware"
-
-	log "github.com/Sirupsen/logrus"
+	"github.com/cryptag/leapchat/miniware"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 type Message []byte
