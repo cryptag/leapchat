@@ -153,14 +153,7 @@ header {
     flex-grow: 2;
     border: none;
   }
-  .chat-icons {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 5px;
-  }
   .emoji-picker-icon {
-    float: left;
-    margin-left: 8px;
     cursor: pointer;
   }
 }
@@ -340,4 +333,27 @@ textarea {
   box-sizing: border-box !important;
   max-height: 40vh !important;
   width: 100% !important;
+}
+
+// All widths
+.chat-icons {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5px;
+  width: 100%;
+}
+.chat-icons .right-chat-icons {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  margin-left: auto;
+}
+.right-chat-icons .delete-all-msgs {
+  display: flex;
+  flex-direction: row;
+  background-color: #c00;
+  color: white;
+}
+.delete-all-msgs:hover {
+  background-color: #e00;
 }

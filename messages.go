@@ -12,11 +12,17 @@ import (
 type Message []byte
 
 type OutgoingPayload struct {
-	Ephemeral []Message `json:"ephemeral"`
+	Ephemeral  []Message  `json:"ephemeral"`
+	FromServer FromServer `json:"from_server,omitempty"`
+}
+
+type FromServer struct {
+	AllMessagesDeleted bool `json:"all_messages_deleted,omitempty"`
 }
 
 type ToServer struct {
-	TTL *int `json:"ttl_secs"`
+	TTL               *int `json:"ttl_secs"`
+	DeleteAllMessages bool `json:"delete_all_messages"`
 }
 
 type IncomingPayload struct {
@@ -72,6 +78,17 @@ func messageReader(room *Room, client *Client) {
 			err := json.Unmarshal(p, &payload)
 			if err != nil {
 				log.Debugf("Error unmarshalling message `%s` -- %s", p, err)
+				continue
+			}
+
+			if payload.ToServer.DeleteAllMessages {
+				err = room.DeleteAllMessages()
+				if err != nil {
+					room.BroadcastMessages(client, Message(err.Error()))
+					log.Errorf("Error deleting all messages from room %s -- %s", room.ID, err)
+					continue
+				}
+				room.BroadcastDeleteSignal()
 				continue
 			}
 

@@ -20,6 +20,8 @@ import {
   addSuggestion
 } from '../../actions/chatActions';
 
+import { chatHandler } from '../../epics/chatEpics';
+
 class MessageForm extends Component {
   constructor(props) {
     super(props);
@@ -130,6 +132,10 @@ class MessageForm extends Component {
     this.messageInput = input;
   }
 
+  onDeleteAllMsgs = (e) => {
+    chatHandler.sendDeleteAllMessagesSignalToServer();
+  }
+
   render() {
     const { message, showEmojiPicker } = this.props.chat;
     const { messageUpdate, togglePicker } = this.props;
@@ -154,7 +160,18 @@ class MessageForm extends Component {
             <div className="chat-icons">
               <FaSmileO size={24}
                 className="emoji-picker-icon"
-                onClick={togglePicker} />
+                onClick={togglePicker}
+              />
+
+              <div className="right-chat-icons">
+                <button
+                  style={{height: '100%', padding: '0 8px 0 10px'}}
+                  className="delete-all-msgs"
+                  onClick={this.onDeleteAllMsgs}
+                >
+                  Delete All Messages Forever Now
+                </button>
+              </div>
             </div>
 
             <div className="message" onKeyDown={this.handleKeyDown}>

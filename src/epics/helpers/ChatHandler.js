@@ -44,6 +44,11 @@ class ChatHandler {
         .catch(error => console.error('An error occurred in ChatHandler', error))
         .subscribe();
     }
+    if (data && data.from_server) {
+      if (data.from_server.all_messages_deleted) {
+        alert("All messages deleted from server! (Refresh this page to remove them from this browser tab.)");
+      }
+    }
   }
 
   resolveIncomingMessageTypeObservable = (message) => {
@@ -142,6 +147,15 @@ class ChatHandler {
   sendUserStatus = (username, status, ttl) => {
     const tags = ['from:' + username, 'type:userstatus', 'status:' + status];
     this.send({ tags, ttl });
+  }
+
+  sendDeleteAllMessagesSignalToServer = () => {
+    const msgForServer = {
+      to_server: {
+        delete_all_messages: true
+      }
+    }
+    this.ws.send(JSON.stringify(msgForServer));
   }
 
   sendMessageToServer = (ttl_secs, fileBlob, saveName, senderMinilockID) => {

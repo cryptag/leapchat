@@ -35,7 +35,7 @@ import createDetectVisibilityObservable from './helpers/createDetectPageVisibili
 
 const authUrl = `${window.location.origin}/api/login`;
 const wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
-const chatHandler = new ChatHandler(wsUrl);
+export const chatHandler = new ChatHandler(wsUrl);
 
 import { Observable } from 'rxjs/Observable';
 import { ajax } from 'rxjs/observable/dom/ajax';

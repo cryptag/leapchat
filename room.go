@@ -4,6 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"sync"
 	"time"
@@ -180,6 +182,39 @@ func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
 	}
 }
 
+func (r *Room) DeleteAllMessages() error {
+	resp, err := r.pgClient.Delete("/messages?room_id=eq." + r.ID)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if len(body) != 0 {
+		return fmt.Errorf("Error deleting messages: `%s`", body)
+	}
+
+	return nil
+}
+
+func (r *Room) BroadcastDeleteSignal() {
+	r.clientLock.RLock()
+	defer r.clientLock.RUnlock()
+
+	for _, client := range r.Clients {
+		go func(client *Client) {
+			err := client.SendDeleteSignal()
+			if err != nil {
+				log.Debugf("Error sending message. Err: %s", err)
+			}
+		}(client)
+	}
+}
+
 type Client struct {
 	wsConn    *websocket.Conn
 	writeLock sync.Mutex
@@ -192,6 +227,32 @@ func (c *Client) SendMessages(msgs ...Message) error {
 	defer c.writeLock.Unlock()
 
 	outgoing := OutgoingPayload{Ephemeral: msgs}
+
+	body, err := json.Marshal(outgoing)
+	if err != nil {
+		return err
+	}
+
+	err = c.wsConn.WriteMessage(websocket.TextMessage, body)
+	if err != nil {
+		log.Debugf("Error sending message to client. Removing client from room. Err: %s", err)
+		c.room.RemoveClient(c)
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) SendDeleteSignal() error {
+	c.writeLock.Lock()
+	defer c.writeLock.Unlock()
+
+	outgoing := OutgoingPayload{
+		Ephemeral: []Message{},
+		FromServer: FromServer{
+			AllMessagesDeleted: true,
+		},
+	}
 
 	body, err := json.Marshal(outgoing)
 	if err != nil {

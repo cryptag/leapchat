@@ -77,6 +77,17 @@ func (cl *PGClient) Get(urlSuffix string) (*http.Response, error) {
 	return http.DefaultClient.Do(req)
 }
 
+func (cl *PGClient) Delete(urlSuffix string) (*http.Response, error) {
+	log.Debugf("DELETE'ing from %s", urlSuffix)
+
+	req, _ := http.NewRequest("DELETE", cl.BaseURL+urlSuffix, nil)
+	// req.Header.Add("Prefer", "return=representation")
+	req.Header.Add("Prefer", "return=none")
+	// req.Header.Add("Content-Type", "application/json")
+
+	return http.DefaultClient.Do(req)
+}
+
 func (cl *PGClient) GetInto(urlSuffix string, respobj interface{}) error {
 	resp, err := cl.Get(urlSuffix)
 	if err != nil {
