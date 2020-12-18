@@ -32,6 +32,7 @@ export function detectPageVisible(onVisible, onHidden, onClose){
   // If user closes tab or window
   //
 
+  /*
   window.onbeforeunload = function(e) {
     onClose();  // Fires in some browsers, but not all
 
@@ -39,4 +40,5 @@ export function detectPageVisible(onVisible, onHidden, onClose){
     e.returnValue = msg;
     return msg;
   };
+  */
 }
