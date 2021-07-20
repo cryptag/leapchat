@@ -1,5 +1,7 @@
 # LeapChat
 
+[![Leapchat logo](https://user-images.githubusercontent.com/17814535/90422449-7dd88900-e080-11ea-95ec-4c2f95e4aa85.png)](https://www.leapchat.org/)
+
 LeapChat is an ephemeral chat application.  LeapChat uses
 [miniLock](https://minilock.io) for challenge/response-based
 authentication. This app also enables users to create chat rooms,
