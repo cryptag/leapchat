@@ -36,6 +36,7 @@
     "babel-loader": "^7.1.1",
     "btoa": "^1.1.2",
     "copy-webpack-plugin": "^4.0.1",
+    "date-fns": "^2.0.0-alpha.2",
     "emoji-datasource-apple": "^3.0.0",
     "emoji-js": "^3.2.2",
     "emoji-mart": "^1.0.1",
