@@ -10,7 +10,7 @@ require (
 	github.com/dchest/blake2s v1.0.0 // indirect
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.7.1
-	github.com/gorilla/websocket v1.4.0
+	github.com/gorilla/websocket v1.4.1
 	github.com/justinas/alice v0.0.0-20171023064455-03f45bd4b7da
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
