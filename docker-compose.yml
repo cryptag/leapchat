@@ -4,7 +4,7 @@ services:
     postgres:
         image: postgres:latest
         ports:
-            - 5432:5432
+            - 127.0.0.1:5432:5432
         environment:
             - POSTGRES_PASSWORD=superuser
             - POSTGRES_USER=superuser
@@ -14,7 +14,7 @@ services:
     postgrest:
         image: erasche/postgrest:latest
         ports:
-            - "3000:3000"
+            - 3000:3000
         environment:
             PGUSER: superuser
             PGPASSWORD: superuser
@@ -25,7 +25,3 @@ services:
             DB_ANON_ROLE: postgres
         depends_on:
             - postgres
-    adminer:
-        image: adminer
-        ports:
-            - 8082:8080
