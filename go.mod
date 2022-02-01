@@ -17,6 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.4.1
 	github.com/stretchr/testify v1.3.0
 	github.com/tv42/base58 v1.0.0 // indirect
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
 )
