@@ -90,7 +90,7 @@
     "vinyl-source-stream": "^1.1.2",
     "webpack": "^3.12.0",
     "webpack-dev-middleware": "^1.12.2",
-    "webpack-hot-middleware": "^2.25.0",
+    "webpack-hot-middleware": "^2.25.3",
     "wiredep": "^4.0.0"
   }
 }
