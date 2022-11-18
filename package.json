@@ -76,7 +76,7 @@
     "jsdom": "^10.1.0",
     "mocha": "^8.2.1",
     "node-env-file": "^0.1.8",
-    "node-sass": "^5.0.0",
+    "node-sass": "^8.0.0",
     "npm-run-all": "^4.1.5",
     "pump": "^1.0.3",
     "redux-devtools": "^3.7.0",
