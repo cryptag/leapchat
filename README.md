@@ -31,127 +31,207 @@ There is currently one public instance running at
 [leapchat.org](https://www.leapchat.org).
 
 
-# Development / Running
+# Running LeapChat
 
-## Dependencies
+## Getting Started
 
-#### Postgres
+### Install Go
 
-To install Postgres along with the relevant extensions on Debian-based
-Linux distros, run
+If you're on Linux or macOS _and_ if don't already have
+[Go](https://golang.org/dl/) version 1.14 or newer installed
+(`$ go version` will tell you), you can install Go by running:
 
-``` $ bash debian_install.sh ```
+```
+curl https://raw.githubusercontent.com/elimisteve/install-go/master/install-go.sh | bash
+source ~/.bashrc
+```
 
-On Fedora and friends you can run
+Then grab and build the `leapchat` source:
 
-```$ bash fedora_install.sh ```
-
-On Mac OS, run
-
-``` $ brew install postgresql ossp-uuid ```
-
-
-#### PostgREST
-
-On Linux, download the latest
-[PostgREST release](https://github.com/begriffs/postgrest/releases)
-and put it in your PATH.
-
-On Mac OS, either do the same or use `homebrew` to install it with
-
-``` $ brew install postgrest ```
+```
+go get github.com/cryptag/leapchat
+```
 
 
-## Install and Run Using Docker and Docker Compose
+### macOS Instructions
 
-(If you'd rather not use Docker/Docker Compose, see next section
-instead.)
+If you don't already have Postgres 9.5 to Postgres 12 installed and
+running, install it with Homebrew:
 
-Instead of intalling Postgres and PostgREST you can run it in docker with docker compose.
-Make sure you have Docker installed with Docker Compose. Then run:
+```
+brew install postgresql@10
+```
 
-``` $ docker-compose up ```
+(It may ask you to append a line to your shell config; watch for this
+and follow those instructions.)
 
-This will pull some images from Docker Hub and start the following
-containers:
+Next, you'll need three terminals.
 
-- Postgres at port 5432
-- PostgREST at port 3000
-- Adminer at port 8082
+**In the first terminal**, run database migrations, download `postgrest`,
+and have `postgrest` connect to Postgres:
 
-Adminer is a web UI for managing SQL databases. After the containers
-are installed and started, go to `localhost:8082`.
+```
+cd $(go env GOPATH)/src/github.com/cryptag/leapchat/db
+chmod a+rx ~/
+createdb
+sudo -u $USER bash init_sql.sh
+wget https://github.com/PostgREST/postgrest/releases/download/v7.0.0/postgrest-v7.0.0-osx.tar.xz
+tar xvf postgrest-v7.0.0-osx.tar.xz
+./postgrest postgrest.conf
+```
 
-From there you can choose postgres as the database engine and the
-login with hostname `postgres`, username and password `superuser` and
-database `leapchat`.  In here you can execute the initial scripts for
-the database. This you only need to do once.
+If you get an error, make sure that Postgres is running.  On macOS,
+run Postgres by running
 
-A folder is created at the projects root called
-`_docker-volumes/`. This is where all the data from e.g the postgres
-container are placed.  Here the actual database files will be stored.
-
-Once your conatiners are running and you have setup the initial
-database scripts you can access postgREST at `localhost:3000`.
-
-If you want to shut down the containers just run:
-
-``` $ docker-compose down ```
-
-If you want to force rebuild of the images just run:
-
-``` $ docker-compose up --build ```
-
-If you want to remove the containers just run:
-
-``` $ docker-compose rm ```
+```
+pg_ctl -D /usr/local/var/postgres start
+```
 
 
-## Install and Run
+**In the second terminal**, run LeapChat's Go backend:
 
-To install and build static assets:
+```
+cd $(go env GOPATH)/src/github.com/cryptag/leapchat
+go build
+./leapchat
+```
 
-``` $ npm install ```
+**In the third terminal**, install JavaScript dependencies and start
+LeapChat's auto-reloading dev server:
+
+```
+cd $(go env GOPATH)/src/github.com/cryptag/leapchat
+npm install
+npm run build
+npm run dev
+```
+
+LeapChat's dev server should now be running on
+<http://localhost:5000> !  (And the Go backend on
+<http://localhost:5001> .)
 
 
-To build the frontend run the following:
+#### macOS: Once you're set up
 
-``` $ npm run dev ```
+...then run in 3 different terminals:
 
-With the `dev` command, webpack is used to build the frontend and it
-will automatically rebuild it when you make changes to something in
-the `./src` directory.
+```
+cd db
+pg_ctl -D /usr/local/var/postgres start
+./postgrest postgrest.conf
+```
 
-Then, in another terminal, to set up the database and run PostgREST,
-which our Go code uses for persistence, run (unless you run it in
-Docker, see above):
+```
+./leapchat
+```
 
-``` $ cd db/ ```
+```
+npm run dev
+```
 
-If you're on Linux, now run
 
-``` $ sudo -u postgres bash init_sql.sh ```
+### Linux Instructions (for Ubuntu; works on Debian if other dependencies met)
 
-On Mac OS X, instead run
+If you don't already have Node 14.x installed (`node --version` will tell
+you the installed version), install Node by running:
 
-``` $ sudo -u $USER bash init_sql.sh ```
+```
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt-get install nodejs
+```
 
-(The following commands should be run regardless of whether you're on
-Linux or OS X.)
 
-``` $ postgrest postgrest.conf ```
+If you don't already have Postgres 9.5 or newer installed and running,
+install it by running:
 
-Then, in another terminal session run:
+```
+sudo apt-get install postgresql postgresql-contrib
+```
 
-``` $ go get ./... ```
+Next, you'll need three terminals.
 
-(An error about not finding `github.com/cryptag/leapchat` is OK here.)
+**In the first terminal**, run database migrations, download `postgrest`,
+and have `postgrest` connect to Postgres:
 
-``` $ go build ```
+```
+cd $(go env GOPATH)/src/github.com/cryptag/leapchat/db
+chmod a+rx ~/
+sudo -u postgres bash init_sql.sh
+wget https://github.com/PostgREST/postgrest/releases/download/v7.0.0/postgrest-v7.0.0-ubuntu.tar.xz
+tar xvf postgrest-v7.0.0-ubuntu.tar.xz
+./postgrest postgrest.conf
+```
 
-``` $ npm run be ```
+**In the second terminal**, run LeapChat's Go backend:
 
-Then view <http://localhost:8080>.
+```
+cd $(go env GOPATH)/src/github.com/cryptag/leapchat
+go build
+./leapchat
+```
+
+**In the third terminal**, install JavaScript dependencies and start
+LeapChat's auto-reloading dev server:
+
+```
+cd $(go env GOPATH)/src/github.com/cryptag/leapchat
+npm install
+npm run build
+npm run start
+```
+
+LeapChat should now be running at <http://localhost:8080> !
+
+
+#### Linux: Once you're set up
+
+...then run in 3 different terminals:
+
+```
+cd db
+./postgrest postgrest.conf
+```
+
+```
+./leapchat
+```
+
+```
+npm run start
+```
+
+
+### Production Deployment Build
+
+Same as the Linux commands above, with two modifications.
+
+Replace:
+
+```
+npm run dev
+```
+
+with
+
+```
+go build
+npm run build
+```
+
+Replace:
+
+```
+go build
+./leapchat
+```
+
+with
+
+```
+go build
+sudo setcap cap_net_bind_service=+ep leapchat
+./leapchat -prod -domain www.leapchat.org -http :80 -https :443 -iframe-origin www.leapchat.org 2>&1 | tee -a logs.txt
+```
 
 
 ## Testing
