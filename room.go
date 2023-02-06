@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"sync"
 	"time"
 
@@ -38,7 +37,7 @@ func NewRoomManager(pgClient *PGClient) *RoomManager {
 		var err error
 		for {
 			err = pgClient.PostWanted("/rpc/delete_expired_messages", nil,
-				http.StatusOK)
+				204)
 			if err != nil {
 				log.Infof("Error deleting expired messages: %v", err)
 			} else {
