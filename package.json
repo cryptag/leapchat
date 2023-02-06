@@ -66,7 +66,7 @@
     "bs58": "^4.0.1",
     "chai": "^3.5.0",
     "clean-webpack-plugin": "^0.1.19",
-    "css-loader": "^0.28.11",
+    "css-loader": "^6.7.3",
     "eslint": "^4.19.1",
     "eslint-plugin-react": "^7.21.5",
     "extract-loader": "^5.1.0",
