@@ -74,7 +74,7 @@
     "html-loader": "^0.4.5",
     "html-webpack-plugin": "^5.5.0",
     "jsdom": "^10.1.0",
-    "mocha": "^8.2.1",
+    "mocha": "^10.2.0",
     "node-env-file": "^0.1.8",
     "node-sass": "^8.0.0",
     "npm-run-all": "^4.1.5",
