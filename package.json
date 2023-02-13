@@ -44,7 +44,7 @@
     "guid": "0.0.12",
     "jquery": "^3.5.1",
     "js-sha512": "^0.3.0",
-    "markdown-it": "^8.4.2",
+    "markdown-it": "^12.3.2",
     "prop-types": "^15.7.2",
     "react": "^15.7.0",
     "react-bootstrap": "^0.31.5",
