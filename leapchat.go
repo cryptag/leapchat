@@ -25,9 +25,9 @@ func init() {
 }
 
 func main() {
-	httpAddr := flag.String("http", "127.0.0.1:8080",
+	httpAddr := flag.String("http", "0.0.0.0:8080",
 		"Address to listen on HTTP")
-	httpsAddr := flag.String("https", "127.0.0.1:8443",
+	httpsAddr := flag.String("https", "0.0.0.0:8443",
 		"Address to listen on HTTPS")
 	domain := flag.String("domain", "", "Domain of this service")
 	iframeOrigin := flag.String("iframe-origin", "",
@@ -38,7 +38,7 @@ func main() {
 	flag.Parse()
 
 	if *onionPush {
-		*httpAddr = "127.0.0.1:5001"
+		*httpAddr = "0.0.0.0:5001"
 		BUILD_DIR = "public"
 	}
 
