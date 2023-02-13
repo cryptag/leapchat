@@ -51,6 +51,8 @@ func TestRoomMessages(t *testing.T) {
 			err := r.AddMessages(msgs[i], &ttlSecs)
 			if err != nil {
 				t.Logf("Error from AddMessages: %s", err)
+
+				// FALLTHROUGH
 			}
 			wg.Done()
 		}(i)
@@ -59,6 +61,8 @@ func TestRoomMessages(t *testing.T) {
 			_, err := r.GetMessages()
 			if err != nil {
 				t.Logf("Error from GetMessages: %s", err)
+
+				// FALLTHROUGH
 			}
 			wg.Done()
 		}()
