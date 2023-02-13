@@ -11,3 +11,6 @@ _docker-volumes/
 
 # Editors
 .vscode/
+
+# Mac OS X Bullshit
+.DS_Store
