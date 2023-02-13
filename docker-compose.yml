@@ -10,7 +10,7 @@ services:
         depends_on:
             - postgrest
         volumes:
-            - ./build:/build
+            - ./build:/app/github.com/cryptag/leapchat/build
     postgres:
         image: postgres:latest
         ports:

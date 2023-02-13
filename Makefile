@@ -1,4 +1,7 @@
 
+shell:
+	docker compose exec app /bin/sh
+
 start:
 	docker compose up -d
 
