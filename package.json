@@ -4,12 +4,13 @@
   "description": "Self-destructing, encrypted, in-browser chat",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ./src",
+    "lint": "./node_modules/.bin/eslint ./src",
     "build": "NODE_ENV=production node_modules/.bin/webpack --config webpack.config.prod.js",
     "start": "npm run build && ./leapchat",
     "dev": "NODE_ENV=development node_modules/.bin/webpack --config webpack.config.dev.js --progress",
     "be": "./leapchat",
-    "test": "node_modules/.bin/mocha --reporter nyan test/.setup.js test/**/*.test.js"
+    "test": "node_modules/.bin/mocha --reporter nyan test/.setup.js test/**/*.test.js",
+    "fix_lint_indentation": "./node_modules/.bin/eslint --fix --parser babel-eslint --ext js --no-eslintrc  --rule 'indent: [\"error\", 2]' ./src"
   },
   "repository": {
     "type": "git",

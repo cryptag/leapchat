@@ -9,7 +9,7 @@ export default class Info extends Component {
   render() {
     return (
       <div className="info">
-          <FaQuestionCircle onClick={this.props.toggleInfoModal} size={19}/>
+        <FaQuestionCircle onClick={this.props.toggleInfoModal} size={19}/>
       </div>
     );
   }

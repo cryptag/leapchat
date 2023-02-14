@@ -22,7 +22,7 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   assignAttributes(tokens, idx, {
     target: '_blank',
     rel: 'nofollow noreferrer noopener'
-   });
+  });
   // pass token to default renderer.
   return defaultRender(tokens, idx, options, env, self);
 };

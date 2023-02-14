@@ -102,7 +102,7 @@ class MessageForm extends Component {
   backgroundImageFn = (set, sheetSize) => {
     if (set !== 'apple' || sheetSize !== 64) {
       console.log('WARNING: using set "apple" and sheetSize 64 rather than',
-                  set, 'and', sheetSize, 'as was requested');
+        set, 'and', sheetSize, 'as was requested');
     }
     return '/' + emoji.EMOJI_APPLE_64_SHEET;
   }

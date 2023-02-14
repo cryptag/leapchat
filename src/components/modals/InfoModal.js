@@ -15,9 +15,9 @@ export default class InfoModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <p>Just visit <a href="https://www.leapchat.org/" target="_blank">leapchat.org</a> and a new, secure chat room will instantly be created for you. And once you're in, just link people to that page to invite them to join you!</p>
-        <h3>
-          Why LeapChat?
-        </h3>
+          <h3>
+            Why LeapChat?
+          </h3>
           <p>
             You shouldn't have to sacrifice your privacy and personal information just to chat online. Slack, HipChat, and others make you create an account with your email address, their software doesn't encrypt your messages (they can see everything), and the messages last forever unless you manually delete them.
             In contrast, LeapChat <em>does</em> encrypt your messages (even we can't see them!), <em>doesn't</em> require you to hand over your email address, and messages last for a maximum of 90 days (this will soon be configurable to a shorter duration).

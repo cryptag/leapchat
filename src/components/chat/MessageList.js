@@ -29,10 +29,12 @@ class MessageList extends Component {
     return (
       <ul>
         {messages.map((message, i) => {
-          return <Message
-            key={i}
-            message={message}
-            username={username} />
+          return (
+            <Message
+              key={i}
+              message={message}
+              username={username} />
+          )
         })}
       </ul>
     );
