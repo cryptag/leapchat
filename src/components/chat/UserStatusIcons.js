@@ -11,9 +11,9 @@ export const ViewingUserIcon = (props) => {
     <div style={styleUserStatus}>
       <FaCircle style={styleViewing} />
       {username}
-      {isCurrentUser && <span>&nbsp;(me)</span> }
+      {isCurrentUser && <span>{' '}(me)</span> }
       <span style={styleEditUsername}>
-        {isCurrentUser &&
+        {isCurrentUser && 
           <FaPencilSquare onClick={onShowUsernameModal} size={19} />
         }
       </span>
