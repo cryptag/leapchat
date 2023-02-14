@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import UserIcon from '../chat/UserIcon';
 import UserList from '../chat/UserList';
 import Logo from './Logo';
 import Settings from './Settings';
 import Info from './Info';
 import { closePicker } from '../../actions/chatActions';
-import { connect } from 'react-redux';
 
 class Header extends Component {
   constructor(props){
@@ -14,29 +16,45 @@ class Header extends Component {
     this.state = { displayUserList: false };
   }
 
-  toggleUserList = () => {
+  onToggleUserList = () => {
     this.setState({ displayUserList: !this.state.displayUserList });
   }
 
   render(){
-    const { closePicker, toggleInfoModal, showSettings, statuses } = this.props;
+    const {
+      username,
+      statuses,
+      onShowUsernameModal,
+      onToggleInfoModal
+    } = this.props;
+    const { displayUserList } = this.state;
+    
     return (
       <header onClick={closePicker}>
         <div className="logo-container">
           <div id="logo-info">
             <Logo />
-            <Info toggleInfoModal={toggleInfoModal}/>
+            <Info onToggleInfoModal={onToggleInfoModal}/>
           </div>
           <Settings
-            showSettings={showSettings} />
+            onShowUsernameModal={onShowUsernameModal} />
         </div>
-        <UserIcon toggleUserList={this.toggleUserList} />
+        <UserIcon onToggleUserList={this.onToggleUserList} />
         <UserList
+          username={username}
           statuses={statuses}
-          displayUserList={this.state.displayUserList} />
+          displayUserList={displayUserList}
+          onShowUsernameModal={onShowUsernameModal} />
       </header>
     )
   }
+}
+
+Header.propTypes = {
+  username: PropTypes.string.isRequired,
+  statuses: PropTypes.object.isRequired,
+  onShowUsernameModal: PropTypes.func.isRequired,
+  onToggleInfoModal: PropTypes.func.isRequired
 }
 
 export default connect(null, { closePicker })(Header);

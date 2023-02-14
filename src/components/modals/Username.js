@@ -49,6 +49,7 @@ class UsernameModal extends PureComponent {
 
   setRandomUsernameInForm = () => {
     this.usernameInput.value = generateRandomUsername();
+    this.usernameInput.focus();
   }
 
   displayFailAlert = () => {
@@ -60,17 +61,24 @@ class UsernameModal extends PureComponent {
   }
 
   render() {
-    const { showModal, previousUsername, username, onCloseModal } = this.props;
+    const {
+      isVisible,
+      previousUsername,
+      username,
+      onCloseModal
+    } = this.props;
 
     return (
       <div>
-        <Modal show={showModal} onHide={this.onCloseModal}>
+        <Modal show={isVisible} onHide={onCloseModal}>
           <Modal.Header>
             <Modal.Title>Set Username</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">
+              <label htmlFor="username">Username</label>
               <input 
+                id="username"
                 type="text"
                 className="form-control"
                 ref={(input) => { this.usernameInput = input; }}
@@ -96,9 +104,8 @@ class UsernameModal extends PureComponent {
   }
 }
 
-
-UsernameModal.propType = {
-  showModal: PropTypes.bool.isRequired,
+UsernameModal.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
   previousUsername: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   onCloseModal: PropTypes.func.isRequired,

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from 'react-bootstrap';
 
 export default class InfoModal extends Component {
@@ -8,7 +9,7 @@ export default class InfoModal extends Component {
 
   render() {
     return (
-      <Modal show={this.props.showModal} onHide={this.props.toggleInfoModal}>
+      <Modal show={this.props.showModal} onHide={this.props.onToggleInfoModal}>
         <Modal.Header closeButton>
           <h3>Welcome to LeapChat!</h3>
           <h4>LeapChat: encrypted, ephemeral, in-browser chat.</h4>
@@ -51,4 +52,9 @@ export default class InfoModal extends Component {
       </Modal>
     );
   }
+}
+
+
+InfoModal.propTypes = {
+  onToggleInfoModal: PropTypes.func.isRequired
 }

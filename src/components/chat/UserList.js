@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import FaGroup from 'react-icons/lib/fa/group';
-import FaCircle from 'react-icons/lib/fa/circle';
-import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
-import $ from 'jquery';
+import PropTypes from 'prop-types';
+
 import {
   ViewingUserIcon,
   OnlineUserIcon,
@@ -28,7 +25,8 @@ class UserList extends Component {
   }
 
   render() {
-    const { statuses } = this.props;
+    const { statuses, onShowUsernameModal } = this.props;
+    const currentUsername = this.props.username;
 
     const viewing = [];  // green
     const online = [];   // yellow
@@ -59,8 +57,10 @@ class UserList extends Component {
           {viewing.map((username, i) => {
             return (
               <li key={i}>
-                <ViewingUserIcon />
-                {username}
+                <ViewingUserIcon
+                  username={username}
+                  isCurrentUser={username === currentUsername}
+                  onShowUsernameModal={onShowUsernameModal} />
               </li>
             )
           })}
@@ -86,6 +86,13 @@ class UserList extends Component {
       </div>
     );
   }
+}
+
+UserList.propTypes = {
+  username: PropTypes.string.isRequired,
+  statuses: PropTypes.object.isRequired,
+  displayUserList: PropTypes.bool.isRequired,
+  onShowUsernameModal: PropTypes.func.isRequired
 }
 
 export default UserList;
