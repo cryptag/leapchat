@@ -37,15 +37,15 @@ class UserList extends Component {
     Object.keys(statuses).forEach(username => {
       const status = statuses[username];
       switch (status) {
-        case 'viewing':
-          viewing.push(username);
-          break;
-        case 'online':
-          online.push(username);
-          break;
-        case 'offline':
-          offline.push(username);
-          break;
+      case 'viewing':
+        viewing.push(username);
+        break;
+      case 'online':
+        online.push(username);
+        break;
+      case 'offline':
+        offline.push(username);
+        break;
       }
     });
 

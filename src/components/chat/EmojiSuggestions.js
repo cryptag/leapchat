@@ -6,25 +6,25 @@ import md from '../../utils/link_attr_blank';
 import { scrollIntoViewOptions } from '../../utils/suggestions';
 
 const EmojiSuggestions = ({ addSuggestion, chat }) => (
-    <ul>
-      {chat.suggestions.map((emoj, i) => {
-        const suggestion = emoji.replace_colons(emoj.name) + emoj.name;
-        const suggestionMD = suggestion.replace(/<span class="emoji emoji-sizer" style="background-image:url\((\/static\/img\/emoji\/apple\/64\/.*?)\)" data-codepoints="(?:.*?)"><\/span>/g, '![emoji]($1)');
-        const renderItem = md.renderInline(suggestionMD);
-        const activeItem = chat.highlightedSuggestion === i;
-        let props = {
-          key : i,
-          onClick : (e) => addSuggestion(emoj.name),
-          className : activeItem ? 'active': '',
+  <ul>
+    {chat.suggestions.map((emoj, i) => {
+      const suggestion = emoji.replace_colons(emoj.name) + emoj.name;
+      const suggestionMD = suggestion.replace(/<span class="emoji emoji-sizer" style="background-image:url\((\/static\/img\/emoji\/apple\/64\/.*?)\)" data-codepoints="(?:.*?)"><\/span>/g, '![emoji]($1)');
+      const renderItem = md.renderInline(suggestionMD);
+      const activeItem = chat.highlightedSuggestion === i;
+      let props = {
+        key : i,
+        onClick : (e) => addSuggestion(emoj.name),
+        className : activeItem ? 'active': '',
+      }
+      if (activeItem) {
+        props.ref = (item) => {
+          if (item) item.scrollIntoView(scrollIntoViewOptions);
         }
-        if (activeItem) {
-          props.ref = (item) => {
-            if (item) item.scrollIntoView(scrollIntoViewOptions);
-          }
-        }
-        return (<li {...props} dangerouslySetInnerHTML={{__html: renderItem}}></li>)
-      })}
-    </ul>
+      }
+      return (<li {...props} dangerouslySetInnerHTML={{__html: renderItem}}></li>)
+    })}
+  </ul>
 );
 
 

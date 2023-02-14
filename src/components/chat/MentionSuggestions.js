@@ -29,9 +29,9 @@ const MentionSuggestions = ({ chat, addSuggestion }) => (
         {viewing
           ? <ViewingUserIcon />
           : (online)
-          ? <OnlineUserIcon />
-          : <OfflineUserIcon /> }
-          {mention.slice(1)}
+            ? <OnlineUserIcon />
+            : <OfflineUserIcon /> }
+        {mention.slice(1)}
       </li>
     })}
   </ul>
