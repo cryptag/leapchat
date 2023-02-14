@@ -16,11 +16,11 @@ const OpenSearchIcon = ({ onToggleModalVisibility }) => {
 
   return (
     <div className="open-message-search">
-      <OverlayTrigger overlay={openTooltip} placement="top" delayShow={300} delayHide={150}>
-        <FaSearch
-          size={24}
-          onClick={onOpenSearchModal} />
-      </OverlayTrigger>
+      {/* <OverlayTrigger overlay={openTooltip} placement="top" delayShow={300} delayHide={150}> */}
+      {/* </OverlayTrigger> */}
+      <FaSearch
+        size={24}
+        onClick={onOpenSearchModal} />
     </div>
   );
 };

@@ -1,11 +1,11 @@
 {
   "presets": [
-    "latest",
-    "react"
+    "@babel/preset-react",
+    "@babel/preset-env"
   ],
   "plugins": [
     "system-import-transformer",
     "transform-class-properties",
-    "transform-object-rest-spread"
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }

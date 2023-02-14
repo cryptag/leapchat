@@ -1,8 +1,7 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const env = require('node-env-file');
 const outputFolder = 'build';
@@ -15,7 +14,8 @@ module.exports = {
   context: __dirname,
   output: {
     path: path.resolve(__dirname, outputFolder),
-    filename: '[name]_[chunkhash].bundle.js'
+    filename: '[name]_[chunkhash].bundle.js',
+    clean: true
   },
   module: {
     rules: [
@@ -26,11 +26,17 @@ module.exports = {
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader?name=[name].[ext]'
+        loader: 'file-loader',
+        options: {
+          'name': '[name].[ext]'
+        }
       },
       {
         test: /\.wav$/,
-        loader: 'file-loader?name=[name].[ext]'
+        loader: 'file-loader',
+        options: {
+          'name': '[name].[ext]'
+        }
       }
     ]
   },
@@ -38,19 +44,25 @@ module.exports = {
     extensions: ['.js', '.jsx', '.css', '.scss', '.json'],
     modules: [
       'node_modules'
-    ]
+    ],
+    fallback: {
+      "crypto": require.resolve('crypto-browserify'),
+      "stream": require.resolve("stream-browserify"),
+      buffer: require.resolve("buffer/"),
+    }
   },
   plugins: [
-    new CleanWebpackPlugin([outputFolder]),
     new HtmlWebpackPlugin({
       title: 'LeapChat',
       template: './src/index-template.ejs'
     }),
-    new ExtractTextPlugin({
-      filename: '[name].css',
-      allChunks: true
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
     }),
-    new CopyWebpackPlugin([
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
+    new CopyPlugin([
       {
         from: 'node_modules/emoji-datasource-apple/img/apple/64',
         to: emoji.EMOJI_APPLE_64_PATH
@@ -63,6 +75,6 @@ module.exports = {
         from: 'src/static/js/emoji-fixed.js',
         to: '../node_modules/emoji-js/lib/emoji.js'
       }
-    ])
+    ]),
   ]
 }
