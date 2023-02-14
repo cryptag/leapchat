@@ -1,7 +1,8 @@
 {
  "parser": "babel-eslint",
   "plugins": [
-    "react"
+    "react",
+    "unused-imports"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -31,6 +32,12 @@
     "indent": ["error", 2],
     "react/jsx-indent-props":  ["error", 2],
     "react/jsx-indent": ["error", 2],
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+			"warn",
+			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+		]
   },
 
   "env": {

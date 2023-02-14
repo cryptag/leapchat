@@ -69,6 +69,7 @@
     "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "extract-loader": "^0.1.0",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",
