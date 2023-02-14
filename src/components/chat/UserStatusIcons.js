@@ -21,9 +21,9 @@ export const UserStatusIcon = ({
     <div style={styleUserStatus}>
       {statusIcon}
       {username}
-      {isCurrentUser && <span>&nbsp;(me)</span> }
+      {isCurrentUser && <span>{' '}(me)</span> }
       <span style={styleEditUsername}>
-        {isCurrentUser &&
+        {isCurrentUser && 
           <FaPencilSquare onClick={onShowUsernameModal} size={19} />
         }
       </span>
