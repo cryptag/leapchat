@@ -5,6 +5,8 @@ import { Modal, Button } from 'react-bootstrap';
 
 import { generateRandomUsername } from '../../data/username';
 
+export const MAX_USERNAME_LENGTH = 45;
+
 class UsernameModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -31,8 +33,8 @@ class UsernameModal extends PureComponent {
     if (!username || username.length === 0) {
       this.setState({ failMessage: 'Must not be empty' });
       return false;
-    } else if (username.length > 45) {
-      this.setState({ failMessage: 'Length must not exceed 45' });
+    } else if (username.length > MAX_USERNAME_LENGTH) {
+      this.setState({ failMessage: `Length must not exceed ${MAX_USERNAME_LENGTH}` });
       return false;
     } else {
       return true;
@@ -75,7 +77,7 @@ class UsernameModal extends PureComponent {
             <Modal.Title>Set Username</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group">
+            <div data-testid="set-username-form" className="form-group">
               <label htmlFor="username">Username</label>
               <input 
                 id="username"
@@ -96,7 +98,7 @@ class UsernameModal extends PureComponent {
           </Modal.Body>
           <Modal.Footer>
             {username && <Button onClick={onCloseModal}>Cancel</Button>}
-            <Button onClick={this.onSetUsernameClick} bsStyle="primary">Set Username</Button>
+            <Button data-testid="set-username" onClick={this.onSetUsernameClick} bsStyle="primary">Set Username</Button>
           </Modal.Footer>
         </Modal>
       </div>
