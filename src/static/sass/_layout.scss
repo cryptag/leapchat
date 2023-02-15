@@ -91,8 +91,7 @@ header {
     font-weight: bold;
   }
 
-  .settings {
-  }
+  .settings {}
 }
 
 // HEADER - desktop settings
@@ -134,10 +133,6 @@ header {
         li {
           margin-bottom: 1px;
           word-wrap: break-word;
-          svg {
-            float: left;
-            margin-top: 0.2em;
-          }
         }
       }
     }

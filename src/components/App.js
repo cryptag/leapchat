@@ -15,16 +15,9 @@ import Header from './layout/Header';
 
 import ChatContainer from './chat/ChatContainer';
 
-import { tagByPrefixStripped } from '../utils/tags';
-
 import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
 import PincodeModal from './modals/PincodeModal';
-
-import {
-  SERVER_ERROR_PREFIX, AUTH_ERROR, ON_CLOSE_RECONNECT_MESSAGE,
-  USER_STATUS_DELAY_MS
-} from '../constants/messaging';
 
 class App extends Component {
   constructor(props) {
@@ -52,12 +45,17 @@ class App extends Component {
     }
   }
 
-  handleShowSettings = () => {
+  onShowUsernameModal = () => {
     this.setState({
       showUsernameModal: true
     });
   }
 
+  onCloseUsernameModal = () => {
+    this.setState({
+      showUsernameModal: false
+    });
+  }
 
   onClosePincodeModal = () => {
     this.setState({
@@ -73,20 +71,14 @@ class App extends Component {
     this.props.initConnection(pincode);
   }
 
-  onCloseUsernameModal = () => {
-    this.setState({
-      showUsernameModal: false
-    });
-  }
-
-  handleSetUsername = (username) => {
-    this.setState({
-      showUsernameModal: false
-    });
+  onSetUsername = (username) => {
     this.props.setUsername(username);
+    this.setState({
+      showUsernameModal: false
+    });
   }
 
-  toggleInfoModal = () => {
+  onToggleInfoModal = () => {
     this.setState((prevState) => {
       return { showInfoModal: !prevState.showInfoModal }
     })
@@ -98,7 +90,7 @@ class App extends Component {
   }
 
   render() {
-    const { showInfoModal, showUsernameModal } = this.state;
+    const { showInfoModal } = this.state;
     const {
       messages,
       username,
@@ -108,16 +100,19 @@ class App extends Component {
       pincodeRequired,
       previousUsername } = this.props;
 
-    const displaySettings = !pincodeRequired && (showUsernameModal || username === '');
+    let { showUsernameModal } = this.state;
+    showUsernameModal = !pincodeRequired && (showUsernameModal || username === '');
+
     const chatInputFocus = !pincodeRequired && !showUsernameModal && username !== '';
 
     return (
       <div id="page">
 
         <Header
+          username={username}
           statuses={statuses}
-          showSettings={this.handleShowSettings}
-          toggleInfoModal={this.toggleInfoModal} />
+          onShowUsernameModal={this.onShowUsernameModal}
+          onToggleInfoModal={this.onToggleInfoModal} />
 
         <main className="encloser">
 
@@ -126,11 +121,11 @@ class App extends Component {
             onSetPincode={this.onSetPincode}
             onCloseModal={this.onClosePincodeModal} />}
 
-          {displaySettings && <UsernameModal
+          {showUsernameModal && <UsernameModal
             previousUsername={previousUsername}
             username={username}
-            showModal={displaySettings}
-            onSetUsername={this.handleSetUsername}
+            isVisible={showUsernameModal}
+            onSetUsername={this.onSetUsername}
             onCloseModal={this.onCloseUsernameModal} />}
 
           <ChatContainer
@@ -144,9 +139,10 @@ class App extends Component {
 
           <InfoModal
             showModal={showInfoModal}
-            toggleInfoModal={this.toggleInfoModal} />
+            onToggleInfoModal={this.onToggleInfoModal} />
 
         </main>
+
       </div>
     );
   }

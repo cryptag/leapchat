@@ -26,7 +26,7 @@ const initialState = {
   previousUsername: previousUsername,
   status: '',
   messages: [],
-  statuses: [],
+  statuses: {},
   message: '',
   showEmojiPicker: false,
   suggestionStart: null,
