@@ -38,7 +38,9 @@ const styleUserStatus = {
 }
 
 const styleDots = {
-  marginRight: '.2em'
+  marginTop: '.2em',
+  marginRight: '.2em',
+  marginBottom: '.2em'
 }
 
 const styleViewing = Object.assign(
