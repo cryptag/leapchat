@@ -8,11 +8,11 @@ const Settings = ({ onShowSettingsModal }) => {
     <div className="settings" >
       <FaCog size={30} onClick={onShowSettingsModal} />
     </div>
-  )
-}
+  );
+};
 
 Settings.propTypes = {
   onShowSettingsModal: PropTypes.func.isRequired
-}
+};
 
 export default Settings;

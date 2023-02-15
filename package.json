@@ -13,7 +13,7 @@
     "playwright": "npx playwright test",
     "webtest": "npx playwright test --headed",
     "test": "npm run mocha && npm run playwright",
-    "fix_lint_indentation": "./node_modules/.bin/eslint --fix --parser babel-eslint --ext js --no-eslintrc  --rule 'indent: [\"error\", 2]' ./src"
+    "lintfix": "./node_modules/.bin/eslint --fix --parser babel-eslint --ext js --no-eslintrc  --rule 'indent: [\"error\", 2]' --rule 'semi: [2]' ./src"
   },
   "repository": {
     "type": "git",
