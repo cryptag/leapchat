@@ -20,8 +20,6 @@ import {
   addSuggestion
 } from '../../actions/chatActions';
 
-import { chatHandler } from '../../epics/chatEpics';
-
 class MessageForm extends Component {
   constructor(props) {
     super(props);
@@ -132,12 +130,6 @@ class MessageForm extends Component {
     this.messageInput = input;
   }
 
-  onDeleteAllMsgs = (e) => {
-    if (window.confirm("Are you sure you want to delete every existing chat message from this chat room?")) {
-      chatHandler.sendDeleteAllMessagesSignalToServer();
-    }
-  }
-
   render() {
     const { message, showEmojiPicker } = this.props.chat;
     const { messageUpdate, togglePicker } = this.props;
@@ -165,15 +157,7 @@ class MessageForm extends Component {
                 onClick={togglePicker}
               />
 
-              <div className="right-chat-icons">
-                <button
-                  style={{height: '100%', padding: '0 8px 0 10px'}}
-                  className="delete-all-msgs"
-                  onClick={this.onDeleteAllMsgs}
-                >
-                  Delete All Messages Forever
-                </button>
-              </div>
+              <div className="right-chat-icons"></div>
             </div>
 
             <div className="message" onKeyDown={this.handleKeyDown}>

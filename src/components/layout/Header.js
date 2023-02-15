@@ -25,7 +25,8 @@ class Header extends Component {
       username,
       statuses,
       onShowUsernameModal,
-      onToggleInfoModal
+      onToggleInfoModal,
+      onShowSettingsModal
     } = this.props;
     const { displayUserList } = this.state;
     
@@ -37,7 +38,7 @@ class Header extends Component {
             <Info onToggleInfoModal={onToggleInfoModal}/>
           </div>
           <Settings
-            onShowUsernameModal={onShowUsernameModal} />
+            onShowSettingsModal={onShowSettingsModal} />
         </div>
         <UserIcon onToggleUserList={this.onToggleUserList} />
         <UserList
@@ -54,7 +55,8 @@ Header.propTypes = {
   username: PropTypes.string.isRequired,
   statuses: PropTypes.object.isRequired,
   onShowUsernameModal: PropTypes.func.isRequired,
-  onToggleInfoModal: PropTypes.func.isRequired
+  onToggleInfoModal: PropTypes.func.isRequired,
+  onShowSettingsModal: PropTypes.func.isRequired,
 }
 
 export default connect(null, { closePicker })(Header);
