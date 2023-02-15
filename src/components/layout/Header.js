@@ -57,6 +57,6 @@ Header.propTypes = {
   onShowUsernameModal: PropTypes.func.isRequired,
   onToggleInfoModal: PropTypes.func.isRequired,
   onShowSettingsModal: PropTypes.func.isRequired
-}
+};
 
 export default connect(null, { closePicker })(Header);

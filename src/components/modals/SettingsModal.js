@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 import { Modal, Button } from 'react-bootstrap';
 import FaShareAlt from 'react-icons/lib/fa/share-alt';
@@ -13,11 +13,11 @@ const onDeleteAllMsgs = (e) => {
   if (window.confirm("Are you sure you want to delete every existing chat message from this chat room? This action cannot be undone.")) {
     chatHandler.sendDeleteAllMessagesSignalToServer();
   }
-}
+};
 
 const onCopyShareLink = (e) => {
   navigator.clipboard.writeText(shareLink);
-}
+};
 
 const SettingsModal = ({
   isVisible,
@@ -62,13 +62,13 @@ const SettingsModal = ({
         </Modal.Footer>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
 SettingsModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onCloseModal: PropTypes.func.isRequired,
 
-}
+};
 
 export default SettingsModal;
