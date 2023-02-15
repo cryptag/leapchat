@@ -108,40 +108,40 @@ class App extends Component {
     return (
       <div id="page">
 
-          <Header
+        <Header
+          username={username}
+          statuses={statuses}
+          onShowUsernameModal={this.onShowUsernameModal}
+          onToggleInfoModal={this.onToggleInfoModal} />
+
+        <main className="encloser">
+
+          {pincodeRequired && <PincodeModal
+            showModal={pincodeRequired}
+            onSetPincode={this.onSetPincode}
+            onCloseModal={this.onClosePincodeModal} />}
+
+          {showUsernameModal && <UsernameModal
+            previousUsername={previousUsername}
             username={username}
-            statuses={statuses}
-            onShowUsernameModal={this.onShowUsernameModal}
+            isVisible={showUsernameModal}
+            onSetUsername={this.onSetUsername}
+            onCloseModal={this.onCloseUsernameModal} />}
+
+          <ChatContainer
+            alertMessage={alertMessage}
+            alertStyle={alertStyle}
+            onAlertDismiss={this.props.dismissAlert}
+            messages={messages}
+            username={username}
+            onSendMessage={this.onSendMessage}
+            messageInputFocus={chatInputFocus} />
+
+          <InfoModal
+            showModal={showInfoModal}
             onToggleInfoModal={this.onToggleInfoModal} />
 
-          <main className="encloser">
-
-            {pincodeRequired && <PincodeModal
-              showModal={pincodeRequired}
-              onSetPincode={this.onSetPincode}
-              onCloseModal={this.onClosePincodeModal} />}
-
-            {showUsernameModal && <UsernameModal
-              previousUsername={previousUsername}
-              username={username}
-              isVisible={showUsernameModal}
-              onSetUsername={this.onSetUsername}
-              onCloseModal={this.onCloseUsernameModal} />}
-
-            <ChatContainer
-              alertMessage={alertMessage}
-              alertStyle={alertStyle}
-              onAlertDismiss={this.props.dismissAlert}
-              messages={messages}
-              username={username}
-              onSendMessage={this.onSendMessage}
-              messageInputFocus={chatInputFocus} />
-
-            <InfoModal
-              showModal={showInfoModal}
-              onToggleInfoModal={this.onToggleInfoModal} />
-
-          </main>
+        </main>
 
       </div>
     );
