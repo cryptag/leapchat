@@ -8,12 +8,12 @@ import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
 export const ViewingUserIcon = (props) => {
   const { username, isCurrentUser, onShowUsernameModal } = props;
   return (
-    <div>
+    <div style={styleUserStatus}>
       <FaCircle style={styleViewing} />
       {username}
-      {isCurrentUser && <span> (me)</span> }
-      <span className="edit-username">
-        {isCurrentUser && 
+      {isCurrentUser && <span>&nbsp;(me)</span> }
+      <span style={styleEditUsername}>
+        {isCurrentUser &&
           <FaPencilSquare onClick={onShowUsernameModal} size={19} />
         }
       </span>
@@ -31,9 +31,14 @@ export const OnlineUserIcon = () => <FaCircle style={styleOnline} />
 
 export const OfflineUserIcon = () => <FaMinusCircle style={styleOffline} />
 
+const styleUserStatus = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center'
+}
+
 const styleDots = {
-  marginRight: '.2em',
-  marginBottom: '.2em'
+  marginRight: '.2em'
 }
 
 const styleViewing = Object.assign(
@@ -50,3 +55,8 @@ const styleOffline = Object.assign(
   { color: 'gray' },
   styleDots
 )
+
+const styleEditUsername = {
+  marginLeft: 'auto',
+  marginRight: '2px'  // For optical vertical alignment with gear icon
+}
