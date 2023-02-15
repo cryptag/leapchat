@@ -43,7 +43,7 @@ const SettingsModal = ({
           <h3>Feedback</h3>
           <p>
             Do you have feedback or suggestions on how we can improve LeapChat? We're listening!{' '}
-            <a href="https://github.com/cryptag/leapchat/issues/new" target="_blank">
+            <a href="https://github.com/cryptag/leapchat/issues" target="_blank">
               Share your feedback here.{' '}<FaExternalLink size={19} />
             </a>
           </p>
