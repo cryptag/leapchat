@@ -41,7 +41,7 @@ class UserList extends Component {
                   isCurrentUser={userStatus.username === currentUsername}
                   onShowUsernameModal={onShowUsernameModal} />
               </li>
-            )
+            );
           })}
         </ul>
       </div>
@@ -54,6 +54,6 @@ UserList.propTypes = {
   statuses: PropTypes.object.isRequired,
   displayUserList: PropTypes.bool.isRequired,
   onShowUsernameModal: PropTypes.func.isRequired
-}
+};
 
 export default UserList;

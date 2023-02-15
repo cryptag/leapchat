@@ -138,12 +138,12 @@
     self.init_env();
 
     return self;
-  }
+  };
 
   emoji.prototype.noConflict = function(){
     root.EmojiConvertor = previous_emoji;
     return emoji;
-  }
+  };
 
 
   /**
@@ -2622,7 +2622,7 @@
     }
     exports.EmojiConvertor = emoji;
   }else if (typeof define === 'function' && define.amd){
-    define(function() { return emoji; })
+    define(function() { return emoji; });
   }else{
     root.EmojiConvertor = emoji;
   }

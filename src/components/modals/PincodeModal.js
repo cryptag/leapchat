@@ -82,6 +82,6 @@ PincodeModal.propType = {
   showModal: PropTypes.bool.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSetPincode: PropTypes.func.isRequired
-}
+};
 
 export default PincodeModal;

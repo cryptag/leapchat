@@ -13,10 +13,10 @@ class ChatRoom extends Component {
             <div key={message.key} className={fromMe ? 'chat-outgoing' : 'chat-incoming'}>
               {message.from}: {message.msg}
             </div>
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 }
 

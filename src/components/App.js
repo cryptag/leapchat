@@ -80,8 +80,8 @@ class App extends Component {
 
   onToggleInfoModal = () => {
     this.setState((prevState) => {
-      return { showInfoModal: !prevState.showInfoModal }
-    })
+      return { showInfoModal: !prevState.showInfoModal };
+    });
   }
 
   onSendMessage = (message) => {
@@ -148,7 +148,7 @@ class App extends Component {
   }
 }
 
-App.propTypes = {}
+App.propTypes = {};
 
 const mapStateToProps = (reduxState) => {
   return { ...reduxState.chat, ...reduxState.alert };

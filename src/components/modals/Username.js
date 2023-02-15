@@ -110,6 +110,6 @@ UsernameModal.propTypes = {
   username: PropTypes.string.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSetUsername: PropTypes.func.isRequired
-}
+};
 
 export default UsernameModal;

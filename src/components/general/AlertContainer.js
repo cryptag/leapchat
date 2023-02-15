@@ -34,6 +34,6 @@ AlertContainer.propTypes = {
   message: PropTypes.string.isRequired,
   alertStyle: PropTypes.string,
   onAlertDismiss: PropTypes.func.isRequired
-}
+};
 
 export default AlertContainer;

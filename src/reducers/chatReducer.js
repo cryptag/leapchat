@@ -48,14 +48,14 @@ function chatReducer(state = initialState, action) {
       shouldConnect: false,
       pincodeRequired: false,
       ready: false
-    })
+    });
 
   case CHAT_CONNECTION_INITIATED:
     return Object.assign({}, state, {
       connecting: false,
       connected: true,
       shouldConnect: false,
-    })
+    });
 
   case CHAT_DISCONNECTED:
     return Object.assign({}, state, {
@@ -63,7 +63,7 @@ function chatReducer(state = initialState, action) {
       connected: false,
       shouldConnect: true,
       ready: false
-    })
+    });
 
   case CHAT_ADD_MESSAGE:
     return Object.assign({}, state, {
@@ -130,8 +130,8 @@ function chatReducer(state = initialState, action) {
 
   case 'CHAT_ADD_SUGGESTION':
     const beforeSuggestion = state.message.slice(0, state.suggestionStart);
-    const afterSuggestion = state.message.slice(state.suggestionStart)
-    const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion + ' ')
+    const afterSuggestion = state.message.slice(state.suggestionStart);
+    const formattedSuggestion = afterSuggestion.replace(state.suggestionWord, action.suggestion + ' ');
     return Object.assign({}, state, {
       message: beforeSuggestion + formattedSuggestion,
       suggestionWord: action.suggestion

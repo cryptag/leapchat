@@ -5,7 +5,7 @@ const Logo = () => {
     <div className="logo">
       LeapChat
     </div>
-  )
-}
+  );
+};
 
 export default Logo;

@@ -9,7 +9,7 @@ const throbberDotStyles = {
   'backgroundColor': '#999',
   'float': 'left',
   'transform': 'scale(0.7)'
-}
+};
 
 
 class Throbber extends Component {
@@ -56,7 +56,7 @@ class Throbber extends Component {
           <div style={throbberDotStyles} ref="thirdDot"></div>
         </div>
       </div>
-    )
+    );
   }
 }
 

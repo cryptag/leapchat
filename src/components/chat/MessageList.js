@@ -12,7 +12,7 @@ class MessageList extends Component {
         .concat(this.props.messages.map(m => m.id))
         .reduce((acc, id) => {
           if(!acc.indexOf(id) === -1){
-            acc.push(id)
+            acc.push(id);
           }
           return acc;
         }, [])
@@ -34,7 +34,7 @@ class MessageList extends Component {
               key={i}
               message={message}
               username={username} />
-          )
+          );
         })}
       </ul>
     );

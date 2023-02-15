@@ -16,13 +16,13 @@ const EmojiSuggestions = ({ addSuggestion, chat }) => (
         key : i,
         onClick : (e) => addSuggestion(emoj.name),
         className : activeItem ? 'active': '',
-      }
+      };
       if (activeItem) {
         props.ref = (item) => {
           if (item) item.scrollIntoView(scrollIntoViewOptions);
-        }
+        };
       }
-      return (<li {...props} dangerouslySetInnerHTML={{__html: renderItem}}></li>)
+      return (<li {...props} dangerouslySetInnerHTML={{__html: renderItem}}></li>);
     })}
   </ul>
 );

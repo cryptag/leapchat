@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import FaQuestionCircle from 'react-icons/lib/fa/question-circle'
+import FaQuestionCircle from 'react-icons/lib/fa/question-circle';
 
 export default class Info extends Component {
   constructor(props){
-    super(props)
+    super(props);
   }
 
   render() {
@@ -18,4 +18,4 @@ export default class Info extends Component {
 
 Info.propTypes = {
   onToggleInfoModal: PropTypes.func.isRequired
-}
+};
