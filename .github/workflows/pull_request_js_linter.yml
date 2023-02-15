@@ -1,0 +1,19 @@
+name: JavaScript Lint and Test Check
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  run_eslinter:
+    name: Runs ESLint and execute test suite
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14.x
+    - run: npm install
+    - run: npm run lint
+    - run: npm test
