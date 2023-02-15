@@ -65,8 +65,8 @@ class ChatHandler {
               fromUsername: message.meta.from,
               maybeSenderId: message.maybeSenderId,
               message: contents.msg
-            })
-          })
+            });
+          });
 
       reader.readAsText(message.fileBlob);
 
@@ -81,7 +81,7 @@ class ChatHandler {
       }).do(status => this.wsUserStatusSubject.next(status));
 
     } else {
-      return Observable.throw(new Error('Unrecognized data with type ' + message.tags.type))
+      return Observable.throw(new Error('Unrecognized data with type ' + message.tags.type));
     }
   }
 
@@ -119,11 +119,11 @@ class ChatHandler {
       throw new Error('WebSocket connection not initialized!');
     }
     if (this.ws.readyState !== WebSocket.OPEN) {
-      throw new Error('WebSocket connection is initializing and is not open yet!')
+      throw new Error('WebSocket connection is initializing and is not open yet!');
     }
 
     const saveName = tags.join('|||');
-    const fileBlob = new Blob([JSON.stringify(contents)], { type: 'application/json' })
+    const fileBlob = new Blob([JSON.stringify(contents)], { type: 'application/json' });
     fileBlob.name = saveName;
 
     const mID = this.mID;
@@ -154,7 +154,7 @@ class ChatHandler {
       to_server: {
         delete_all_messages: true
       }
-    }
+    };
     this.ws.send(JSON.stringify(msgForServer));
   }
 
@@ -165,7 +165,7 @@ class ChatHandler {
       const b64encMinilockFile = btoa([].reduce.call(
         new Uint8Array(reader.result),
         function (p, c) {
-          return p + String.fromCharCode(c)
+          return p + String.fromCharCode(c);
         }, ''));
 
       const msgForServer = {
@@ -174,11 +174,11 @@ class ChatHandler {
       if (ttl_secs > 0) {
         msgForServer.to_server = {
           ttl_secs: ttl_secs
-        }
+        };
       }
       this.ws.send(JSON.stringify(msgForServer));
-    })
-    reader.readAsArrayBuffer(fileBlob)
+    });
+    reader.readAsArrayBuffer(fileBlob);
   }
 
   initConnection = ({ mID, secretKey, authToken }) => {

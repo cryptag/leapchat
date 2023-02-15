@@ -46,7 +46,7 @@ class Header extends Component {
           displayUserList={displayUserList}
           onShowUsernameModal={onShowUsernameModal} />
       </header>
-    )
+    );
   }
 }
 
@@ -55,6 +55,6 @@ Header.propTypes = {
   statuses: PropTypes.object.isRequired,
   onShowUsernameModal: PropTypes.func.isRequired,
   onToggleInfoModal: PropTypes.func.isRequired
-}
+};
 
 export default connect(null, { closePicker })(Header);

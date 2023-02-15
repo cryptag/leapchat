@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
 import FaSmileO from 'react-icons/lib/fa/smile-o';
 import { Picker, emojiIndex } from 'emoji-mart';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import emoji from '../../constants/emoji';
 import { emojiSuggestions, mentionSuggestions } from '../../utils/suggestions';
 import {

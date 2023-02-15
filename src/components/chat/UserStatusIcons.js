@@ -29,7 +29,7 @@ export const UserStatusIcon = ({
       </span>
     </div>
   );
-}
+};
 
 UserStatusIcon.propTypes = {
   username: PropTypes.string.isRequired,
@@ -42,30 +42,30 @@ const styleUserStatus = {
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center'
-}
+};
 
 const styleDots = {
   marginTop: '.2em',
   marginRight: '.2em',
   marginBottom: '.2em'
-}
+};
 
 const styleViewing = Object.assign(
   { color: 'green' },
   styleDots
-)
+);
 
 const styleOnline = Object.assign(
   { color: 'yellow' },
   styleDots
-)
+);
 
 const styleOffline = Object.assign(
   { color: 'gray' },
   styleDots
-)
+);
 
 const styleEditUsername = {
   marginLeft: 'auto',
   marginRight: '2px'  // For optical vertical alignment with gear icon
-}
+};

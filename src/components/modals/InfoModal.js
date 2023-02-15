@@ -4,7 +4,7 @@ import { Modal } from 'react-bootstrap';
 
 export default class InfoModal extends Component {
   constructor(props){
-    super(props)
+    super(props);
   }
 
   render() {
@@ -57,4 +57,4 @@ export default class InfoModal extends Component {
 
 InfoModal.propTypes = {
   onToggleInfoModal: PropTypes.func.isRequired
-}
+};

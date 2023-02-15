@@ -44,7 +44,7 @@ class Message extends Component {
 
         return '![:' + emojiName + ':](' + $1 + $2 + $3 + ')';
       }
-    )
+    );
 
     // Render escaped HTML/Markdown
     let linked = md.render(emojiMD);

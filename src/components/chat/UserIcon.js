@@ -16,6 +16,6 @@ class UserIcon extends Component {
 
 UserIcon.propTypes = {
   onToggleUserList: PropTypes.func.isRequired
-}
+};
 
 export default UserIcon;

@@ -19,11 +19,11 @@ const MentionSuggestions = ({ chat, addSuggestion }) => (
         key : i,
         onClick : (e) => addSuggestion(mention),
         className : activeItem ? 'active': '',
-      }
+      };
       if (activeItem) {
         props.ref = (item) => {
           if (item) item.scrollIntoView(scrollIntoViewOptions);
-        }
+        };
       }
       return <li {...props}>
         {viewing
@@ -32,9 +32,9 @@ const MentionSuggestions = ({ chat, addSuggestion }) => (
             ? <OnlineUserIcon />
             : <OfflineUserIcon /> }
         {mention.slice(1)}
-      </li>
+      </li>;
     })}
   </ul>
-)
+);
 
 export default connect(({ chat }) => ({chat}), { addSuggestion })(MentionSuggestions);

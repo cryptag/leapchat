@@ -10,5 +10,5 @@ export function extractMessageMetadata(tags) {
     from: tagByPrefixStripped(tags, 'from:'),
     to: tagByPrefixStripped(tags, 'to:'),
     status: tagByPrefixStripped(tags, 'status:')
-  }
+  };
 }

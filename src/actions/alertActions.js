@@ -8,7 +8,7 @@ export const alertWarning = (message) =>
   ({ type: ALERT_DISPLAY, style: 'warning', message });
 
 export const alertDanger = (message) =>
-  ({ type: ALERT_DISPLAY, style: 'danger', message })
+  ({ type: ALERT_DISPLAY, style: 'danger', message });
 
 export const dismissAlert = () => 
-  ({ type: ALERT_DISMISS })
+  ({ type: ALERT_DISMISS });

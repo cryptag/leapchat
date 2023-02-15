@@ -12,7 +12,7 @@ class ChatRoom extends Component {
       <li>
         <a href="#" onClick={this.onSelectRoom.bind(this)}>{chatRoom.roomname}</a>
       </li>
-    )
+    );
   }
 }
 

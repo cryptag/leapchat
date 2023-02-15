@@ -20,7 +20,7 @@ const composeEnhancers =
       // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
     }) : compose;
 
-const epicMiddleware = createEpicMiddleware(rootEpic)
+const epicMiddleware = createEpicMiddleware(rootEpic);
 const enhancer = composeEnhancers(
   applyMiddleware(epicMiddleware)
 );
