@@ -5,11 +5,21 @@ import FaCircle from 'react-icons/lib/fa/circle';
 import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
 import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
 
-export const ViewingUserIcon = (props) => {
-  const { username, isCurrentUser, onShowUsernameModal } = props;
+export const UserStatusIcon = ({
+  username,
+  status,
+  isCurrentUser,
+  onShowUsernameModal
+}) => {
+  let statusIcon = <FaMinusCircle style={styleOffline} />;
+  if (status === 'viewing') {
+    statusIcon = <FaCircle style={styleViewing} />;
+  } else if (status === 'online') {
+    statusIcon = <FaCircle style={styleOnline} />;
+  }
   return (
     <div style={styleUserStatus}>
-      <FaCircle style={styleViewing} />
+      {statusIcon}
       {username}
       {isCurrentUser && <span>&nbsp;(me)</span> }
       <span style={styleEditUsername}>
@@ -21,15 +31,12 @@ export const ViewingUserIcon = (props) => {
   );
 }
 
-ViewingUserIcon.propTypes = {
+UserStatusIcon.propTypes = {
   username: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
   isCurrentUser: PropTypes.bool.isRequired,
   onShowUsernameModal: PropTypes.func.isRequired
-}
-
-export const OnlineUserIcon = () => <FaCircle style={styleOnline} />
-
-export const OfflineUserIcon = () => <FaMinusCircle style={styleOffline} />
+};
 
 const styleUserStatus = {
   display: 'flex',
