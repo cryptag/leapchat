@@ -22,7 +22,7 @@ export const UserStatusIcon = ({
       {statusIcon}
       {username}
       {isCurrentUser && <span>&nbsp;(me)</span> }
-      <span style={styleEditUsername}>
+      <span style={styleEditUsername} data-testid="edit-username">
         {isCurrentUser &&
           <FaPencilSquare onClick={onShowUsernameModal} size={19} />
         }
@@ -66,6 +66,7 @@ const styleOffline = Object.assign(
 );
 
 const styleEditUsername = {
+  cursor: 'pointer',
   marginLeft: 'auto',
   marginRight: '2px'  // For optical vertical alignment with gear icon
 };

@@ -234,16 +234,55 @@ sudo setcap cap_net_bind_service=+ep leapchat
 ```
 
 
-## Testing
+## JavaScript Testing
 
-We use [mocha](https://mochajs.org/) as the testing framework, with
+### Unit Tests
+
+For unit tests, use [mocha](https://mochajs.org/) as the testing framework and test runner, with
 [chai](http://chaijs.com/)'s expect API.
 
-To run tests:
+Unit tests are located at `./test/` and have an extension of `.test.js`.
 
-``` $ npm test ```
+To run unit tests only, run:
 
-and go tests:
+```
+$ npm run mocha
+```
+
+### Browser Tests
+
+For browser tests, we use [playwright](https://playwright.dev/). This should be installed for you 
+via `npm`, but you may need to install the playwright browser have tests run successfully:
+
+```
+$ npx playwright install firefox
+$ npx playwright install chromium
+$ npx playwright install webkit
+```
+
+Browser tests are located at `./test/playwright` and have an extension of `.spec.js`.
+
+To run browser tests only, run:
+
+```
+$ npm run playwright
+```
+
+By default, the browser tests run in headless mode. To run with an interactive browser session, run:
+
+```
+$ npm run webtests
+```
+
+**To run all of the tests, all together**:
+
+```
+$ npm test
+```
+
+## Go Testing
+
+To run the golang tests:
 
 ``` $ go test [-v] ./... ```
 

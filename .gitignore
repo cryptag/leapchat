@@ -14,3 +14,6 @@ _docker-volumes/
 
 # Mac OS X Bullshit
 .DS_Store
+
+# Playwright tests
+playwright-report/

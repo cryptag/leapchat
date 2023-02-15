@@ -9,7 +9,10 @@
     "start": "npm run build && ./leapchat",
     "dev": "NODE_ENV=development node_modules/.bin/webpack --config webpack.config.dev.js --progress",
     "be": "./leapchat",
-    "test": "node_modules/.bin/mocha --reporter nyan test/.setup.js test/**/*.test.js",
+    "mocha": "./node_modules/.bin/mocha --reporter nyan test/.setup.js test/**/*.test.js",
+    "playwright": "npx playwright test",
+    "webtest": "npx playwright test --headed",
+    "test": "npm run mocha && npm run playwright",
     "fix_lint_indentation": "./node_modules/.bin/eslint --fix --parser babel-eslint --ext js --no-eslintrc  --rule 'indent: [\"error\", 2]' ./src"
   },
   "repository": {
@@ -55,6 +58,7 @@
     "utf8": "^2.1.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.30.0",
     "babel-eslint": "^7.2.3",
     "babel-plugin-system-import-transformer": "^3.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -79,6 +83,7 @@
     "node-env-file": "^0.1.8",
     "node-sass": "^5.0.0",
     "npm-run-all": "^4.1.5",
+    "playwright": "^1.30.0",
     "pump": "^1.0.3",
     "redux-devtools": "^3.7.0",
     "redux-devtools-dock-monitor": "^1.2.0",

@@ -16,4 +16,6 @@ jobs:
         node-version: 14.x
     - run: npm install
     - run: npm run lint
-    - run: npm test
+    - run: npm run mocha
+    # - run: npx playwright install-deps
+    # - run: npm test
