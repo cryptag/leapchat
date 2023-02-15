@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  ViewingUserIcon,
-  OnlineUserIcon,
-  OfflineUserIcon
-} from './UserStatusIcons'
+import { UserStatusIcon } from './UserStatusIcons';
 
 class UserList extends Component {
   constructor(props) {
@@ -28,57 +24,24 @@ class UserList extends Component {
     const { statuses, onShowUsernameModal } = this.props;
     const currentUsername = this.props.username;
 
-    const viewing = [];  // green
-    const online = [];   // yellow
-    const offline = [];  // gray
-
-    Object.keys(statuses).forEach(username => {
+    const userStatuses = Object.keys(statuses).map(username => {
       const status = statuses[username];
-      switch (status) {
-      case 'viewing':
-        viewing.push(username);
-        break;
-      case 'online':
-        online.push(username);
-        break;
-      case 'offline':
-        offline.push(username);
-        break;
-      }
+      return { status, username };
     });
 
-    viewing.sort(this.sortByFrom);
-    online.sort(this.sortByFrom);
-    offline.sort(this.sortByFrom);
+    console.log(userStatuses);
 
     return (
       <div className="users-list">
         <ul style={this.styleUserList()}>
-          {viewing.map((username, i) => {
+          {userStatuses.map((userStatus, i) => {
             return (
               <li key={i}>
-                <ViewingUserIcon
-                  username={username}
-                  isCurrentUser={username === currentUsername}
+                <UserStatusIcon
+                  username={userStatus.username}
+                  status={userStatus.status}
+                  isCurrentUser={userStatus.username === currentUsername}
                   onShowUsernameModal={onShowUsernameModal} />
-              </li>
-            )
-          })}
-
-          {online.map((username, i) => {
-            return (
-              <li key={i}>
-                <OnlineUserIcon />
-                {username}
-              </li>
-            )
-          })}
-
-          {offline.map((username, i) => {
-            return (
-              <li key={i}>
-                <OfflineUserIcon />
-                {username}
               </li>
             )
           })}
