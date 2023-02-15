@@ -36,8 +36,8 @@ const SettingsModal = ({
           <p>
             Click to copy a link and invite others to this LeapChat room.
           </p>
-          <Button onClick={onCopyShareLink} bsStyle="primary">
-            Copy Invite Link <FaShareAlt />
+          <Button onClick={onCopyShareLink} bsStyle="primary" style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+            Copy Invite Link <div style={{width: '4px'}}></div><FaShareAlt />
           </Button>
           <hr />
           <h3>Feedback</h3>
