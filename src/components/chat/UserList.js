@@ -29,8 +29,6 @@ class UserList extends Component {
       return { status, username };
     });
 
-    console.log(userStatuses);
-
     return (
       <div className="users-list">
         <ul style={this.styleUserList()}>
