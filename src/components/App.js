@@ -18,6 +18,7 @@ import ChatContainer from './chat/ChatContainer';
 import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
 import PincodeModal from './modals/PincodeModal';
+import SettingsModal from './modals/SettingsModal';
 
 class App extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class App extends Component {
     this.state = {
       showUsernameModal: false,
       showInfoModal: false,
+      showSettingsModal: false
     };
 
   }
@@ -54,6 +56,18 @@ class App extends Component {
   onCloseUsernameModal = () => {
     this.setState({
       showUsernameModal: false
+    });
+  }
+
+  onShowSettingsModal = () => {
+    this.setState({
+      showSettingsModal: true
+    });
+  }
+
+  onCloseSettingsModal = () => {
+    this.setState({
+      showSettingsModal: false
     });
   }
 
@@ -90,7 +104,7 @@ class App extends Component {
   }
 
   render() {
-    const { showInfoModal } = this.state;
+    const { showInfoModal, showSettingsModal } = this.state;
     const {
       messages,
       username,
@@ -107,40 +121,45 @@ class App extends Component {
 
     return (
       <div id="page">
-          <Header
+        <Header
+          username={username}
+          statuses={statuses}
+          onShowUsernameModal={this.onShowUsernameModal}
+          onShowSettingsModal={this.onShowSettingsModal}
+          onToggleInfoModal={this.onToggleInfoModal} />
+
+        <main className="encloser">
+
+          {pincodeRequired && <PincodeModal
+            showModal={pincodeRequired}
+            onSetPincode={this.onSetPincode}
+            onCloseModal={this.onClosePincodeModal} />}
+
+          {showUsernameModal && <UsernameModal
+            previousUsername={previousUsername}
             username={username}
-            statuses={statuses}
-            onShowUsernameModal={this.onShowUsernameModal}
+            isVisible={showUsernameModal}
+            onSetUsername={this.onSetUsername}
+            onCloseModal={this.onCloseUsernameModal} />}
+
+          {showSettingsModal && <SettingsModal 
+            isVisible={showSettingsModal}
+            onCloseModal={this.onCloseSettingsModal} />}
+
+          <ChatContainer
+            alertMessage={alertMessage}
+            alertStyle={alertStyle}
+            onAlertDismiss={this.props.dismissAlert}
+            messages={messages}
+            username={username}
+            onSendMessage={this.onSendMessage}
+            messageInputFocus={chatInputFocus} />
+
+          <InfoModal
+            showModal={showInfoModal}
             onToggleInfoModal={this.onToggleInfoModal} />
 
-          <main className="encloser">
-
-            {pincodeRequired && <PincodeModal
-              showModal={pincodeRequired}
-              onSetPincode={this.onSetPincode}
-              onCloseModal={this.onClosePincodeModal} />}
-
-            {showUsernameModal && <UsernameModal
-              previousUsername={previousUsername}
-              username={username}
-              isVisible={showUsernameModal}
-              onSetUsername={this.onSetUsername}
-              onCloseModal={this.onCloseUsernameModal} />}
-
-            <ChatContainer
-              alertMessage={alertMessage}
-              alertStyle={alertStyle}
-              onAlertDismiss={this.props.dismissAlert}
-              messages={messages}
-              username={username}
-              onSendMessage={this.onSendMessage}
-              messageInputFocus={chatInputFocus} />
-
-            <InfoModal
-              showModal={showInfoModal}
-              onToggleInfoModal={this.onToggleInfoModal} />
-
-          </main>
+        </main>
 
       </div>
     );
