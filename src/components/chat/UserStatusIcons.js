@@ -11,7 +11,7 @@ export const UserStatusIcon = ({
   isCurrentUser,
   onShowUsernameModal
 }) => {
-  let statusIcon = <FaMinusCircle style={styleOffline} />
+  let statusIcon = <FaMinusCircle style={styleOffline} />;
   if (status === 'viewing') {
     statusIcon = <FaCircle style={styleViewing} />;
   } else if (status === 'online') {
