@@ -24,10 +24,15 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    // Default to false on initial render so audio doesn't attempt to play before 
+    // user interacts with page (which triggers console.error)
+    const isAudioEnabled = false;
+
     this.state = {
       showUsernameModal: false,
       showInfoModal: false,
-      showSettingsModal: false
+      showSettingsModal: false,
+      isAudioEnabled: isAudioEnabled,
     };
 
   }
@@ -77,6 +82,13 @@ class App extends Component {
     });
   }
 
+  onSetIsAudioEnabled = (isAudioEnabled) => {
+    this.setState({
+      isAudioEnabled: isAudioEnabled
+    });
+    localStorage.setItem("isAudioEnabled", isAudioEnabled);
+  }
+
   onSetPincode = (pincode = "") => {
     if (!pincode || pincode.endsWith("--")) {
       this.onError('Invalid pincode!');
@@ -104,7 +116,7 @@ class App extends Component {
   }
 
   render() {
-    const { showInfoModal, showSettingsModal } = this.state;
+    const { showInfoModal, showSettingsModal, isAudioEnabled } = this.state;
     const {
       messages,
       username,
@@ -140,7 +152,8 @@ class App extends Component {
             username={username}
             isVisible={showUsernameModal}
             onSetUsername={this.onSetUsername}
-            onCloseModal={this.onCloseUsernameModal} />}
+            onCloseModal={this.onCloseUsernameModal}
+            onSetIsAudioEnabled={this.onSetIsAudioEnabled} />}
 
           {showSettingsModal && <SettingsModal 
             isVisible={showSettingsModal}
@@ -153,7 +166,9 @@ class App extends Component {
             messages={messages}
             username={username}
             onSendMessage={this.onSendMessage}
-            messageInputFocus={chatInputFocus} />
+            messageInputFocus={chatInputFocus}
+            isAudioEnabled={isAudioEnabled}
+            onSetIsAudioEnabled={this.onSetIsAudioEnabled} />
 
           <InfoModal
             showModal={showInfoModal}
