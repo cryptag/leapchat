@@ -1,0 +1,53 @@
+FROM golang:1.20-alpine AS gobuild
+
+COPY . /app
+
+WORKDIR /app
+
+RUN go build -o /leapchat
+
+FROM node:14-alpine AS jsbuild
+
+COPY . /app
+
+WORKDIR /app
+
+RUN npm install
+RUN npm rebuild node-sass
+RUN npm run build
+
+FROM ubuntu:latest
+
+WORKDIR /app
+
+COPY --from=gobuild /leapchat .
+
+WORKDIR /app/build
+COPY --from=jsbuild /app/build .
+
+# https://postgrest.org/en/stable/admin.html#daemonizing
+WORKDIR /etc/systemd/system/
+COPY systemctl/postgrest.service .
+COPY systemctl/leapchat.service .
+
+WORKDIR /app
+RUN apt-get update
+RUN apt-get install wget xz-utils systemctl  -y
+RUN wget wget https://github.com/PostgREST/postgrest/releases/download/v10.1.2/postgrest-v10.1.2-linux-static-x64.tar.xz
+RUN tar Jxf postgrest-v10.1.2-linux-static-x64.tar.xz
+RUN rm -f postgrest-v10.1.2-linux-static-x64.tar.xz
+COPY db/postgrest.conf .
+
+WORKDIR /app
+COPY entrypoint.sh .
+RUN chmod +x /app/entrypoint.sh
+
+# TO BUILD THIS:
+# $ docker build -t leapchat-bundle -f Dockerfile.multistage .
+# TO SHELL INTO:
+# $ docker run -it leapchat-bundle /bin/bash
+# TO RUN:
+# $ docker run -d -it leapchat-bundle
+
+
+CMD ["./entrypoint.sh"]

@@ -1,0 +1,17 @@
+[Unit]
+Description=LeapChat Ephemeral Chat
+ConditionPathExists=/app
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/app
+ExecStart=/app/leapchat
+Restart=on-failure
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=leapchat
+
+[Install]
+WantedBy=multi-user.target
