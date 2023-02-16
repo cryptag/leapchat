@@ -1,17 +1,34 @@
-version: '3.1'
+version: '3.4'
 
 services:
+    app:
+        build:
+            context: .
+            dockerfile: ./Dockerfile.dev
+        ports:
+            - 8080:8080
+        depends_on:
+            - postgrest
+        volumes:
+            - ./build:/app/github.com/cryptag/leapchat/build
     postgres:
         image: postgres:latest
         ports:
-            - 127.0.0.1:5432:5432
+            - 5433:5432
         environment:
             - POSTGRES_PASSWORD=superuser
             - POSTGRES_USER=superuser
             - POSTGRES_DB=leapchat
         volumes:
             - ./_docker-volumes/postgres:/var/lib/postgresql/data
+            #- ./db:/docker-entrypoint-initdb.d/
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 5s
+            timeout: 60s
+            retries: 10
     postgrest:
+        command: postgrest /app/postgrest.conf
         image: postgrest/postgrest:latest
         ports:
             - 3000:3000
@@ -23,5 +40,8 @@ services:
             PGDATABASE: leapchat
             PGSCHEMA: public
             DB_ANON_ROLE: postgres
+        volumes:
+            - ./db/:/app
         depends_on:
-            - postgres
+            postgres:
+                condition: service_healthy

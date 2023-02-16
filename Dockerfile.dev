@@ -1,0 +1,18 @@
+FROM golang:1.19-alpine
+
+RUN mkdir -p /app
+
+WORKDIR /app/github.com/cryptag/leapchat/miniware
+
+WORKDIR /app/github.com/cryptag/leapchat
+
+COPY miniware/* miniware/
+COPY *.go .
+COPY go.* .
+COPY LICENSE.md .
+
+RUN go build
+
+EXPOSE 8080
+
+CMD ["./leapchat"]
