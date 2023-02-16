@@ -1,6 +1,6 @@
 {
   "name": "LeapChat",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Self-destructing, encrypted, in-browser chat",
   "main": "index.js",
   "scripts": {
