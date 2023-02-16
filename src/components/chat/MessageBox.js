@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import MessageList from './MessageList';
-import Throbber from '../general/Throbber';
 import { connect } from 'react-redux';
 import { closePicker } from '../../actions/chatActions';
 import { playNotification } from '../../utils/audio';
@@ -16,8 +15,14 @@ class MessageBox extends Component {
     };
   }
 
+  onNewMessages = () => {
+    if (this.props.isAudioEnabled){
+      playNotification();
+    }
+    this.scrollToBottom();
+  }
+
   scrollToBottom = () => {
-    playNotification();
     this.messagesEnd && this.messagesEnd.scrollIntoView();
   }
 
@@ -32,7 +37,10 @@ class MessageBox extends Component {
     return (
       <div className="message-box" onClick={closePicker}>
         <div className="message-list">
-          <MessageList onNewMessages={this.scrollToBottom} messages={messages} username={username} />
+          <MessageList
+            onNewMessages={() => this.onNewMessages()}
+            messages={messages}
+            username={username} />
         </div>
         <div style={{float: "left", clear: "both"}}
           ref={this.setMessagesEndRef}>
