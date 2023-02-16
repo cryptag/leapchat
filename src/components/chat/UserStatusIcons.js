@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+
 import FaCircle from 'react-icons/lib/fa/circle';
 import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
 import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
+
+const activeTooltip = <Tooltip>Active</Tooltip>;
+
+const idleTooltip = <Tooltip>Idle</Tooltip>;
 
 export const UserStatusIcon = ({
   username,
@@ -13,9 +19,27 @@ export const UserStatusIcon = ({
 }) => {
   let statusIcon = <FaMinusCircle style={styleOffline} />;
   if (status === 'viewing') {
-    statusIcon = <FaCircle style={styleViewing} />;
+    statusIcon = (
+      <OverlayTrigger
+        placement="right"
+        overlay={activeTooltip}
+        trigger="hover"
+        delayShow={300}
+        delayHide={150}>
+        <FaCircle style={styleViewing} />
+      </OverlayTrigger>
+    );
   } else if (status === 'online') {
-    statusIcon = <FaCircle style={styleOnline} />;
+    statusIcon = (
+      <OverlayTrigger
+        placement="right"
+        overlay={idleTooltip}
+        trigger="hover"
+        delayShow={300}
+        delayHide={150}>
+        <FaCircle style={styleOnline} />
+      </OverlayTrigger>
+    );
   }
   return (
     <div style={styleUserStatus}>
