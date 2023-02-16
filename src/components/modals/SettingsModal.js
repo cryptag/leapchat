@@ -7,8 +7,6 @@ import FaExternalLink from 'react-icons/lib/fa/external-link';
 
 import { chatHandler } from '../../epics/chatEpics';
 
-const shareLink = window.location.href;
-
 const onDeleteAllMsgs = (e) => {
   if (window.confirm("Are you sure you want to delete every existing chat message from this chat room? This action cannot be undone.")) {
     chatHandler.sendDeleteAllMessagesSignalToServer();
@@ -16,6 +14,7 @@ const onDeleteAllMsgs = (e) => {
 };
 
 const onCopyShareLink = (e) => {
+  const shareLink = window.location.href;
   navigator.clipboard.writeText(shareLink);
 };
 

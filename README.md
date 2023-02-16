@@ -201,34 +201,33 @@ npm run start
 ```
 
 
-### Production Deployment Build
+### Production Build and Deploy
 
-Same as the Linux commands above, with two modifications.
+Make sure you're in the default branch (currently `develop`), and make
+sure that `git diff` doesn't return anything, then run these commands
+to create a new, versioned release of LeapChat, perform a production
+build, then deploy that build to production:
 
-Replace:
-
-```
-npm run dev
-```
-
-with
+(Be sure to customize `version` to the actual new version number.)
 
 ```
-go build
-npm run build
+make -B build
+make release version=1.2.3
+make deploy version=1.2.3
 ```
 
-Replace:
+If the build succeeds and the upload and rest of the deployment fails,
+you can deploy the latest local build (in `./releases/`) with
 
 ```
-go build
-./leapchat
+make upload
 ```
 
-with
+Once SSH'd in, kill the old `leapchat` process then run
 
 ```
-go build
+cd ~/gocode/src/github.com/cryptag/leapchat
+tar xvf $(ls -t releases/*.tar.gz | head -1)
 sudo setcap cap_net_bind_service=+ep leapchat
 ./leapchat -prod -domain www.leapchat.org -http :80 -https :443 -iframe-origin www.leapchat.org 2>&1 | tee -a logs.txt
 ```
