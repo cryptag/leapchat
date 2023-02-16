@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import FaShareAlt from 'react-icons/lib/fa/share-alt';
 import FaExternalLink from 'react-icons/lib/fa/external-link';
 
@@ -19,6 +19,12 @@ const onCopyShareLink = (e) => {
   navigator.clipboard.writeText(shareLink);
 };
 
+const tooltip = (
+  <Tooltip id="confirm-copy">
+    <strong>Link copied!</strong>
+  </Tooltip>
+);
+
 const SettingsModal = ({
   isVisible,
   onCloseModal
@@ -34,11 +40,13 @@ const SettingsModal = ({
           <hr />
           <h3>Invite to this Chat</h3>
           <p>
-            Click to copy a link and invite others to this LeapChat room.
+            Click to copy a link to your clipboard to invite others to this LeapChat room.
           </p>
-          <Button onClick={onCopyShareLink} bsStyle="primary" style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-            Copy Invite Link <div style={{width: '4px'}}></div><FaShareAlt />
-          </Button>
+          <OverlayTrigger placement="top" overlay={tooltip} trigger="click" delayHide={500}>
+            <Button onClick={onCopyShareLink} bsStyle="primary" style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+              Copy Link to Clipboard <div style={{width: '4px'}}></div><FaShareAlt />
+            </Button>
+          </OverlayTrigger>
           <hr />
           <h3>Feedback</h3>
           <p>
