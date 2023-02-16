@@ -168,7 +168,7 @@ class MessageForm extends Component {
                 onSetIsAudioEnabled={onSetIsAudioEnabled} />
 
               <div className="right-chat-icons"></div>
-            </div>  
+            </div>
 
             
             <div className="message" onKeyDown={this.handleKeyDown}>

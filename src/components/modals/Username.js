@@ -47,10 +47,7 @@ class UsernameModal extends PureComponent {
     if (this.isUsernameValid(username)) {
       this.props.onSetUsername(username);
       // set the audio to the user's previously selected preference; enable by default
-      let isAudioEnabled = JSON.parse(localStorage.getItem('isAudioEnabled'));
-      if (isAudioEnabled !== false) {
-        isAudioEnabled = true;
-      }
+      let isAudioEnabled = JSON.parse(localStorage.getItem('isAudioEnabled') || 'true');
       this.props.onSetIsAudioEnabled(isAudioEnabled);
     }
   }
