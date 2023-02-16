@@ -18,6 +18,7 @@ import ChatContainer from './chat/ChatContainer';
 import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
 import PincodeModal from './modals/PincodeModal';
+import SettingsModal from './modals/SettingsModal';
 
 class App extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class App extends Component {
     this.state = {
       showUsernameModal: false,
       showInfoModal: false,
+      showSettingsModal: false
     };
 
   }
@@ -54,6 +56,18 @@ class App extends Component {
   onCloseUsernameModal = () => {
     this.setState({
       showUsernameModal: false
+    });
+  }
+
+  onShowSettingsModal = () => {
+    this.setState({
+      showSettingsModal: true
+    });
+  }
+
+  onCloseSettingsModal = () => {
+    this.setState({
+      showSettingsModal: false
     });
   }
 
@@ -90,7 +104,7 @@ class App extends Component {
   }
 
   render() {
-    const { showInfoModal } = this.state;
+    const { showInfoModal, showSettingsModal } = this.state;
     const {
       messages,
       username,
@@ -107,11 +121,11 @@ class App extends Component {
 
     return (
       <div id="page">
-
         <Header
           username={username}
           statuses={statuses}
           onShowUsernameModal={this.onShowUsernameModal}
+          onShowSettingsModal={this.onShowSettingsModal}
           onToggleInfoModal={this.onToggleInfoModal} />
 
         <main className="encloser">
@@ -127,6 +141,10 @@ class App extends Component {
             isVisible={showUsernameModal}
             onSetUsername={this.onSetUsername}
             onCloseModal={this.onCloseUsernameModal} />}
+
+          {showSettingsModal && <SettingsModal 
+            isVisible={showSettingsModal}
+            onCloseModal={this.onCloseSettingsModal} />}
 
           <ChatContainer
             alertMessage={alertMessage}

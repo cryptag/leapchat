@@ -1,23 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { PropTypes } from 'prop-types';
+
 import FaCog from 'react-icons/lib/fa/cog';
 
-export default class Settings extends Component {
-  constructor(props) {
-    super(props);
+const Settings = ({ onShowSettingsModal }) => {
+  return (
+    <div className="settings" >
+      <FaCog size={30} onClick={onShowSettingsModal} />
+    </div>
+  );
+};
 
-    this.onClickSettings = this.onClickSettings.bind(this);
-  }
+Settings.propTypes = {
+  onShowSettingsModal: PropTypes.func.isRequired
+};
 
-  // only one settings options for now
-  onClickSettings() {
-    this.props.onShowUsernameModal();
-  }
-
-  render() {
-    return (
-      <div className="settings" >
-        <FaCog size={30} onClick={this.onClickSettings} />
-      </div>
-    );
-  }
-}
+export default Settings;

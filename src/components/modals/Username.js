@@ -87,7 +87,8 @@ class UsernameModal extends PureComponent {
                 defaultValue={ username || previousUsername }
                 placeholder="Enter username (e.g., trinity)" 
                 onKeyPress={this.onUsernameKeyPress} 
-                autoFocus={true} />
+                autoFocus={true}
+                autoComplete="off" />
               <br />
               <div className="alert alert-danger" role="alert" style={this.displayFailAlert()} >
                 <strong>Invalid Username: </strong>
