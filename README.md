@@ -75,8 +75,8 @@ cd $(go env GOPATH)/src/github.com/cryptag/leapchat/db
 chmod a+rx ~/
 createdb
 sudo -u $USER bash init_sql.sh
-wget https://github.com/PostgREST/postgrest/releases/download/v7.0.0/postgrest-v7.0.0-osx.tar.xz
-tar xvf postgrest-v7.0.0-osx.tar.xz
+wget https://github.com/PostgREST/postgrest/releases/download/v10.1.1/postgrest-v10.1.1-macos-x64.tar.xz
+tar xvf postgrest-v10.1.1-macos-x64.tar.xz
 ./postgrest postgrest.conf
 ```
 
@@ -157,8 +157,8 @@ and have `postgrest` connect to Postgres:
 cd $(go env GOPATH)/src/github.com/cryptag/leapchat/db
 chmod a+rx ~/
 sudo -u postgres bash init_sql.sh
-wget https://github.com/PostgREST/postgrest/releases/download/v7.0.0/postgrest-v7.0.0-ubuntu.tar.xz
-tar xvf postgrest-v7.0.0-ubuntu.tar.xz
+wget https://github.com/PostgREST/postgrest/releases/download/v10.1.1/postgrest-v10.1.1-linux-static-x64.tar.xz
+tar xvf postgrest-v10.1.1-linux-static-x64.tar.xz
 ./postgrest postgrest.conf
 ```
 
