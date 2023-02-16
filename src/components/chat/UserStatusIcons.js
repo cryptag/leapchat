@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+
 import FaCircle from 'react-icons/lib/fa/circle';
 import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
 import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
+
+const editUsernameTooltip = (
+  <Tooltip>Edit Username</Tooltip>
+);
 
 export const UserStatusIcon = ({
   username,
@@ -24,7 +30,9 @@ export const UserStatusIcon = ({
       {isCurrentUser && <span>&nbsp;(me)</span> }
       <span style={styleEditUsername} data-testid="edit-username">
         {isCurrentUser &&
-          <FaPencilSquare onClick={onShowUsernameModal} size={19} />
+          <OverlayTrigger placement="bottom" overlay={editUsernameTooltip} delayShow={300} delayHide={150}>
+            <FaPencilSquare onClick={onShowUsernameModal} size={19} />
+          </OverlayTrigger>
         }
       </span>
     </div>
