@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import FaQuestionCircle from 'react-icons/lib/fa/question-circle';
+import FaInfoCircle from 'react-icons/lib/fa/info-circle';
 
 export default class Info extends Component {
   constructor(props){
@@ -10,7 +10,7 @@ export default class Info extends Component {
   render() {
     return (
       <div className="info">
-        <FaQuestionCircle onClick={this.props.onToggleInfoModal} size={19}/>
+        <FaInfoCircle onClick={this.props.onToggleInfoModal} size={25}/>
       </div>
     );
   }

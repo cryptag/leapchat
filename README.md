@@ -232,6 +232,14 @@ sudo setcap cap_net_bind_service=+ep leapchat
 ./leapchat -prod -domain www.leapchat.org -http :80 -https :443 -iframe-origin www.leapchat.org 2>&1 | tee -a logs.txt
 ```
 
+## Documentation Links
+
+Currently, some of the packages we use are slightly out of date. Here are some quick documentation links that might prove useful:
+
+[React Bootstrap version 0.33.1 docs](https://react-bootstrap-v3.netlify.app/components/tooltips/)
+
+Search for available [Font Awesome Icons](https://fontawesome.com/v4/icons/)
+
 
 ## JavaScript Testing
 
@@ -254,9 +262,7 @@ For browser tests, we use [playwright](https://playwright.dev/). This should be 
 via `npm`, but you may need to install the playwright browser have tests run successfully:
 
 ```
-$ npx playwright install firefox
-$ npx playwright install chromium
-$ npx playwright install webkit
+$ npx playwright install-deps
 ```
 
 Browser tests are located at `./test/playwright` and have an extension of `.spec.js`.
@@ -278,6 +284,16 @@ $ npm run webtests
 ```
 $ npm test
 ```
+
+### Documentation Links
+
+Playwright has good docs. For quick access, here are some useful links:
+
+[Accessing the DOM with Playwright](https://playwright.dev/docs/api/class-locator)
+
+[Test Assertions with Playwright](https://playwright.dev/docs/test-assertions)
+
+Currently experimental: [Unit Testing React Components with Playwright](https://playwright.dev/docs/test-components)
 
 ## Go Testing
 
