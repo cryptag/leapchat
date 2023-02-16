@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
 import FaSmileO from 'react-icons/lib/fa/smile-o';
 import { Picker, emojiIndex } from 'emoji-mart';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import emoji from '../../constants/emoji';
 import { emojiSuggestions, mentionSuggestions } from '../../utils/suggestions';
 import {
@@ -19,8 +19,6 @@ import {
   upSuggestion,
   addSuggestion
 } from '../../actions/chatActions';
-
-import { chatHandler } from '../../epics/chatEpics';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -102,7 +100,7 @@ class MessageForm extends Component {
   backgroundImageFn = (set, sheetSize) => {
     if (set !== 'apple' || sheetSize !== 64) {
       console.log('WARNING: using set "apple" and sheetSize 64 rather than',
-                  set, 'and', sheetSize, 'as was requested');
+        set, 'and', sheetSize, 'as was requested');
     }
     return '/' + emoji.EMOJI_APPLE_64_SHEET;
   }
@@ -132,12 +130,6 @@ class MessageForm extends Component {
     this.messageInput = input;
   }
 
-  onDeleteAllMsgs = (e) => {
-    if (window.confirm("Are you sure you want to delete every existing chat message from this chat room?")) {
-      chatHandler.sendDeleteAllMessagesSignalToServer();
-    }
-  }
-
   render() {
     const { message, showEmojiPicker } = this.props.chat;
     const { messageUpdate, togglePicker } = this.props;
@@ -165,15 +157,7 @@ class MessageForm extends Component {
                 onClick={togglePicker}
               />
 
-              <div className="right-chat-icons">
-                <button
-                  style={{height: '100%', padding: '0 8px 0 10px'}}
-                  className="delete-all-msgs"
-                  onClick={this.onDeleteAllMsgs}
-                >
-                  Delete All Messages Forever
-                </button>
-              </div>
+              <div className="right-chat-icons"></div>
             </div>
 
             <div className="message" onKeyDown={this.handleKeyDown}>

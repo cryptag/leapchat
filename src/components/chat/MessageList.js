@@ -12,7 +12,7 @@ class MessageList extends Component {
         .concat(this.props.messages.map(m => m.id))
         .reduce((acc, id) => {
           if(!acc.indexOf(id) === -1){
-            acc.push(id)
+            acc.push(id);
           }
           return acc;
         }, [])
@@ -29,10 +29,12 @@ class MessageList extends Component {
     return (
       <ul>
         {messages.map((message, i) => {
-          return <Message
-            key={i}
-            message={message}
-            username={username} />
+          return (
+            <Message
+              key={i}
+              message={message}
+              username={username} />
+          );
         })}
       </ul>
     );

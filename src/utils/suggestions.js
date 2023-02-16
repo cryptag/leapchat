@@ -18,7 +18,7 @@ export const emojiSuggestions = (cursorStart, value) => {
   begin.sort(sortBySuggest);
   end.sort(sortBySuggest);
   return begin.concat(end);
-}
+};
 
 export const mentionSuggestions = (start, value, obj) => {
   const users = Object.keys(obj);
@@ -31,11 +31,11 @@ export const mentionSuggestions = (start, value, obj) => {
     }
   });
   return filteredMentions.sort(sortBySuggest);
-}
+};
 
 const sortBySuggest = (suggest1, suggest2) => {
   return suggest1.name.localeCompare(suggest2.name);
-}
+};
 
 export const scrollIntoViewOptions = {behavior: 'instant', block: 'nearest'};
 if (window.browser === 'Firefox') {

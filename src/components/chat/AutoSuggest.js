@@ -26,8 +26,8 @@ const AutoSuggest = ({ chat }) => {
         : <EmojiSuggestions />
       }
     </div>
-  )
-}
+  );
+};
 
 
 export default connect(({ chat }) => ({chat}))(AutoSuggest);

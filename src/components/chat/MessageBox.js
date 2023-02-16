@@ -38,7 +38,7 @@ class MessageBox extends Component {
           ref={this.setMessagesEndRef}>
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -62,15 +62,15 @@ const messageEpic = (action$) =>
   action$.ofType('CHAT_START_SUGGESTIONS')
     .mergeMap(({ cursorIndex, filterSuggestions, list }) => {
       return action$.ofType('CHAT_MESSAGE_UPDATE')
-      .map((msg) => showSuggestions(cursorIndex, msg.message, filterSuggestions, list))
-      .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
-      .catch((err) => console.error(err))
-    })
+        .map((msg) => showSuggestions(cursorIndex, msg.message, filterSuggestions, list))
+        .takeUntil(action$.ofType('CHAT_STOP_SUGGESTIONS'))
+        .catch((err) => console.error(err));
+    });
 
 const suggestionEpic = (action$) =>
   action$.ofType('CHAT_ADD_SUGGESTION')
     .map(() => stopSuggestions())
-    .catch((err) => console.error(err))
+    .catch((err) => console.error(err));
 
 
 function createKeyPairObservable({ pincode = '' }) {
@@ -86,8 +86,8 @@ function createKeyPairObservable({ pincode = '' }) {
     let email = getEmail(passphrase);
     // 4. Decrypt to get key pair
     miniLock.crypto.getKeyPair(passphrase, email, (keyPair) => {
-      miniLock.session.keys = keyPair
-      miniLock.session.keyPairReady = true
+      miniLock.session.keys = keyPair;
+      miniLock.session.keyPairReady = true;
       let mID = miniLock.crypto.getMiniLockID(keyPair.publicKey);
       // 4. When we have keypair, login:
 
@@ -113,8 +113,8 @@ function createDecryptMessageObservable({ message, mID, secretKey }) {
         });
 
         reader.readAsText(fileBlob);
-      })
-  })
+      });
+  });
 }
 
 function getAuthRequestSettings({ mID }) {
@@ -125,7 +125,7 @@ function getAuthRequestSettings({ mID }) {
       'X-Minilock-Id': mID
     },
     method: 'GET'
-  }
+  };
   return settings;
 }
 
@@ -162,7 +162,7 @@ const initConnectionEpic = (action$) =>
           return Observable.from([
             alertWarning('Lost connection to chat server. Trying to reconnect...'),
             disconnected()
-          ])
+          ]);
         })
     )
     .catch(error => {
@@ -170,7 +170,7 @@ const initConnectionEpic = (action$) =>
       return Observable.from([
         alertWarning('Something went wrong when initiating. Trying again...'),
         disconnected()
-      ])
+      ]);
     });
 
 const setUsernameEpic = (action$, store) =>
@@ -180,12 +180,12 @@ const setUsernameEpic = (action$, store) =>
       Observable.of(action.username)
         .do(username => {
           const ttl = USER_STATUS_DELAY_MS / 1000;
-          chatHandler.sendUserStatus(username, 'viewing', ttl)
+          chatHandler.sendUserStatus(username, 'viewing', ttl);
         })
         .retryWhen(error => error.delay(500))
         .do(() => localStorage && localStorage.setItem(USERNAME_KEY, action.username))
     )
-    .map(username => usernameSet(username))
+    .map(username => usernameSet(username));
 
 const ownUserStatusEpic = (action$, store) =>
   action$.ofType(CHAT_INIT_CHAT)
@@ -201,7 +201,7 @@ const ownUserStatusEpic = (action$, store) =>
         .map(() => userStatusSent())
     )
     .catch(error => {
-      console.error(error)
+      console.error(error);
       return Observable.of(alertWarning('Error sending user status.'));
     });
 
@@ -217,7 +217,7 @@ const sendMessageEpic = action$ =>
     )
     .map(() => messageSent())
     .catch(error => {
-      console.error(error)
+      console.error(error);
       return Observable.of(alertWarning('Error sending message.'));
     });
 

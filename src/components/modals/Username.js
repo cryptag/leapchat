@@ -5,6 +5,8 @@ import { Modal, Button } from 'react-bootstrap';
 
 import { generateRandomUsername } from '../../data/username';
 
+export const MAX_USERNAME_LENGTH = 45;
+
 class UsernameModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -31,8 +33,8 @@ class UsernameModal extends PureComponent {
     if (!username || username.length === 0) {
       this.setState({ failMessage: 'Must not be empty' });
       return false;
-    } else if (username.length > 45) {
-      this.setState({ failMessage: 'Length must not exceed 45' });
+    } else if (username.length > MAX_USERNAME_LENGTH) {
+      this.setState({ failMessage: `Length must not exceed ${MAX_USERNAME_LENGTH}` });
       return false;
     } else {
       return true;
@@ -49,6 +51,7 @@ class UsernameModal extends PureComponent {
 
   setRandomUsernameInForm = () => {
     this.usernameInput.value = generateRandomUsername();
+    this.usernameInput.focus();
   }
 
   displayFailAlert = () => {
@@ -60,24 +63,32 @@ class UsernameModal extends PureComponent {
   }
 
   render() {
-    const { showModal, previousUsername, username, onCloseModal } = this.props;
+    const {
+      isVisible,
+      previousUsername,
+      username,
+      onCloseModal
+    } = this.props;
 
     return (
       <div>
-        <Modal show={showModal} onHide={this.onCloseModal}>
+        <Modal show={isVisible} onHide={onCloseModal}>
           <Modal.Header>
             <Modal.Title>Set Username</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-group">
+            <div data-testid="set-username-form" className="form-group">
+              <label htmlFor="username">Username</label>
               <input 
+                id="username"
                 type="text"
                 className="form-control"
                 ref={(input) => { this.usernameInput = input; }}
                 defaultValue={ username || previousUsername }
                 placeholder="Enter username (e.g., trinity)" 
                 onKeyPress={this.onUsernameKeyPress} 
-                autoFocus={true} />
+                autoFocus={true}
+                autoComplete="off" />
               <br />
               <div className="alert alert-danger" role="alert" style={this.displayFailAlert()} >
                 <strong>Invalid Username: </strong>
@@ -88,7 +99,7 @@ class UsernameModal extends PureComponent {
           </Modal.Body>
           <Modal.Footer>
             {username && <Button onClick={onCloseModal}>Cancel</Button>}
-            <Button onClick={this.onSetUsernameClick} bsStyle="primary">Set Username</Button>
+            <Button data-testid="set-username" onClick={this.onSetUsernameClick} bsStyle="primary">Set Username</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -96,13 +107,12 @@ class UsernameModal extends PureComponent {
   }
 }
 
-
-UsernameModal.propType = {
-  showModal: PropTypes.bool.isRequired,
+UsernameModal.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
   previousUsername: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSetUsername: PropTypes.func.isRequired
-}
+};
 
 export default UsernameModal;

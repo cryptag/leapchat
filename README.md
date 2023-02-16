@@ -201,49 +201,87 @@ npm run start
 ```
 
 
-### Production Deployment Build
+### Production Build and Deploy
 
-Same as the Linux commands above, with two modifications.
+Make sure you're in the default branch (currently `develop`), and make
+sure that `git diff` doesn't return anything, then run these commands
+to create a new, versioned release of LeapChat, perform a production
+build, then deploy that build to production:
 
-Replace:
-
-```
-npm run dev
-```
-
-with
+(Be sure to customize `version` to the actual new version number.)
 
 ```
-go build
-npm run build
+make -B build
+make release version=1.2.3
+make deploy version=1.2.3
 ```
 
-Replace:
+If the build succeeds and the upload and rest of the deployment fails,
+you can deploy the latest local build (in `./releases/`) with
 
 ```
-go build
-./leapchat
+make upload
 ```
 
-with
+Once SSH'd in, kill the old `leapchat` process then run
 
 ```
-go build
+cd ~/gocode/src/github.com/cryptag/leapchat
+tar xvf $(ls -t releases/*.tar.gz | head -1)
 sudo setcap cap_net_bind_service=+ep leapchat
 ./leapchat -prod -domain www.leapchat.org -http :80 -https :443 -iframe-origin www.leapchat.org 2>&1 | tee -a logs.txt
 ```
 
 
-## Testing
+## JavaScript Testing
 
-We use [mocha](https://mochajs.org/) as the testing framework, with
+### Unit Tests
+
+For unit tests, use [mocha](https://mochajs.org/) as the testing framework and test runner, with
 [chai](http://chaijs.com/)'s expect API.
 
-To run tests:
+Unit tests are located at `./test/` and have an extension of `.test.js`.
 
-``` $ npm test ```
+To run unit tests only, run:
 
-and go tests:
+```
+$ npm run mocha
+```
+
+### Browser Tests
+
+For browser tests, we use [playwright](https://playwright.dev/). This should be installed for you 
+via `npm`, but you may need to install the playwright browser have tests run successfully:
+
+```
+$ npx playwright install firefox
+$ npx playwright install chromium
+$ npx playwright install webkit
+```
+
+Browser tests are located at `./test/playwright` and have an extension of `.spec.js`.
+
+To run browser tests only, run:
+
+```
+$ npm run playwright
+```
+
+By default, the browser tests run in headless mode. To run with an interactive browser session, run:
+
+```
+$ npm run webtests
+```
+
+**To run all of the tests, all together**:
+
+```
+$ npm test
+```
+
+## Go Testing
+
+To run the golang tests:
 
 ``` $ go test [-v] ./... ```
 
