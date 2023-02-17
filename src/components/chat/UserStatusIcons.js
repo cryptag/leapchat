@@ -8,7 +8,7 @@ import FaMinusCircle from 'react-icons/lib/fa/minus-circle';
 import FaPencilSquare from 'react-icons/lib/fa/pencil-square';
 
 const editUsernameTooltip = (
-  <Tooltip>Edit Username</Tooltip>
+  <Tooltip id="edit-username-tooltip">Edit Username</Tooltip>
 );
 
 export const UserStatusIcon = ({
