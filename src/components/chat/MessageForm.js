@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { PropTypes } from 'prop-types';
+import { connect } from 'react-redux';
+
 import { Button } from 'react-bootstrap';
 import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
 import FaSmileO from 'react-icons/lib/fa/smile-o';
-import { Picker, emojiIndex } from 'emoji-mart';
-import { connect } from 'react-redux';
+import { Picker } from 'emoji-mart';
 import emoji from '../../constants/emoji';
 import { emojiSuggestions, mentionSuggestions } from '../../utils/suggestions';
 import {
@@ -19,6 +20,7 @@ import {
   upSuggestion,
   addSuggestion
 } from '../../actions/chatActions';
+import ToggleAudioIcon from './toolbar/ToggleAudioIcon';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -132,7 +134,11 @@ class MessageForm extends Component {
 
   render() {
     const { message, showEmojiPicker } = this.props.chat;
-    const { messageUpdate, togglePicker } = this.props;
+    const {
+      messageUpdate,
+      togglePicker,
+      isAudioEnabled,
+      onSetIsAudioEnabled } = this.props;
 
     return (
       <div className="message-form">
@@ -157,9 +163,14 @@ class MessageForm extends Component {
                 onClick={togglePicker}
               />
 
+              <ToggleAudioIcon
+                isAudioEnabled={isAudioEnabled}
+                onSetIsAudioEnabled={onSetIsAudioEnabled} />
+
               <div className="right-chat-icons"></div>
             </div>
 
+            
             <div className="message" onKeyDown={this.handleKeyDown}>
               <textarea
                 className="form-control"
@@ -175,13 +186,21 @@ class MessageForm extends Component {
                 <FaArrowCircleRight size={30} />
               </Button>
             </div>
-          </div>
 
+          </div>
         </form>
+
       </div>
     );
   }
 }
+
+MessageForm.propType = {
+  onSendMessage: PropTypes.func.isRequired,
+  shouldHaveFocus: PropTypes.bool.isRequired,
+  onSetIsAudioEnabled: PropTypes.func.isRequired,
+  isAudioEnabled: PropTypes.bool.isRequired,
+};
 
 export default connect(({ chat }) => ({chat}), {
   messageUpdate,
