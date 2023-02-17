@@ -211,13 +211,20 @@ build, then deploy that build to production:
 (Be sure to customize `version` to the actual new version number.)
 
 ```
+make all-deploy version=1.2.3
+```
+
+Or to run the build, release, and deploy steps individually:
+
+```
 make -B build
 make release version=1.2.3
 make deploy version=1.2.3
 ```
 
-If the build succeeds and the upload and rest of the deployment fails,
-you can deploy the latest local build (in `./releases/`) with
+If the build and release succeed but the upload (and thus the rest of
+the deployment) fails, you can deploy the latest local build (in
+`./releases/`) with
 
 ```
 make upload
