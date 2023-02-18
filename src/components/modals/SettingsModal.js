@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import FaShareAlt from 'react-icons/lib/fa/share-alt';
-import FaExternalLink from 'react-icons/lib/fa/external-link';
+import { FaShareAlt } from 'react-icons/fa';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 import { chatHandler } from '../../epics/chatEpics';
 
@@ -51,7 +51,7 @@ const SettingsModal = ({
           <p>
             Do you have feedback or suggestions on how we can improve LeapChat? We're listening!{' '}
             <a href="https://github.com/cryptag/leapchat/issues" target="_blank" rel="nofollow noreferrer noopener">
-              Share your feedback here.{' '}<FaExternalLink size={19} />
+              Share your feedback here.{' '}<FaExternalLinkAlt size={19} />
             </a>
           </p>
           <hr />

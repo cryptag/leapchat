@@ -3,8 +3,8 @@ import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Button } from 'react-bootstrap';
-import FaArrowCircleRight from 'react-icons/lib/fa/arrow-circle-right';
-import FaSmileO from 'react-icons/lib/fa/smile-o';
+import { FaArrowAltCircleRight } from 'react-icons/fa';
+import { FaSmile } from 'react-icons/fa';
 import { Picker } from 'emoji-mart';
 import emoji from '../../constants/emoji';
 import { emojiSuggestions, mentionSuggestions } from '../../utils/suggestions';
@@ -158,7 +158,7 @@ class MessageForm extends Component {
 
           <div>
             <div className="chat-icons">
-              <FaSmileO size={24}
+              <FaSmile size={24}
                 className="emoji-picker-icon"
                 onClick={togglePicker}
               />
@@ -183,7 +183,7 @@ class MessageForm extends Component {
                 placeholder="Enter message">
               </textarea>
               <Button onClick={this.onSendMessage}>
-                <FaArrowCircleRight size={30} />
+                <FaArrowAltCircleRight size={30} />
               </Button>
             </div>
 

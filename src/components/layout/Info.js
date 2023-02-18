@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-import FaInfoCircle from 'react-icons/lib/fa/info-circle';
+import { FaInfoCircle } from 'react-icons/fa';
 
 const infoTooltip = (
   <Tooltip id="open-info-tooltip">Open LeapChat Info</Tooltip>

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-import FaVolumeUp from 'react-icons/lib/fa/volume-up';
-import FaVolumeOff from 'react-icons/lib/fa/volume-off';
+import { FaVolumeUp } from 'react-icons/fa';
+import { FaVolumeMute } from 'react-icons/fa';
 
 const disableAudioTooltip = (
   <Tooltip id="mute-audio">Mute Audio</Tooltip>
@@ -22,7 +22,7 @@ const DisableAudioIcon = ({ onSetIsAudioEnabled }) => (
 
 const EnableAudioIcon = ({ onSetIsAudioEnabled }) => (
   <OverlayTrigger overlay={enableAudioTooltip} placement="top" delayShow={300} delayHide={150}>
-    <FaVolumeOff size={24} onClick={() => onSetIsAudioEnabled(true)} />
+    <FaVolumeMute size={24} onClick={() => onSetIsAudioEnabled(true)} />
   </OverlayTrigger>
 );
 

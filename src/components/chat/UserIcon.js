@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import FaGroup from 'react-icons/lib/fa/group';
+import { FaUsers } from 'react-icons/fa';
 
 const UserIcon = ({ onToggleUserList }) => {
 
   return (
     <div className="users-icon">
-      <FaGroup size={30} onClick={onToggleUserList} />
+      <FaUsers size={30} onClick={onToggleUserList} />
     </div>
   );
 };
