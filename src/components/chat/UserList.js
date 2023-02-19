@@ -21,7 +21,7 @@ class UserList extends Component {
   }
 
   render() {
-    const { statuses, onShowUsernameModal } = this.props;
+    const { statuses, onToggleModalVisibility } = this.props;
     const currentUsername = this.props.username;
 
     const userStatuses = Object.keys(statuses).map(username => {
@@ -39,7 +39,7 @@ class UserList extends Component {
                   username={userStatus.username}
                   status={userStatus.status}
                   isCurrentUser={userStatus.username === currentUsername}
-                  onShowUsernameModal={onShowUsernameModal} />
+                  onToggleModalVisibility={onToggleModalVisibility} />
               </li>
             );
           })}
@@ -53,7 +53,7 @@ UserList.propTypes = {
   username: PropTypes.string.isRequired,
   statuses: PropTypes.object.isRequired,
   displayUserList: PropTypes.bool.isRequired,
-  onShowUsernameModal: PropTypes.func.isRequired
+  onToggleModalVisibility: PropTypes.func.isRequired
 };
 
 export default UserList;

@@ -29,10 +29,21 @@ class App extends Component {
     const isAudioEnabled = false;
 
     this.state = {
-      showUsernameModal: false,
-      showInfoModal: false,
-      showSettingsModal: false,
       isAudioEnabled: isAudioEnabled,
+      modals: {
+        username: {
+          isVisible: false
+        },
+        info: {
+          isVisible: false
+        },
+        settings: {
+          isVisible: false
+        },
+        pincode: {
+          isVisible: false
+        }
+      }
     };
 
   }
@@ -52,30 +63,13 @@ class App extends Component {
     }
   }
 
-  onShowUsernameModal = () => {
+  onToggleModalVisibility = (modalName, isVisible) => {
+    let modalsState = {...this.state.modals};
+    modalsState[modalName].isVisible = isVisible;
     this.setState({
-      showUsernameModal: true
+      modals: modalsState
     });
   }
-
-  onCloseUsernameModal = () => {
-    this.setState({
-      showUsernameModal: false
-    });
-  }
-
-  onShowSettingsModal = () => {
-    this.setState({
-      showSettingsModal: true
-    });
-  }
-
-  onCloseSettingsModal = () => {
-    this.setState({
-      showSettingsModal: false
-    });
-  }
-
   onClosePincodeModal = () => {
     this.setState({
       showPincodeModal: false
@@ -99,15 +93,7 @@ class App extends Component {
 
   onSetUsername = (username) => {
     this.props.setUsername(username);
-    this.setState({
-      showUsernameModal: false
-    });
-  }
-
-  onToggleInfoModal = () => {
-    this.setState((prevState) => {
-      return { showInfoModal: !prevState.showInfoModal };
-    });
+    this.onToggleModalVisibility('username', false);
   }
 
   onSendMessage = (message) => {
@@ -116,7 +102,6 @@ class App extends Component {
   }
 
   render() {
-    const { showInfoModal, showSettingsModal, isAudioEnabled } = this.state;
     const {
       messages,
       username,
@@ -126,7 +111,12 @@ class App extends Component {
       pincodeRequired,
       previousUsername } = this.props;
 
-    let { showUsernameModal } = this.state;
+    const { isAudioEnabled } = this.state;
+
+    const showSettingsModal = this.state.modals.settings.isVisible;
+    const showInfoModal = this.state.modals.info.isVisible;
+
+    let showUsernameModal = this.state.modals.username.isVisible;
     showUsernameModal = !pincodeRequired && (showUsernameModal || username === '');
 
     const chatInputFocus = !pincodeRequired && !showUsernameModal && username !== '';
@@ -136,28 +126,30 @@ class App extends Component {
         <Header
           username={username}
           statuses={statuses}
-          onShowUsernameModal={this.onShowUsernameModal}
-          onShowSettingsModal={this.onShowSettingsModal}
-          onToggleInfoModal={this.onToggleInfoModal} />
+          onToggleModalVisibility={this.onToggleModalVisibility} />
 
         <main className="encloser">
 
           {pincodeRequired && <PincodeModal
             showModal={pincodeRequired}
             onSetPincode={this.onSetPincode}
-            onCloseModal={this.onClosePincodeModal} />}
+            onToggleModalVisibility={this.onToggleModalVisibility} />}
 
           {showUsernameModal && <UsernameModal
             previousUsername={previousUsername}
             username={username}
             isVisible={showUsernameModal}
             onSetUsername={this.onSetUsername}
-            onCloseModal={this.onCloseUsernameModal}
+            onToggleModalVisibility={this.onToggleModalVisibility}
             onSetIsAudioEnabled={this.onSetIsAudioEnabled} />}
 
           {showSettingsModal && <SettingsModal 
             isVisible={showSettingsModal}
-            onCloseModal={this.onCloseSettingsModal} />}
+            onToggleModalVisibility={this.onToggleModalVisibility} />}
+
+          {showInfoModal && <InfoModal
+            isVisible={showInfoModal}
+            onToggleModalVisibility={this.onToggleModalVisibility} />}
 
           <ChatContainer
             alertMessage={alertMessage}
@@ -169,10 +161,6 @@ class App extends Component {
             messageInputFocus={chatInputFocus}
             isAudioEnabled={isAudioEnabled}
             onSetIsAudioEnabled={this.onSetIsAudioEnabled} />
-
-          <InfoModal
-            showModal={showInfoModal}
-            onToggleInfoModal={this.onToggleInfoModal} />
 
         </main>
 

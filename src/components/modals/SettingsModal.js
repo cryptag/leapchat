@@ -26,12 +26,16 @@ const tooltip = (
 
 const SettingsModal = ({
   isVisible,
-  onCloseModal
+  onToggleModalVisibility
 }) => {
+
+  const onClose = () => {
+    onToggleModalVisibility('settings', false);
+  };
 
   return (
     <div>
-      <Modal show={isVisible} onHide={onCloseModal}>
+      <Modal show={isVisible} onHide={onClose}>
         <Modal.Header closeButton>
           <h2>Settings</h2>
         </Modal.Header>
@@ -74,7 +78,7 @@ const SettingsModal = ({
 
 SettingsModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  onCloseModal: PropTypes.func.isRequired,
+  onToggleModalVisibility: PropTypes.func.isRequired,
 
 };
 

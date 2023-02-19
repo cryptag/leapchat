@@ -44,12 +44,16 @@ class PincodeModal extends PureComponent {
     this.pincodeInput.value = genPassphrase(2);
   }
 
+  onClose = () => {
+    this.props.onToggleModalVisibility('pincode', false);
+  }
+
   render() {
-    let { showModal, pincode, onCloseModal } = this.props;
+    let { showModal, pincode } = this.props;
 
     return (
       <div>
-        <Modal show={showModal} onHide={this.onCloseModal}>
+        <Modal show={showModal} onHide={this.onClose}>
           <Modal.Header>
             <Modal.Title>Set Pincode</Modal.Title>
           </Modal.Header>
@@ -68,7 +72,7 @@ class PincodeModal extends PureComponent {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            {pincode && <Button onClick={onCloseModal}>Cancel</Button>}
+            {pincode && <Button onClick={this.onClose}>Cancel</Button>}
             <Button onClick={this.onSetPincodeClick} bsStyle="primary">Set Pincode</Button>
           </Modal.Footer>
         </Modal>
@@ -80,7 +84,7 @@ class PincodeModal extends PureComponent {
 
 PincodeModal.propType = {
   showModal: PropTypes.bool.isRequired,
-  onCloseModal: PropTypes.func.isRequired,
+  onToggleModalVisibility: PropTypes.func.isRequired,
   onSetPincode: PropTypes.func.isRequired
 };
 

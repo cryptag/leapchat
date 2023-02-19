@@ -15,14 +15,20 @@ export const UserStatusIcon = ({
   username,
   status,
   isCurrentUser,
-  onShowUsernameModal
+  onToggleModalVisibility
 }) => {
+
+  const onShowUsernameModal = () => {
+    onToggleModalVisibility('username', true);
+  };
+
   let statusIcon = <FaMinusCircle style={styleOffline} />;
   if (status === 'viewing') {
     statusIcon = <FaCircle style={styleViewing} />;
   } else if (status === 'online') {
     statusIcon = <FaCircle style={styleOnline} />;
   }
+
   return (
     <div style={styleUserStatus}>
       {statusIcon}
@@ -43,7 +49,7 @@ UserStatusIcon.propTypes = {
   username: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   isCurrentUser: PropTypes.bool.isRequired,
-  onShowUsernameModal: PropTypes.func.isRequired
+  onToggleModalVisibility: PropTypes.func.isRequired
 };
 
 const styleUserStatus = {
