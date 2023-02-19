@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { FaShareAlt } from 'react-icons/fa';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
 import { chatHandler } from '../../epics/chatEpics';
@@ -12,17 +11,6 @@ const onDeleteAllMsgs = (e) => {
     chatHandler.sendDeleteAllMessagesSignalToServer();
   }
 };
-
-const onCopyShareLink = (e) => {
-  const shareLink = window.location.href;
-  navigator.clipboard.writeText(shareLink);
-};
-
-const tooltip = (
-  <Tooltip id="confirm-copy">
-    <strong>Link copied!</strong>
-  </Tooltip>
-);
 
 const SettingsModal = ({
   isVisible,
@@ -37,20 +25,9 @@ const SettingsModal = ({
     <div>
       <Modal show={isVisible} onHide={onClose}>
         <Modal.Header closeButton>
-          <h2>Settings</h2>
+          <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <hr />
-          <h3>Invite to this Chat</h3>
-          <p>
-            Click to copy a link to your clipboard to invite others to this LeapChat room.
-          </p>
-          <OverlayTrigger placement="top" overlay={tooltip} trigger="click" delayHide={500}>
-            <Button onClick={onCopyShareLink} bsStyle="primary" style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-              Copy Link to Clipboard <div style={{width: '4px'}}></div><FaShareAlt />
-            </Button>
-          </OverlayTrigger>
-          <hr />
           <h3>Feedback</h3>
           <p>
             Do you have feedback or suggestions on how we can improve LeapChat? We're listening!{' '}

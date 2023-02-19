@@ -19,6 +19,7 @@ import UsernameModal from './modals/Username';
 import InfoModal from './modals/InfoModal';
 import PincodeModal from './modals/PincodeModal';
 import SettingsModal from './modals/SettingsModal';
+import SharingModal from './modals/SharingModal';
 
 class App extends Component {
   constructor(props) {
@@ -41,6 +42,9 @@ class App extends Component {
           isVisible: false
         },
         pincode: {
+          isVisible: false
+        },
+        sharing: {
           isVisible: false
         }
       }
@@ -115,6 +119,7 @@ class App extends Component {
 
     const showSettingsModal = this.state.modals.settings.isVisible;
     const showInfoModal = this.state.modals.info.isVisible;
+    const showSharingModal = this.state.modals.sharing.isVisible;
 
     let showUsernameModal = this.state.modals.username.isVisible;
     showUsernameModal = !pincodeRequired && (showUsernameModal || username === '');
@@ -151,6 +156,10 @@ class App extends Component {
             isVisible={showInfoModal}
             onToggleModalVisibility={this.onToggleModalVisibility} />}
 
+          {showSharingModal && <SharingModal
+            isVisible={showSharingModal}
+            onToggleModalVisibility={this.onToggleModalVisibility} />}
+
           <ChatContainer
             alertMessage={alertMessage}
             alertStyle={alertStyle}
@@ -160,7 +169,8 @@ class App extends Component {
             onSendMessage={this.onSendMessage}
             messageInputFocus={chatInputFocus}
             isAudioEnabled={isAudioEnabled}
-            onSetIsAudioEnabled={this.onSetIsAudioEnabled} />
+            onSetIsAudioEnabled={this.onSetIsAudioEnabled}
+            onToggleModalVisibility={this.onToggleModalVisibility} />
 
         </main>
 

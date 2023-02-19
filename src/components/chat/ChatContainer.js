@@ -19,7 +19,8 @@ class ChatContainer extends Component {
       messageInputFocus,
       chat,
       isAudioEnabled,
-      onSetIsAudioEnabled } = this.props;
+      onSetIsAudioEnabled,
+      onToggleModalVisibility } = this.props;
 
     return (
       <div className="content">
@@ -40,7 +41,8 @@ class ChatContainer extends Component {
           onSendMessage={onSendMessage}
           shouldHaveFocus={messageInputFocus}
           isAudioEnabled={isAudioEnabled}
-          onSetIsAudioEnabled={onSetIsAudioEnabled} />
+          onSetIsAudioEnabled={onSetIsAudioEnabled}
+          onToggleModalVisibility={onToggleModalVisibility} />
 
       </div>
     );
@@ -58,6 +60,7 @@ ChatContainer.propTypes = {
   chat: PropTypes.object.isRequired,
   isAudioEnabled: PropTypes.bool.isRequired,
   onSetIsAudioEnabled: PropTypes.func.isRequired,
+  onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
 export default connect(({ chat }) => ({ chat }))(ChatContainer);

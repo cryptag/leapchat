@@ -21,6 +21,7 @@ import {
   addSuggestion
 } from '../../actions/chatActions';
 import ToggleAudioIcon from './toolbar/ToggleAudioIcon';
+import InviteIcon from './toolbar/InviteIcon';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -138,7 +139,8 @@ class MessageForm extends Component {
       messageUpdate,
       togglePicker,
       isAudioEnabled,
-      onSetIsAudioEnabled } = this.props;
+      onSetIsAudioEnabled,
+      onToggleModalVisibility } = this.props;
 
     return (
       <div className="message-form">
@@ -166,6 +168,9 @@ class MessageForm extends Component {
               <ToggleAudioIcon
                 isAudioEnabled={isAudioEnabled}
                 onSetIsAudioEnabled={onSetIsAudioEnabled} />
+
+              <InviteIcon
+                onToggleModalVisibility={onToggleModalVisibility} />
 
               <div className="right-chat-icons"></div>
             </div>
@@ -200,6 +205,7 @@ MessageForm.propType = {
   shouldHaveFocus: PropTypes.bool.isRequired,
   onSetIsAudioEnabled: PropTypes.func.isRequired,
   isAudioEnabled: PropTypes.bool.isRequired,
+  onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
 export default connect(({ chat }) => ({chat}), {
