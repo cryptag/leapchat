@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"sync"
 	"time"
 
@@ -110,17 +113,57 @@ func (r *Room) GetMessages() ([]Message, error) {
 }
 
 func (r *Room) AddMessages(msgs []Message, ttlSecs *int) error {
-	post := make(PGMessages, len(msgs))
+	toPost := make(PGMessages, len(msgs))
 
 	for i := 0; i < len(msgs); i++ {
-		post[i] = &PGMessage{
+		toPost[i] = &PGMessage{
 			RoomID:     r.ID,
 			MessageEnc: string(msgs[i]),
 			TTL:        ttlSecs,
 		}
 	}
 
-	return post.Create(r.pgClient)
+	return toPost.Create(r.pgClient)
+}
+
+func (r *Room) AddTodoLists(lists []TodoList) (toBroadcast []byte, err error) {
+	toPost := make([]PGTodoList, len(lists))
+
+	for i := 0; i < len(lists); i++ {
+		toPost[i].RoomID = r.ID
+		toPost[i].TitleEnc = lists[i].TitleEnc
+	}
+
+	return MarshalToPostgrestResp("/todo_lists", toPost, http.StatusCreated)
+}
+
+func MarshalToPostgrestResp(urlSuffix string, toPost interface{}, wantedCode int) (respBytes []byte, err error) {
+	toPostBytes, err := json.Marshal(toPost)
+	if err != nil {
+		return nil, err
+	}
+
+	r := bytes.NewReader(toPostBytes)
+	req, _ := http.NewRequest("POST", POSTGREST_BASE_URL+urlSuffix, r)
+	req.Header.Add("Prefer", "return=representation")
+	req.Header.Add("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	respBytes, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != wantedCode {
+		return nil, errors.New(string(respBytes))
+	}
+
+	return
 }
 
 func byteaToBytes(hexdata string) ([]byte, error) {
@@ -183,6 +226,20 @@ func (r *Room) BroadcastMessages(sender *Client, msgs ...Message) {
 	}
 }
 
+func (r *Room) BroadcastJSON(sender *Client, jsonToBroadcast []byte) {
+	r.clientLock.RLock()
+	defer r.clientLock.RUnlock()
+
+	for _, client := range r.Clients {
+		go func(client *Client) {
+			err := client.SendJSON(jsonToBroadcast)
+			if err != nil {
+				log.Debugf("Error sending message. Err: %s", err)
+			}
+		}(client)
+	}
+}
+
 func (r *Room) DeleteAllMessages() error {
 	resp, err := r.pgClient.Delete("/messages?room_id=eq." + r.ID)
 	if err != nil {
@@ -224,9 +281,6 @@ type Client struct {
 }
 
 func (c *Client) SendMessages(msgs ...Message) error {
-	c.writeLock.Lock()
-	defer c.writeLock.Unlock()
-
 	outgoing := OutgoingPayload{Ephemeral: msgs}
 
 	body, err := json.Marshal(outgoing)
@@ -234,9 +288,16 @@ func (c *Client) SendMessages(msgs ...Message) error {
 		return err
 	}
 
-	err = c.wsConn.WriteMessage(websocket.TextMessage, body)
+	return c.SendJSON(body)
+}
+
+func (c *Client) SendJSON(body []byte) error {
+	c.writeLock.Lock()
+	defer c.writeLock.Unlock()
+
+	err := c.wsConn.WriteMessage(websocket.TextMessage, body)
 	if err != nil {
-		log.Debugf("Error sending message to client. Removing client from room. Err: %s", err)
+		log.Debugf("Error sending JSON to client. Removing client from room. Err: %s", err)
 		c.room.RemoveClient(c)
 		return err
 	}

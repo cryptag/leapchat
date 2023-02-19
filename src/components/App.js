@@ -12,6 +12,7 @@ import {
 } from '../actions/alertActions';
 
 import Header from './layout/Header';
+import RightPanel from './layout/RightPanel';
 
 import ChatContainer from './chat/ChatContainer';
 
@@ -169,6 +170,8 @@ class App extends Component {
             messageInputFocus={chatInputFocus}
             isAudioEnabled={isAudioEnabled}
             onSetIsAudioEnabled={this.onSetIsAudioEnabled} />
+
+          <RightPanel />
 
           <InfoModal
             showModal={showInfoModal}
