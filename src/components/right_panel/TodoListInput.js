@@ -9,7 +9,7 @@ class TodoListInput extends Component {
 
     this.state = {
       title: ''
-    }
+    };
   }
 
   createTodoList = (e) => {
@@ -24,7 +24,7 @@ class TodoListInput extends Component {
       title: title,
     };
     let fileBlob = new Blob([JSON.stringify(contents)],
-                            {type: 'application/json'})
+                            {type: 'application/json'});
     let saveName = [
       'from:' + this.props.chat.username,
       'type:tasklist'
@@ -44,7 +44,7 @@ class TodoListInput extends Component {
       secretKey,
       this.sendTodoListToServer
     );
-  }
+  };
 
   sendTodoListToServer = (fileBlob, saveName, senderMinilockID) => {
     const that = this;
@@ -55,7 +55,7 @@ class TodoListInput extends Component {
       const b64encMinilockFile = btoa([].reduce.call(
         new Uint8Array(reader.result),
         function(p, c) {
-          return p + String.fromCharCode(c)
+          return p + String.fromCharCode(c);
         }, ''));
 
       const forServer = {
@@ -66,10 +66,10 @@ class TodoListInput extends Component {
 
       // ASSUMPTION: getWsConn() !== undefined
       that.props.getWsConn().send( JSON.stringify(forServer) );
-    })
+    });
 
     reader.readAsArrayBuffer(fileBlob);  // TODO: Add error handling
-  }
+  };
 
   onTitleChange = (e) => {
     this.setState({ title: e.target.value });
@@ -102,12 +102,12 @@ class TodoListInput extends Component {
 const styleTodoListInputCtn = {
   display: 'flex',
   flexDirection: 'column'
-}
+};
 
 const styleTodoListInputRow = {
   display: 'flex',
   flexDirection: 'row'
-}
+};
 
 const styleTodoListInput = {
   width: '100%',
@@ -116,6 +116,6 @@ const styleTodoListInput = {
   border: 'solid 1px #eee',
   borderRadius: '7px',
   paddingLeft: '8px'
-}
+};
 
 export default TodoListInput;

@@ -38,6 +38,6 @@ const styleRightPanel = {
   padding: '16px',
   width: '30vw',
   minWidth: '300px'
-}
+};
 
 export default connect(({ chat, task }) => ({ chat, task }))(RightPanel);
