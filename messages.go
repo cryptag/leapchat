@@ -11,6 +11,10 @@ import (
 
 type Message []byte
 
+type TodoList struct {
+	TitleEnc string `json:"title_enc"` // base64-encoded, encrypted title
+}
+
 type OutgoingPayload struct {
 	Ephemeral  []Message  `json:"ephemeral"`
 	FromServer FromServer `json:"from_server,omitempty"`
@@ -26,8 +30,10 @@ type ToServer struct {
 }
 
 type IncomingPayload struct {
-	Ephemeral []Message `json:"ephemeral"`
-	ToServer  ToServer  `json:"to_server"`
+	Ephemeral []Message  `json:"ephemeral"`
+	TodoLists []TodoList `json:"todo_lists"`
+	// Tasks     []string   `json:"tasks"`
+	ToServer ToServer `json:"to_server"`
 }
 
 func WSMessagesHandler(rooms *RoomManager) func(w http.ResponseWriter, r *http.Request) {
@@ -92,11 +98,30 @@ func messageReader(room *Room, client *Client) {
 				continue
 			}
 
-			err = room.AddMessages(payload.Ephemeral, payload.ToServer.TTL)
-			if err != nil {
-				log.Debugf("Error from AddMessages: %v", err)
-				continue
+			if len(payload.Ephemeral) > 0 {
+				err = room.AddMessages(payload.Ephemeral, payload.ToServer.TTL)
+				if err != nil {
+					log.Debugf("Error from AddMessages: %v", err)
+					continue
+				}
 			}
+
+			if len(payload.TodoLists) > 0 {
+				jsonToBroadcast, err := room.AddTodoLists(payload.TodoLists)
+				if err != nil {
+					log.Debugf("Error from AddTodoLists: %v", err)
+					continue
+				}
+				room.BroadcastJSON(client, jsonToBroadcast)
+			}
+
+			// if len(payload.Tasks) > 0 {
+			// 	err = room.AddTasks(payload.Tasks)
+			// 	if err != nil {
+			// 		log.Debugf("Error from AddTasks: %v", err)
+			// 		continue
+			// 	}
+			// }
 
 			room.BroadcastMessages(client, payload.Ephemeral...)
 

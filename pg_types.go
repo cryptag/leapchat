@@ -127,6 +127,12 @@ type PGMessage struct {
 	Created    *time.Time `json:"created,omitempty"`
 }
 
+type PGTodoList struct {
+	ID       *string `json:"id,omitempty"`
+	RoomID   string  `json:"room_id"`
+	TitleEnc string  `json:"title_enc"`
+}
+
 type pgPostMessage PGMessage
 
 func (msg *PGMessage) MarshalJSON() ([]byte, error) {
