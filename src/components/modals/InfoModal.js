@@ -27,7 +27,7 @@ export default class InfoModal extends Component {
           <h3>
             How does it work?
           </h3>
-          <p>
+          <div>
             When click on a link to a LeapChat room:
             <ol>
               <li>
@@ -41,7 +41,7 @@ export default class InfoModal extends Component {
               </li>
             </ol>
             The server can't even see your username!  That's encrypted, too, and is attached to the messages you send.
-          </p>
+          </div>
           <h3>
             Can I type markdown in my messages?
           </h3>

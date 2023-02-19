@@ -245,7 +245,7 @@ Currently, some of the packages we use are slightly out of date. Here are some q
 
 [React Bootstrap version 0.33.1 docs](https://react-bootstrap-v3.netlify.app/components/tooltips/)
 
-Search for available [Font Awesome Icons](https://fontawesome.com/v4/icons/)
+Search for available [Font Awesome Icons](https://fontawesome.com/v5/search)
 
 
 ## JavaScript Testing

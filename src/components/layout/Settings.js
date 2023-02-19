@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-import FaCog from 'react-icons/lib/fa/cog';
+import { FaCog } from 'react-icons/fa';
 
 const settingsTooltip = (
   <Tooltip id="open-settings-tooltip">Open Settings</Tooltip>
