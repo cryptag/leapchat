@@ -20,12 +20,16 @@ class TodoListInput extends Component {
 
     console.log("Creating todo list with title `%s`", title);
 
-    let contents = {
+    const contents = {
       title: title,
     };
-    let fileBlob = new Blob([JSON.stringify(contents)],
-                            {type: 'application/json'});
-    let saveName = [
+
+    const fileBlob = new Blob(
+      [JSON.stringify(contents)],
+      {type: 'application/json'}
+    );
+
+    const saveName = [
       'from:' + this.props.chat.username,
       'type:tasklist'
     ].join('|||');
