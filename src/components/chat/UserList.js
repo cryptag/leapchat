@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
+
+import { FaShareAlt } from 'react-icons/fa';
 
 import { UserStatusIcon } from './UserStatusIcons';
 
@@ -21,7 +24,7 @@ class UserList extends Component {
   }
 
   render() {
-    const { statuses, onShowUsernameModal } = this.props;
+    const { statuses, onToggleModalVisibility } = this.props;
     const currentUsername = this.props.username;
 
     const userStatuses = Object.keys(statuses).map(username => {
@@ -29,9 +32,13 @@ class UserList extends Component {
       return { status, username };
     });
 
+    const onShowSharingModal = () => {
+      onToggleModalVisibility('sharing', true);
+    };
+
     return (
-      <div className="users-list">
-        <ul style={this.styleUserList()}>
+      <div className="users-list" style={this.styleUserList()}>
+        <ul>
           {userStatuses.map((userStatus, i) => {
             return (
               <li key={i}>
@@ -39,11 +46,17 @@ class UserList extends Component {
                   username={userStatus.username}
                   status={userStatus.status}
                   isCurrentUser={userStatus.username === currentUsername}
-                  onShowUsernameModal={onShowUsernameModal} />
+                  onToggleModalVisibility={onToggleModalVisibility} />
               </li>
             );
           })}
         </ul>
+        <div className="invite-users" >
+          <Button className="icon-button" bsStyle="link" onClick={onShowSharingModal}>
+            Invite Users <FaShareAlt size={15} />
+          </Button>
+        </div>
+        
       </div>
     );
   }
@@ -53,7 +66,7 @@ UserList.propTypes = {
   username: PropTypes.string.isRequired,
   statuses: PropTypes.object.isRequired,
   displayUserList: PropTypes.bool.isRequired,
-  onShowUsernameModal: PropTypes.func.isRequired
+  onToggleModalVisibility: PropTypes.func.isRequired
 };
 
 export default UserList;

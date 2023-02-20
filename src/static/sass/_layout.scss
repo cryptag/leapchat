@@ -65,16 +65,41 @@ header {
     }
   }
 
+  .icon-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    svg {
+      margin: 0 4px;
+    }
+  }
+
   .users-list {
     flex: 0 1 100%;
 
     ul {
-      display: none;
+      
       list-style-type: none;
       li {
         svg {
           float: left;
         }
+      }
+    }
+
+    .invite-users {
+      margin-top: 15px;
+
+      button {
+        color: white;
+        border: solid 1px white;
+        border-radius: 5px;
       }
     }
   }
@@ -127,9 +152,10 @@ header {
     .users-list {
       flex-grow: 0;
       flex: none;
+      display: block !important;
 
       ul {
-        display: block !important;
+        
         li {
           margin-bottom: 1px;
           word-wrap: break-word;
@@ -140,7 +166,7 @@ header {
   .modal-header {
     border-bottom: none;
   }
-  .message{
+  .message {
     display: flex;
     flex-direction: row;
   }
@@ -150,6 +176,25 @@ header {
   }
   .emoji-picker-icon {
     cursor: pointer;
+  }
+}
+
+// Sharing overlay - desktop settings
+@media (min-width: 768px) {
+  .share-copy-link {
+    .current-href {
+      width: 60%;
+    }
+  }
+}
+
+// Sharing overlay - mobile settings
+@media (max-width: 768px) {
+  .share-copy-link {
+    .current-href {
+      width: 100%;
+      margin-bottom: 5px;
+    }
   }
 }
 
@@ -338,6 +383,11 @@ textarea {
   width: 100%;
   padding-left: 5px;
   gap: 10px;
+
+  .sharing,
+  .toggle-audio {
+    cursor: pointer;
+  }
 }
 .chat-icons .right-chat-icons {
   display: flex;

@@ -19,19 +19,6 @@ test.describe("Opens settings modal", () => {
     await expect(page.getByText("Settings")).not.toBeVisible();
   });
 
-  test("copies invite link to browser clipboard", async ({ page }) => {
-    await page.locator(".settings").click();
-    await expect(page.getByText("Settings")).toBeVisible();
-
-    // in order to check navigator.clipboard.readText(), we need to give playwright
-    //    permissions. Only chromium (not currently running) supports allowing this.
-    // Just check that we see the tooltip appear.
-    await expect(page.getByText("Link copied!")).not.toBeVisible();
-    await page.locator(".modal-body .btn-primary").click();
-    await expect(page.getByText("Link copied!")).toBeVisible();
-    
-  });
-
   test("purges chat of all messages when delete all message button is clicked", async ({ page }) => {
     // TODO configure a whole mess of messages in the DOM from multiple users, then check that DOM is 
     //  cleared of all message bubble elements on page refresh.

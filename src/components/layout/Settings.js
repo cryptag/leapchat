@@ -9,7 +9,12 @@ const settingsTooltip = (
   <Tooltip id="open-settings-tooltip">Open Settings</Tooltip>
 );
 
-const Settings = ({ onShowSettingsModal }) => {
+const Settings = ({ onToggleModalVisibility }) => {
+
+  const onShowSettingsModal = () => {
+    onToggleModalVisibility('settings', true);
+  };
+
   return (
     <div className="settings" >
       <OverlayTrigger placement="bottom" overlay={settingsTooltip} delayShow={300} delayHide={150}>
@@ -20,7 +25,7 @@ const Settings = ({ onShowSettingsModal }) => {
 };
 
 Settings.propTypes = {
-  onShowSettingsModal: PropTypes.func.isRequired
+  onToggleModalVisibility: PropTypes.func.isRequired
 };
 
 export default Settings;

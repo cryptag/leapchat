@@ -65,17 +65,20 @@ class UsernameModal extends PureComponent {
     }
   }
 
+  onClose = () => {
+    this.props.onToggleModalVisibility('username', false);
+  }
+
   render() {
     const {
       isVisible,
       previousUsername,
-      username,
-      onCloseModal
+      username
     } = this.props;
 
     return (
       <div>
-        <Modal show={isVisible} onHide={onCloseModal}>
+        <Modal show={isVisible} onHide={this.onClose}>
           <Modal.Header>
             <Modal.Title>Set Username</Modal.Title>
           </Modal.Header>
@@ -101,7 +104,7 @@ class UsernameModal extends PureComponent {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            {username && <Button onClick={onCloseModal}>Cancel</Button>}
+            {username && <Button onClick={this.onClose}>Cancel</Button>}
             <Button data-testid="set-username" onClick={this.onSetUsernameClick} bsStyle="primary">Set Username</Button>
           </Modal.Footer>
         </Modal>
@@ -114,7 +117,7 @@ UsernameModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   previousUsername: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  onCloseModal: PropTypes.func.isRequired,
+  onToggleModalVisibility: PropTypes.func.isRequired,
   onSetUsername: PropTypes.func.isRequired,
   onSetIsAudioEnabled: PropTypes.func.isRequired,
 };
