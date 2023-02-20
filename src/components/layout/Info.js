@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-import FaInfoCircle from 'react-icons/lib/fa/info-circle';
+import { FaInfoCircle } from 'react-icons/fa';
 
 const infoTooltip = (
-  <Tooltip>Open LeapChat Info</Tooltip>
+  <Tooltip id="open-info-tooltip">Open LeapChat Info</Tooltip>
 );
 
 export default class Info extends Component {
@@ -16,7 +16,7 @@ export default class Info extends Component {
   render() {
     return (
       <div className="info">
-        <OverlayTrigger placement="bottom" overlay={infoTooltip} trigger="hover" delayHide={150} delayShow={300}>
+        <OverlayTrigger placement="bottom" overlay={infoTooltip} delayHide={150} delayShow={300}>
           <FaInfoCircle onClick={this.props.onToggleInfoModal} size={25}/>
         </OverlayTrigger>
       </div>

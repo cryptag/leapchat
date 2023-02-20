@@ -21,6 +21,11 @@ upload:
 	@scp $$(ls -t releases/*.tar.gz | head -1) leapchat-minishare:~/gocode/src/github.com/cryptag/leapchat/releases/
 	@ssh leapchat-minishare
 
+all-deploy:
+	$(MAKE) -B build
+	$(MAKE) release
+	$(MAKE) deploy
+
 check-env:
 ifndef version
 	$(error "version" variable is undefined; re-run with "version=1.2.3" or similar)
