@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 import { FaArrowAltCircleRight } from 'react-icons/fa';
 import { FaSmile } from 'react-icons/fa';
 import { Picker } from 'emoji-mart';
+
 import emoji from '../../constants/emoji';
 import { emojiSuggestions, mentionSuggestions } from '../../utils/suggestions';
 import {
@@ -20,8 +21,10 @@ import {
   upSuggestion,
   addSuggestion
 } from '../../actions/chatActions';
+
 import ToggleAudioIcon from './toolbar/ToggleAudioIcon';
 import InviteIcon from './toolbar/InviteIcon';
+import OpenSearchIcon from './toolbar/OpenSearchIcon';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -162,12 +165,14 @@ class MessageForm extends Component {
             <div className="chat-icons">
               <FaSmile size={24}
                 className="emoji-picker-icon"
-                onClick={togglePicker}
-              />
+                onClick={togglePicker} />
 
               <ToggleAudioIcon
                 isAudioEnabled={isAudioEnabled}
                 onSetIsAudioEnabled={onSetIsAudioEnabled} />
+
+              <OpenSearchIcon
+                onToggleModalVisibility={onToggleModalVisibility} />
 
               <InviteIcon
                 onToggleModalVisibility={onToggleModalVisibility} />

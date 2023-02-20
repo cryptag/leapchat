@@ -20,6 +20,7 @@ import InfoModal from './modals/InfoModal';
 import PincodeModal from './modals/PincodeModal';
 import SettingsModal from './modals/SettingsModal';
 import SharingModal from './modals/SharingModal';
+import SearchModal from './modals/SearchModal';
 
 class App extends Component {
   constructor(props) {
@@ -45,6 +46,9 @@ class App extends Component {
           isVisible: false
         },
         sharing: {
+          isVisible: false
+        },
+        search: {
           isVisible: false
         }
       }
@@ -74,6 +78,7 @@ class App extends Component {
       modals: modalsState
     });
   }
+
   onClosePincodeModal = () => {
     this.setState({
       showPincodeModal: false
@@ -120,6 +125,7 @@ class App extends Component {
     const showSettingsModal = this.state.modals.settings.isVisible;
     const showInfoModal = this.state.modals.info.isVisible;
     const showSharingModal = this.state.modals.sharing.isVisible;
+    const showSearchModal = this.state.modals.search.isVisible;
 
     let showUsernameModal = this.state.modals.username.isVisible;
     showUsernameModal = !pincodeRequired && (showUsernameModal || username === '');
@@ -158,6 +164,12 @@ class App extends Component {
 
           {showSharingModal && <SharingModal
             isVisible={showSharingModal}
+            onToggleModalVisibility={this.onToggleModalVisibility} />}
+
+          {showSearchModal && <SearchModal 
+            username={username}
+            isVisible={showSearchModal}
+            messages={messages}
             onToggleModalVisibility={this.onToggleModalVisibility} />}
 
           <ChatContainer

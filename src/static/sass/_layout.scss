@@ -211,82 +211,6 @@ main {
     flex-grow: 1;
     position: relative;
 
-    .message-box {
-        // scroll with flexbox needs revisiting
-        // for now, message box is viewport height
-        // less display height of message form
-        // + display height of header
-        height: calc(100vh - 120px);
-        overflow-y: scroll;
-        padding-top: 5px;
-
-      ul {
-        margin-top: 10px;
-
-        li.chat-message {
-          display: inline-block;
-          border: solid 1px #aaa;
-          border-radius: 10px;
-          padding: 5px 10px;
-          margin-bottom: 6px;
-          width: 90%;
-          word-wrap: break-word;
-          box-shadow: 2px 1px 2px #aaa, -1px 0 1px #aaa;
-
-          .username {
-            display: block;
-            font-weight: bold;
-            font-size: 0.85em;
-          }
-
-          p {
-            margin: 0 0 3px;
-          }
-
-          &.chat-outgoing {
-            float: right;
-            color: white;
-            background-color: #663399;
-
-            p {
-              margin: 2px 0;
-            }
-
-            .username {
-              display: none;
-            }
-
-            a {
-              text-decoration: underline;
-              color: white;
-            }
-
-            a:hover {
-              color: #ddd;
-            }
-          }
-
-          &.chat-incoming {
-            float: left;
-            color: #333;
-          }
-
-          ul {
-            list-style-type: disc;
-            margin-left: 20px;
-          }
-
-          img[src^='/static/img/emoji'] {
-            width: 24px;
-            height: 24px;
-            display: inline-block;
-            background-size: 100%;
-            vertical-align: bottom;
-          }
-        }
-      }
-    }
-
     .message-list {
       padding: 0 15px;
     }
@@ -321,6 +245,90 @@ main {
     }
   } // end .content
 } // end main
+
+.message-box,
+.search-results {
+  // scroll with flexbox needs revisiting
+  // for now, message box is viewport height
+  // less display height of message form
+  // + display height of header
+  height: calc(100vh - 120px);
+  overflow-y: scroll;
+  padding-top: 5px;
+
+  ul {
+    margin-top: 10px;
+
+    li.chat-message {
+      display: inline-block;
+      border: solid 1px #aaa;
+      border-radius: 10px;
+      padding: 5px 10px;
+      margin-bottom: 6px;
+      width: 90%;
+      word-wrap: break-word;
+      box-shadow: 2px 1px 2px #aaa, -1px 0 1px #aaa;
+
+      .username {
+        display: block;
+        font-weight: bold;
+        font-size: 0.85em;
+      }
+
+      p {
+        margin: 0 0 3px;
+      }
+
+      &.chat-outgoing {
+        float: right;
+        color: white;
+        background-color: #663399;
+
+        p {
+          margin: 2px 0;
+        }
+
+        .username {
+          display: none;
+        }
+
+        a {
+          text-decoration: underline;
+          color: white;
+        }
+
+        a:hover {
+          color: #ddd;
+        }
+      }
+
+      &.chat-incoming {
+        float: left;
+        color: #333;
+      }
+
+      ul {
+        list-style-type: disc;
+        margin-left: 20px;
+      }
+
+      img[src^='/static/img/emoji'] {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        background-size: 100%;
+        vertical-align: bottom;
+      }
+    }
+  }
+}
+
+.search-results {
+  height: auto;
+  max-height: calc(50vh);
+  padding-right: 10px;
+}
+
 
 // MAIN - desktop settings
 @media (min-width: 768px) {
@@ -374,6 +382,13 @@ main {
     svg {
       vertical-align: top;
       cursor: pointer;
+    }
+  }
+}
+
+.search-results {
+  ul {
+    li.chat-message {
     }
   }
 }
