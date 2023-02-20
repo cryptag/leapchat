@@ -221,24 +221,40 @@ main {
         padding-top: 5px;
 
       ul {
+        margin-top: 10px;
+
         li.chat-message {
           display: inline-block;
-          border: solid 1px #eee;
+          border: solid 1px #aaa;
           border-radius: 10px;
           padding: 5px 10px;
-          margin-bottom: 5px;
+          margin-bottom: 6px;
           width: 90%;
           word-wrap: break-word;
+          box-shadow: 2px 1px 2px #aaa, -1px 0 1px #aaa;
 
           .username {
             display: block;
             font-weight: bold;
+            font-size: 0.85em;
+          }
+
+          p {
+            margin: 0 0 3px;
           }
 
           &.chat-outgoing {
             float: right;
             color: white;
             background-color: #663399;
+
+            p {
+              margin: 2px 0;
+            }
+
+            .username {
+              display: none;
+            }
 
             a {
               text-decoration: underline;
@@ -323,6 +339,7 @@ main {
         // for now, message box is viewport height
         // less display height of message form
         height: calc(100vh - 70px);
+        box-shadow: inset 2px 2px 2px #aaa;
       }
     }
   }
