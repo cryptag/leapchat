@@ -269,10 +269,10 @@ main {
     flex-direction: row;
     justify-content: start;
     height: 100vh;
-    width: 50vw !important;
 
     .content {
-      max-width: 100%;
+      width: calc(100% - 306px - 300px);
+
       .message-box{
         // scroll with flexbox needs revisiting
         // for now, message box is viewport height

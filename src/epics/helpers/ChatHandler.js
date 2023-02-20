@@ -36,7 +36,13 @@ class ChatHandler {
 
   onWsMessage = (event) => {
     const data = JSON.parse(event.data);
-    if (data && data.ephemeral && data.ephemeral.length && data.ephemeral.length > 0) {
+    console.log('onWsMessage:', {data});
+
+    if (!data) {
+      return;
+    }
+
+    if (data.ephemeral && data.ephemeral.length && data.ephemeral.length > 0) {
       Observable.from(data.ephemeral)
         .mergeMap(ephemeral =>
           this.createDecryptEphemeralObservable({ ephemeral, mID: this.mID, secretKey: this.secretKey }))
@@ -44,7 +50,20 @@ class ChatHandler {
         .catch(error => console.error('An error occurred in ChatHandler', error))
         .subscribe();
     }
-    if (data && data.from_server) {
+
+    if (data.todo_lists && data.todo_lists.length && data.todo_lists.length > 0) {
+      console.log('onWsMessage: Got', data.todo_lists.length, 'todo lists!');
+
+      // TODO: Decrypt each member of data.todo_lists
+    }
+
+    if (data.tasks && data.tasks.length && data.tasks.length > 0) {
+      console.log('onWsMessage: Got', data.tasks.length, 'tasks!');
+
+      // TODO: Decrypt each member of data.tasks
+    }
+
+    if (data.from_server) {
       if (data.from_server.all_messages_deleted) {
         alert("All messages deleted from server! (Refresh this page to remove them from this browser tab.)");
       }
@@ -220,6 +239,17 @@ class ChatHandler {
 
   getUserStatusSubject = () => {
     return this.wsUserStatusSubject;
+  }
+
+  getWsConn = () => {
+    return this.ws;
+  }
+
+  getCryptoInfo = () => {
+    return {
+      mID: this.mID,
+      secretKey: this.secretKey
+    };
   }
 
 }
