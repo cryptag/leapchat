@@ -21,6 +21,7 @@ import {
   addSuggestion
 } from '../../actions/chatActions';
 import ToggleAudioIcon from './toolbar/ToggleAudioIcon';
+import SpeechToTextIcon from './toolbar/SpeechToTextIcon';
 
 class MessageForm extends Component {
   constructor(props) {
@@ -132,13 +133,22 @@ class MessageForm extends Component {
     this.messageInput = input;
   }
 
+  onMessageUpdate = (e) => {
+    const message = e.target.value;
+    this.props.messageUpdate(message);
+  }
+
   render() {
     const { message, showEmojiPicker } = this.props.chat;
     const {
-      messageUpdate,
       togglePicker,
       isAudioEnabled,
       onSetIsAudioEnabled } = this.props;
+
+    let isSpeechRecognitionSupported = false;
+    if (typeof webkitSpeechRecognition !== "undefined") {
+      isSpeechRecognitionSupported = Boolean( window.SpeechRecognition || webkitSpeechRecognition);
+    }
 
     return (
       <div className="message-form">
@@ -167,6 +177,8 @@ class MessageForm extends Component {
                 isAudioEnabled={isAudioEnabled}
                 onSetIsAudioEnabled={onSetIsAudioEnabled} />
 
+              {isSpeechRecognitionSupported && <SpeechToTextIcon onCapture={this.props.messageUpdate} />}
+
               <div className="right-chat-icons"></div>
             </div>
 
@@ -174,7 +186,7 @@ class MessageForm extends Component {
             <div className="message" onKeyDown={this.handleKeyDown}>
               <textarea
                 className="form-control"
-                onChange={this.props.messageUpdate}
+                onChange={this.onMessageUpdate}
                 onKeyPress={this.onKeyPress}
                 onKeyDown={this.onKeyDown}
                 name="message"

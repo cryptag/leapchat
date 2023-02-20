@@ -330,6 +330,31 @@ textarea {
   width: 100% !important;
 }
 
+.elementToFadeInAndOut {
+  width:200px;
+  height: 200px;
+  background: red;
+  
+}
+
+@-webkit-keyframes fadeinout {
+  0%,100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinout {
+  0%,100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 // All widths
 .chat-icons {
   display: flex;
@@ -338,6 +363,12 @@ textarea {
   width: 100%;
   padding-left: 5px;
   gap: 10px;
+
+  .is-recording {
+    color: #663399;
+    -webkit-animation: fadeinout 2s infinite;
+    animation: fadeinout 2s infinite;
+  }
 }
 .chat-icons .right-chat-icons {
   display: flex;

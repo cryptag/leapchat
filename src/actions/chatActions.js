@@ -43,8 +43,8 @@ export const setUsername = (username) =>
 export const usernameSet = (username) =>
   ({ type: CHAT_USERNAME_SET, username });
 
-export const messageUpdate = (e) =>
-  ({ type: 'CHAT_MESSAGE_UPDATE', message: e.target.value });
+export const messageUpdate = (message) =>
+  ({ type: 'CHAT_MESSAGE_UPDATE', message: message });
 
 export const clearMessage = () =>
   ({ type: 'CHAT_MESSAGE_CLEAR' });
