@@ -15,9 +15,9 @@ const Info = ({ onToggleModalVisibility }) => {
   
   return (
     <div className="info">
-      {/* <OverlayTrigger placement="bottom" overlay={infoTooltip} delayHide={150} delayShow={300}>
-        <FaInfoCircle onClick={onClose} size={25}/>
-      </OverlayTrigger> */}
+      {/* <OverlayTrigger placement="bottom" overlay={infoTooltip} delayHide={150} delayShow={300}> */}
+      {/* </OverlayTrigger> */}
+      <FaInfoCircle onClick={onClose} size={25}/>
     </div>
   );
 };
