@@ -53,6 +53,6 @@ config.plugins = [
       NODE_ENV: JSON.stringify('production')
     }
   }),
-]
+];
 
 module.exports = config;

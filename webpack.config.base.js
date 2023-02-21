@@ -1,7 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const env = require('node-env-file');
 const outputFolder = 'build';
@@ -62,7 +62,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-    new CopyPlugin([
+    new CopyWebpackPlugin([
       {
         from: 'node_modules/emoji-datasource-apple/img/apple/64',
         to: emoji.EMOJI_APPLE_64_PATH
