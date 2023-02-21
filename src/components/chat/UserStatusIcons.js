@@ -11,6 +11,25 @@ const editUsernameTooltip = (
   <Tooltip id="edit-username-tooltip">Edit Username</Tooltip>
 );
 
+export const UserStatusIconBubble = ({ status }) => {
+  let statusIcon = <FaMinusCircle style={styleOffline} />;
+  if (status === 'viewing') {
+    statusIcon = <FaCircle style={styleViewing} />;
+  } else if (status === 'online') {
+    statusIcon = <FaCircle style={styleOnline} />;
+  }
+  return (
+    <>
+      {statusIcon}
+    </>
+  );
+};
+
+UserStatusIconBubble.propTypes = {
+  status: PropTypes.string.isRequired,
+};
+
+
 export const UserStatusIcon = ({
   username,
   status,
@@ -22,16 +41,9 @@ export const UserStatusIcon = ({
     onToggleModalVisibility('username', true);
   };
 
-  let statusIcon = <FaMinusCircle style={styleOffline} />;
-  if (status === 'viewing') {
-    statusIcon = <FaCircle style={styleViewing} />;
-  } else if (status === 'online') {
-    statusIcon = <FaCircle style={styleOnline} />;
-  }
-
   return (
     <div style={styleUserStatus}>
-      {statusIcon}
+      <UserStatusIconBubble status={status} />
       {username}
       {isCurrentUser && <span>&nbsp;(me)</span> }
       <span style={styleEditUsername} data-testid="edit-username">
