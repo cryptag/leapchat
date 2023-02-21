@@ -67,7 +67,7 @@ class MessageForm extends Component {
     if(e.nativeEvent.code === 'Space' && suggestionStart !== null) {
       this.props.stopSuggestions();
     }
-  }
+  };
 
   onKeyDown = (e) => {
     const { message, suggestionWord, statuses } = this.props.chat;
@@ -81,7 +81,7 @@ class MessageForm extends Component {
       const start = before.length - word.length;
       this.props.startSuggestions(start, filterSuggestions, statuses);
     }
-  }
+  };
 
   isPayloadValid(message) {
     if (message && message.length > 0) {
@@ -101,7 +101,7 @@ class MessageForm extends Component {
 
     this.props.onSendMessage(message);
     this.props.clearMessage();
-  }
+  };
 
   backgroundImageFn = (set, sheetSize) => {
     if (set !== 'apple' || sheetSize !== 64) {
@@ -109,12 +109,12 @@ class MessageForm extends Component {
         set, 'and', sheetSize, 'as was requested');
     }
     return '/' + emoji.EMOJI_APPLE_64_SHEET;
-  }
+  };
 
   addEmoji = (emoji) => {
     const cursorIndex = this.messageInput.selectionStart;
     this.props.addEmoji(emoji.colons, cursorIndex);
-  }
+  };
 
   handleKeyDown = (e) => {
     const { suggestions, suggestionStart } = this.props.chat;
@@ -130,11 +130,11 @@ class MessageForm extends Component {
       e.preventDefault();
       this.props.downSuggestion();
     }
-  }
+  };
 
   setMessageInput = (input) => {
     this.messageInput = input;
-  }
+  };
 
   render() {
     const { message, showEmojiPicker } = this.props.chat;

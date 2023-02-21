@@ -21,7 +21,7 @@ class PincodeModal extends PureComponent {
     if (e.which === 13) {
       this.onSetPincodeClick();
     }
-  }
+  };
 
   isPincodeValid(pincode) {
     if (!pincode || pincode.endsWith("--")) {
@@ -38,15 +38,15 @@ class PincodeModal extends PureComponent {
     } else {
       this.props.onSetPincode(pincode);
     }
-  }
+  };
 
   setRandomPincodeInForm = () => {
     this.pincodeInput.value = genPassphrase(2);
-  }
+  };
 
   onClose = () => {
     this.props.onToggleModalVisibility('pincode', false);
-  }
+  };
 
   render() {
     let { showModal, pincode } = this.props;

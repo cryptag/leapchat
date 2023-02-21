@@ -77,20 +77,20 @@ class App extends Component {
     this.setState({
       modals: modalsState
     });
-  }
+  };
 
   onClosePincodeModal = () => {
     this.setState({
       showPincodeModal: false
     });
-  }
+  };
 
   onSetIsAudioEnabled = (isAudioEnabled) => {
     this.setState({
       isAudioEnabled: isAudioEnabled
     });
     localStorage.setItem("isAudioEnabled", isAudioEnabled);
-  }
+  };
 
   onSetPincode = (pincode = "") => {
     if (!pincode || pincode.endsWith("--")) {
@@ -98,17 +98,17 @@ class App extends Component {
       return;
     }
     this.props.initConnection(pincode);
-  }
+  };
 
   onSetUsername = (username) => {
     this.props.setUsername(username);
     this.onToggleModalVisibility('username', false);
-  }
+  };
 
   onSendMessage = (message) => {
     const { username } = this.props;
     this.props.sendMessage({ message, username });
-  }
+  };
 
   render() {
     const {

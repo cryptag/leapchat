@@ -27,7 +27,7 @@ class UsernameModal extends PureComponent {
     if (e.which === 13) {
       this.onSetUsernameClick();
     }
-  }
+  };
 
   isUsernameValid(username) {
     if (!username || username.length === 0) {
@@ -50,12 +50,12 @@ class UsernameModal extends PureComponent {
       let isAudioEnabled = JSON.parse(localStorage.getItem('isAudioEnabled') || 'true');
       this.props.onSetIsAudioEnabled(isAudioEnabled);
     }
-  }
+  };
 
   setRandomUsernameInForm = () => {
     this.usernameInput.value = generateRandomUsername();
     this.usernameInput.focus();
-  }
+  };
 
   displayFailAlert = () => {
     if (!!this.state.failMessage) {
@@ -63,11 +63,11 @@ class UsernameModal extends PureComponent {
     } else {
       return { display: 'none' };
     }
-  }
+  };
 
   onClose = () => {
     this.props.onToggleModalVisibility('username', false);
-  }
+  };
 
   render() {
     const {
