@@ -17,9 +17,9 @@ const InviteIcon = ({ onToggleModalVisibility }) => {
 
   return (
     <div className="sharing">
-      <OverlayTrigger overlay={shareChatTooltip} placement="top" delayShow={300} delayHide={150}>
-        <FaShareAltSquare size={24} onClick={showSharingModal} />
-      </OverlayTrigger>
+      {/* <OverlayTrigger overlay={shareChatTooltip} placement="top" delayShow={300} delayHide={150}> */}
+      {/* </OverlayTrigger> */}
+      <FaShareAltSquare size={24} onClick={showSharingModal} />
     </div>
   );
 };

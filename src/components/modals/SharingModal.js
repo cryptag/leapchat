@@ -56,17 +56,18 @@ const SharingModal = ({
           <div className="form-group share-copy-link">
             <form role="form" className="form-inline">
               <input className="form-control current-href" type="text" readOnly value={window.location.href} />
-              <OverlayTrigger
+              {/* <OverlayTrigger
                 trigger="click"
                 overlay={copyLinkTooltip}
                 placement="top"
                 delayShow={300}
-                delayHide={150}>
-                <Button className="icon-button" bsStyle="primary">
-                  Copy to Clipboard
-                  <FaShareAlt size={15} />
-                </Button>
-              </OverlayTrigger>
+                delayHide={150}> */}
+                
+              {/* </OverlayTrigger> */}
+              <Button className="icon-button" bsStyle="primary">
+                Copy to Clipboard
+                <FaShareAlt size={15} />
+              </Button>
             </form>
           </div>
 

@@ -78,9 +78,9 @@ class MessageSearchModal extends Component {
         <Modal show={isVisible} onHide={this.onClose}>
           <Modal.Header closeButton>
             Search{' '}
-            <OverlayTrigger trigger="click" placement="bottom" overlay={searchInfoPopover}>
-              <FaInfoCircle size="25" />
-            </OverlayTrigger>
+            <FaInfoCircle size="25" />
+            {/* <OverlayTrigger trigger="click" placement="bottom" overlay={searchInfoPopover}> */}
+            {/* </OverlayTrigger> */}
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">

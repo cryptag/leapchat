@@ -15,15 +15,15 @@ const enableAudioTooltip = (
 );
 
 const DisableAudioIcon = ({ onSetIsAudioEnabled }) => (
-  <OverlayTrigger overlay={disableAudioTooltip} placement="top" delayShow={300} delayHide={150}>
-    <FaVolumeUp size={24}  onClick={() => onSetIsAudioEnabled(false)} />
-  </OverlayTrigger>
+  // <OverlayTrigger overlay={disableAudioTooltip} placement="top" delayShow={300} delayHide={150}>
+  // </OverlayTrigger>
+  <FaVolumeUp size={24}  onClick={() => onSetIsAudioEnabled(false)} />
 );
 
 const EnableAudioIcon = ({ onSetIsAudioEnabled }) => (
-  <OverlayTrigger overlay={enableAudioTooltip} placement="top" delayShow={300} delayHide={150}>
-    <FaVolumeMute size={24} onClick={() => onSetIsAudioEnabled(true)} />
-  </OverlayTrigger>
+  // <OverlayTrigger overlay={enableAudioTooltip} placement="top" delayShow={300} delayHide={150}>
+  // </OverlayTrigger>
+  <FaVolumeMute size={24} onClick={() => onSetIsAudioEnabled(true)} />
 );
 
 const ToggleAudioIcon = ({ isAudioEnabled, onSetIsAudioEnabled }) => {

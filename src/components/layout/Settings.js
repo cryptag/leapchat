@@ -17,9 +17,9 @@ const Settings = ({ onToggleModalVisibility }) => {
 
   return (
     <div className="settings" >
-      <OverlayTrigger placement="bottom" overlay={settingsTooltip} delayShow={300} delayHide={150}>
-        <FaCog size={30} onClick={onShowSettingsModal} />
-      </OverlayTrigger>
+      {/* <OverlayTrigger placement="bottom" overlay={settingsTooltip} delayShow={300} delayHide={150}> */}
+      {/* </OverlayTrigger> */}
+      <FaCog size={30} onClick={onShowSettingsModal} />
     </div>
   );
 };

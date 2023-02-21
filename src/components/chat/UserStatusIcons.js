@@ -36,9 +36,9 @@ export const UserStatusIcon = ({
       {isCurrentUser && <span>&nbsp;(me)</span> }
       <span style={styleEditUsername} data-testid="edit-username">
         {isCurrentUser &&
-          <OverlayTrigger placement="bottom" overlay={editUsernameTooltip} delayShow={300} delayHide={150}>
-            <FaEdit onClick={onShowUsernameModal} size={19} />
-          </OverlayTrigger>
+          // <OverlayTrigger placement="bottom" overlay={editUsernameTooltip} delayShow={300} delayHide={150}>
+          // </OverlayTrigger>
+          <FaEdit onClick={onShowUsernameModal} size={19} />
         }
       </span>
     </div>

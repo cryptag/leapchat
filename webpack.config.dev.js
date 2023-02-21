@@ -1,6 +1,10 @@
 const config = require('./webpack.config.base');
 
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 config.entry = './src';
+
+config.mode = "development";
 
 config.watch = true;
 
@@ -12,17 +16,13 @@ config.watchOptions = {
 config.module.rules = [
   ...config.module.rules,
   {
-    test: /\.css$/,
-    loader: ['style-loader',
-      'css-loader?sourceMap&importLoaders=2&localIdentName=[name]__[local]___[hash:base64:5]']
+    test: /\.css$/i,
+    use: [MiniCssExtractPlugin.loader, "css-loader"],
   },
-
   {
-    test: /\.scss$/,
-    loaders: ['style-loader',
-      'css-loader?sourceMap&importLoaders=2&localIdentName=[name]__[local]___[hash:base64:5]',
-      'sass-loader?sourceMap']
-  },
+    test: /\.s[ac]ss$/i,
+    use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+  }
 ];
 
 config.devtool = 'source-map';
