@@ -76,7 +76,7 @@
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "chai": "^4.3.7",
-    "copy-webpack-plugin": "^4.6.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.34.0",
     "eslint-plugin-react": "^7.32.2",
