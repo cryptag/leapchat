@@ -17,7 +17,7 @@ class UserList extends Component {
     } else {
       return { display: 'none' };
     }
-  }
+  };
 
   sortByFrom(username1, username2) {
     return username1.toLowerCase().localeCompare(username2.toLowerCase());

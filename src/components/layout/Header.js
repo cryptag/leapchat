@@ -18,7 +18,7 @@ class Header extends Component {
 
   onToggleUserList = () => {
     this.setState({ displayUserList: !this.state.displayUserList });
-  }
+  };
 
   render(){
     const {

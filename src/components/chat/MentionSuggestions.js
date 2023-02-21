@@ -2,19 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { addSuggestion } from '../../actions/chatActions';
 import { scrollIntoViewOptions } from '../../utils/suggestions';
-import {
-  ViewingUserIcon,
-  OnlineUserIcon,
-  OfflineUserIcon
-} from './UserStatusIcons';
+import { UserStatusIconBubble } from './UserStatusIcons';
 const MentionSuggestions = ({ chat, addSuggestion }) => (
   <ul>
     {chat.suggestions.map((user, i) => {
       const activeItem = chat.highlightedSuggestion === i;
       const mention = user.name;
-      const status = user.status;
-      const viewing = status === 'viewing';
-      const online = status === 'online';
+
       let props = {
         key : i,
         onClick : (e) => addSuggestion(mention),
@@ -26,11 +20,7 @@ const MentionSuggestions = ({ chat, addSuggestion }) => (
         };
       }
       return <li {...props}>
-        {viewing
-          ? <ViewingUserIcon />
-          : (online)
-            ? <OnlineUserIcon />
-            : <OfflineUserIcon /> }
+        <UserStatusIconBubble status={user.status} />
         {mention.slice(1)}
       </li>;
     })}

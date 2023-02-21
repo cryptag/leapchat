@@ -27,12 +27,12 @@ class ChatHandler {
   onWsClose = (event) => {
     console.error('Websocket got close event', event);
     this.wsMessageSubject.error(new Error('The websocket connection was closed!'));
-  }
+  };
 
   onWsError = (event) => {
     console.error('Websocket got error event', event);
     this.wsMessageSubject.error(new Error('Error occurred on websocket connection!'));
-  }
+  };
 
   onWsMessage = (event) => {
     const data = JSON.parse(event.data);
@@ -49,7 +49,7 @@ class ChatHandler {
         alert("All messages deleted from server! (Refresh this page to remove them from this browser tab.)");
       }
     }
-  }
+  };
 
   resolveIncomingMessageTypeObservable = (message) => {
     if (message.meta.isChatMessage) {
@@ -83,7 +83,7 @@ class ChatHandler {
     } else {
       return Observable.throw(new Error('Unrecognized data with type ' + message.tags.type));
     }
-  }
+  };
 
   createDecryptEphemeralObservable = ({ ephemeral, mID, secretKey }) => {
     return Observable.create(function (observer) {
@@ -112,7 +112,7 @@ class ChatHandler {
         });
 
     });
-  }
+  };
 
   send({ contents = {}, tags, ttl = 0 }) {
     if (!this.ws) {
@@ -147,7 +147,7 @@ class ChatHandler {
   sendUserStatus = (username, status, ttl) => {
     const tags = ['from:' + username, 'type:userstatus', 'status:' + status];
     this.send({ tags, ttl });
-  }
+  };
 
   sendDeleteAllMessagesSignalToServer = () => {
     const msgForServer = {
@@ -156,7 +156,7 @@ class ChatHandler {
       }
     };
     this.ws.send(JSON.stringify(msgForServer));
-  }
+  };
 
   sendMessageToServer = (ttl_secs, fileBlob, saveName, senderMinilockID) => {
     const reader = new FileReader();
@@ -179,7 +179,7 @@ class ChatHandler {
       this.ws.send(JSON.stringify(msgForServer));
     });
     reader.readAsArrayBuffer(fileBlob);
-  }
+  };
 
   initConnection = ({ mID, secretKey, authToken }) => {
     this.mID = mID;
@@ -200,7 +200,7 @@ class ChatHandler {
       };
 
     });
-  }
+  };
 
   cleanUp = () => {
     this.wsMessageSubject.complete();
@@ -212,15 +212,15 @@ class ChatHandler {
     this.mID = null;
     this.secretKey = null;
     this.authToken = null;
-  }
+  };
 
   getMessageSubject = () => {
     return this.wsMessageSubject;
-  }
+  };
 
   getUserStatusSubject = () => {
     return this.wsUserStatusSubject;
-  }
+  };
 
 }
 

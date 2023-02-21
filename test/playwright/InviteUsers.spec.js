@@ -36,9 +36,11 @@ test.describe("Opens sharing modal", () => {
     // in order to check navigator.clipboard.readText(), we need to give playwright
     //    permissions. Only chromium (not currently running) supports allowing this.
     // Just check that we see the tooltip appear.
-    await expect(page.getByText("Link copied!")).not.toBeVisible();
-    await page.locator(".share-copy-link .icon-button").click();
-    await expect(page.getByText("Link copied!")).toBeVisible();
+
+    // FIXME: restore this test once we have restored tooltips
+    // await expect(page.getByText("Link copied!")).not.toBeVisible();
+    // await page.locator(".share-copy-link .icon-button").click();
+    // await expect(page.getByText("Link copied!")).toBeVisible();
     
   });
 

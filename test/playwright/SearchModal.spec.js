@@ -37,11 +37,11 @@ test.describe("Message History Search Modal", () => {
     await page.locator(".open-message-search").click();
 
     await page.locator("#message-search").fill("black sheep");
-    let resultsList = page.locator(".message-search-results .chat-message")
+    let resultsList = page.locator(".search-results .chat-message")
     await expect(resultsList).toHaveCount(1);
 
     await page.locator("#message-search").fill("hello");
-    resultsList = page.locator(".message-search-results .chat-message")
+    resultsList = page.locator(".search-results .chat-message")
     await expect(resultsList).toHaveCount(4);
   });
 

@@ -56,13 +56,13 @@ class MessageSearchModal extends Component {
       searchResults: searchResults,
       isLoadingResults: false
     });
-  }
+  };
 
   onClose = () => {
     // belt and suspenders; explicitly wipe local index from state
     this.setState({ miniSearch: null });
     this.props.onToggleModalVisibility('search', false);
-  }
+  };
 
   render() {
     const {
