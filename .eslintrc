@@ -1,7 +1,8 @@
 {
  "parser": "@babel/eslint-parser",
   "plugins": [
-    "@babel"
+    "@babel",
+    "react"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -29,9 +30,9 @@
   },
   "rules": {
     "indent": ["error", 2],
-    "semi": [2]
-    // "react/jsx-indent-props":  ["error", 2],
-    // "react/jsx-indent": ["error", 2],
+    "semi": [2],
+    "react/jsx-indent-props":  ["error", 2],
+    "react/jsx-indent": ["error", 2]
   },
 
   "env": {
