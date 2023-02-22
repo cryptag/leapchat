@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 
-const OpenSearchIcon = ({ onToggleModalVisibility }) => {
+import SearchModal from '../../modals/SearchModal';
+
+const OpenSearchIcon = ({ username, messages }) => {
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   const openTooltip = (
     <Tooltip id="open-message-search">Search Content</Tooltip>
   );
-
-  const onOpenSearchModal = () => {
-    onToggleModalVisibility('search', true);
-  };
 
   return (
     <div className="open-message-search">
@@ -20,13 +19,19 @@ const OpenSearchIcon = ({ onToggleModalVisibility }) => {
       {/* </OverlayTrigger> */}
       <FaSearch
         size={24}
-        onClick={onOpenSearchModal} />
+        onClick={() => setShowSearchModal(true)} />
+      {showSearchModal && <SearchModal 
+        username={username}
+        isVisible={showSearchModal}
+        messages={messages}
+        onClose={() => setShowSearchModal(false)} />}
     </div>
   );
 };
 
 OpenSearchIcon.propTypes = {
-  onToggleModalVisibility: PropTypes.func.isRequired
+  username: PropTypes.string.isRequired,
+  messages: PropTypes.array.isRequired,
 };
 
 export default OpenSearchIcon;

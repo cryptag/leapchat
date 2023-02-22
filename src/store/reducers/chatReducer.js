@@ -10,7 +10,7 @@ import {
 import {
   PARANOID_USERNAME,
   USERNAME_KEY
-} from '../constants/messaging';
+} from '../../constants/messaging';
 
 const paranoidMode = document && document.location.hash.endsWith('----') || false;
 const pincodeRequired = document && document.location.hash.endsWith('--') || false;

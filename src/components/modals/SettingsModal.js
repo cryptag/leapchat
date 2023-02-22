@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
-import { chatHandler } from '../../epics/chatEpics';
+import { chatHandler } from '../../store/epics/chatEpics';
 
 const onDeleteAllMsgs = (e) => {
   if (window.confirm("Are you sure you want to delete every existing chat message from this chat room? This action cannot be undone.")) {
@@ -14,12 +14,8 @@ const onDeleteAllMsgs = (e) => {
 
 const SettingsModal = ({
   isVisible,
-  onToggleModalVisibility
+  onClose
 }) => {
-
-  const onClose = () => {
-    onToggleModalVisibility('settings', false);
-  };
 
   return (
     <div>
@@ -55,7 +51,7 @@ const SettingsModal = ({
 
 SettingsModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  onToggleModalVisibility: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 
 };
 
