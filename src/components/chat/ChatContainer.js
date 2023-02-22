@@ -10,8 +10,6 @@ import AlertContainer from '../general/AlertContainer';
 const ChatContainer = ({
   suggestions,
   messageInputFocus,
-  isAudioEnabled,
-  onSetIsAudioEnabled,
   onToggleModalVisibility
 }) => {
 
@@ -20,15 +18,12 @@ const ChatContainer = ({
 
       <AlertContainer />
 
-      <MessageBox
-        isAudioEnabled={isAudioEnabled} />
+      <MessageBox />
 
       {suggestions.length > 0 && <AutoSuggest />}
 
       <MessageForm
         shouldHaveFocus={messageInputFocus}
-        isAudioEnabled={isAudioEnabled}
-        onSetIsAudioEnabled={onSetIsAudioEnabled}
         onToggleModalVisibility={onToggleModalVisibility} />
 
     </div>
@@ -37,8 +32,6 @@ const ChatContainer = ({
 
 ChatContainer.propTypes = {
   messageInputFocus: PropTypes.bool.isRequired,
-  isAudioEnabled: PropTypes.bool.isRequired,
-  onSetIsAudioEnabled: PropTypes.func.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
@@ -47,7 +40,7 @@ const mapStateToProps = (reduxState) => {
     messages: reduxState.chat.messages,
     username: reduxState.chat.username,
     suggestions: reduxState.chat.suggestions,
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps)(ChatContainer);

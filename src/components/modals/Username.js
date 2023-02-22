@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { Modal, Button } from 'react-bootstrap';
 
 import { generateRandomUsername } from '../../data/username';
+
+import { enableAudio } from '../../store/actions/settingsActions';
 
 export const MAX_USERNAME_LENGTH = 45;
 
@@ -13,7 +16,7 @@ const UsernameModal = ({
   username,
   onToggleModalVisibility,
   setUsername,
-  onSetIsAudioEnabled
+  enableAudio,
 }) => {
   const usernameInput = useRef(null);
 
@@ -50,7 +53,9 @@ const UsernameModal = ({
   const setDefaultAudio = () => {
     // set the audio to the user's previously selected preference; enable by default
     let isAudioEnabled = JSON.parse(localStorage.getItem('isAudioEnabled') || 'true');
-    onSetIsAudioEnabled(isAudioEnabled);
+    if (isAudioEnabled){
+      enableAudio();
+    }
   };
 
   const onSetUsername = () => {
@@ -103,7 +108,12 @@ UsernameModal.propTypes = {
   username: PropTypes.string.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
   setUsername: PropTypes.func.isRequired,
-  onSetIsAudioEnabled: PropTypes.func.isRequired,
 };
 
-export default UsernameModal;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    enableAudio: () => dispatch(enableAudio()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(UsernameModal);

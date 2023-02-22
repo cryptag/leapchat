@@ -17,12 +17,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    // Default to false on initial render so audio doesn't attempt to play before 
-    // user interacts with page (which triggers console.error)
-    const isAudioEnabled = false;
-
     this.state = {
-      isAudioEnabled: isAudioEnabled,
       modals: {
         username: {
           isVisible: false
@@ -64,13 +59,6 @@ class App extends Component {
     });
   };
 
-  onSetIsAudioEnabled = (isAudioEnabled) => {
-    this.setState({
-      isAudioEnabled: isAudioEnabled
-    });
-    localStorage.setItem("isAudioEnabled", isAudioEnabled);
-  };
-
   onSetPincode = (pincode = "") => {
     if (!pincode || pincode.endsWith("--")) {
       this.onError('Invalid pincode!');
@@ -84,8 +72,6 @@ class App extends Component {
       username,
       pincodeRequired,
       previousUsername } = this.props;
-
-    const { isAudioEnabled } = this.state;
 
     let showUsernameModal = this.state.modals.username.isVisible;
     showUsernameModal = !pincodeRequired && (showUsernameModal || username === '');
@@ -108,15 +94,12 @@ class App extends Component {
           username={username}
           isVisible={showUsernameModal}
           setUsername={this.props.setUsername}
-          onToggleModalVisibility={this.onToggleModalVisibility}
-          onSetIsAudioEnabled={this.onSetIsAudioEnabled} />}
+          onToggleModalVisibility={this.onToggleModalVisibility} />}
 
         <main className="encloser">
 
           <ChatContainer
             messageInputFocus={chatInputFocus}
-            isAudioEnabled={isAudioEnabled}
-            onSetIsAudioEnabled={this.onSetIsAudioEnabled}
             onToggleModalVisibility={this.onToggleModalVisibility} />
 
         </main>

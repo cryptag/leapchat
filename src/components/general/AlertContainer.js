@@ -34,8 +34,8 @@ AlertContainer.propTypes = {};
 const mapStateToProps = (reduxState) => {
   return {
     ...reduxState.alert,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {

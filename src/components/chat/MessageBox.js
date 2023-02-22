@@ -56,7 +56,8 @@ const mapStateToProps = (reduxState) => {
   return {
     messages: reduxState.chat.messages,
     username: reduxState.chat.username,
-  }
-}
+    isAudioEnabled: reduxState.settings.isAudioEnabled,
+  };
+};
 
 export default connect(mapStateToProps, { closePicker })(MessageBox);

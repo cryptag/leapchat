@@ -50,7 +50,7 @@ class MessageForm extends Component {
 
   onKeyPress = (e) => {
     const cursorIndex = this.messageInput.current.selectionStart;
-    const { suggestionStart, suggestions, highlightedSuggestion, statuses} = this.props.chat;
+    const { suggestionStart, suggestions, highlightedSuggestion, statuses} = this.props;
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
       if (suggestions.length > 0) {
@@ -73,7 +73,7 @@ class MessageForm extends Component {
   };
 
   onKeyDown = (e) => {
-    const { message, suggestionWord, statuses } = this.props.chat;
+    const { message, suggestionWord, statuses } = this.props;
     const cursorIndex = this.messageInput.current.selectionStart;
     const before = message.slice(0, cursorIndex - 1);
     const word = suggestionWord;
@@ -96,7 +96,7 @@ class MessageForm extends Component {
   onSendMessage = (e) => {
     e.preventDefault();
 
-    const { message, username } = this.props.chat;
+    const { message, username } = this.props;
 
     if (!this.isPayloadValid(message)) {
       return false;
@@ -120,7 +120,7 @@ class MessageForm extends Component {
   };
 
   handleKeyDown = (e) => {
-    const { suggestions, suggestionStart } = this.props.chat;
+    const { suggestions, suggestionStart } = this.props;
     const cursorIndex = this.messageInput.current.selectionStart;
     if (e.key === 'Backspace' && cursorIndex - suggestionStart === 1) {
       this.props.stopSuggestions();
@@ -141,7 +141,7 @@ class MessageForm extends Component {
       showEmojiPicker,
       username,
       messages,
-    } = this.props.chat;
+    } = this.props;
 
     const {
       togglePicker,
@@ -210,12 +210,17 @@ class MessageForm extends Component {
 
 MessageForm.propType = {
   shouldHaveFocus: PropTypes.bool.isRequired,
-  onSetIsAudioEnabled: PropTypes.func.isRequired,
-  isAudioEnabled: PropTypes.bool.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
-export default connect(({ chat }) => ({chat}), {
+const mapStateToProps = (reduxState) => {
+  return {
+    isAudioEnabled: reduxState.settings.isAudioEnabled,
+    ...reduxState.chat,
+  };
+};
+
+export default connect(mapStateToProps, {
   messageUpdate,
   clearMessage,
   togglePicker,
