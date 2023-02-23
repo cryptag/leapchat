@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addSuggestion } from '../../actions/chatActions';
+import { addSuggestion } from '../../store/actions/chatActions';
 import emoji from '../../utils/emoji_convertor';
 import md from '../../utils/link_attr_blank';
 import { scrollIntoViewOptions } from '../../utils/suggestions';

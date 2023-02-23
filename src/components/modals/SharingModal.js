@@ -25,13 +25,8 @@ const copyLinkTooltip = (
 
 const SharingModal = ({
   isVisible,
-  onToggleModalVisibility
+  onClose
 }) => {
-
-  const onClose = () => {
-    onToggleModalVisibility('sharing', false);
-  };
-
   return (
     <div>
       <Modal show={isVisible} onHide={onClose}>
@@ -64,7 +59,7 @@ const SharingModal = ({
                 delayHide={150}> */}
                 
               {/* </OverlayTrigger> */}
-              <Button className="icon-button" bsStyle="primary">
+              <Button className="icon-button" bsStyle="primary" onClick={onCopyShareLink}>
                 Copy to Clipboard
                 <FaShareAlt size={15} />
               </Button>
@@ -79,7 +74,7 @@ const SharingModal = ({
 
 SharingModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  onToggleModalVisibility: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 
 };
 

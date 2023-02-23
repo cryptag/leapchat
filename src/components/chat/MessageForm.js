@@ -19,8 +19,9 @@ import {
   stopSuggestions,
   downSuggestion,
   upSuggestion,
-  addSuggestion
-} from '../../actions/chatActions';
+  addSuggestion,
+  sendMessage,
+} from '../../store/actions/chatActions';
 
 import ToggleAudioIcon from './toolbar/ToggleAudioIcon';
 import InviteIcon from './toolbar/InviteIcon';
@@ -29,6 +30,8 @@ import OpenSearchIcon from './toolbar/OpenSearchIcon';
 class MessageForm extends Component {
   constructor(props) {
     super(props);
+
+    this.messageInput = React.createRef();
   }
 
   componentDidMount() {
@@ -41,13 +44,13 @@ class MessageForm extends Component {
 
   resolveFocus() {
     if (this.props.shouldHaveFocus) {
-      this.messageInput.focus();
+      this.messageInput.current.focus();
     }
   }
 
   onKeyPress = (e) => {
-    const cursorIndex = this.messageInput.selectionStart;
-    const { suggestionStart, suggestions, highlightedSuggestion, statuses} = this.props.chat;
+    const cursorIndex = this.messageInput.current.selectionStart;
+    const { suggestionStart, suggestions, highlightedSuggestion, statuses} = this.props;
     // Send on <enter> unless <shift-enter> has been pressed
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
       if (suggestions.length > 0) {
@@ -70,8 +73,8 @@ class MessageForm extends Component {
   };
 
   onKeyDown = (e) => {
-    const { message, suggestionWord, statuses } = this.props.chat;
-    const cursorIndex = this.messageInput.selectionStart;
+    const { message, suggestionWord, statuses } = this.props;
+    const cursorIndex = this.messageInput.current.selectionStart;
     const before = message.slice(0, cursorIndex - 1);
     const word = suggestionWord;
     const filterSuggestions = word[0] === '@'
@@ -93,13 +96,13 @@ class MessageForm extends Component {
   onSendMessage = (e) => {
     e.preventDefault();
 
-    const { message } = this.props.chat;
+    const { message, username } = this.props;
 
     if (!this.isPayloadValid(message)) {
       return false;
     }
 
-    this.props.onSendMessage(message);
+    this.props.sendMessage({ message, username });
     this.props.clearMessage();
   };
 
@@ -112,13 +115,13 @@ class MessageForm extends Component {
   };
 
   addEmoji = (emoji) => {
-    const cursorIndex = this.messageInput.selectionStart;
+    const cursorIndex = this.messageInput.current.selectionStart;
     this.props.addEmoji(emoji.colons, cursorIndex);
   };
 
   handleKeyDown = (e) => {
-    const { suggestions, suggestionStart } = this.props.chat;
-    const cursorIndex = this.messageInput.selectionStart;
+    const { suggestions, suggestionStart } = this.props;
+    const cursorIndex = this.messageInput.current.selectionStart;
     if (e.key === 'Backspace' && cursorIndex - suggestionStart === 1) {
       this.props.stopSuggestions();
     }
@@ -132,18 +135,18 @@ class MessageForm extends Component {
     }
   };
 
-  setMessageInput = (input) => {
-    this.messageInput = input;
-  };
-
   render() {
-    const { message, showEmojiPicker } = this.props.chat;
     const {
-      messageUpdate,
+      message,
+      showEmojiPicker,
+      username,
+      messages,
+    } = this.props;
+
+    const {
       togglePicker,
       isAudioEnabled,
-      onSetIsAudioEnabled,
-      onToggleModalVisibility } = this.props;
+      onSetIsAudioEnabled } = this.props;
 
     return (
       <div className="message-form">
@@ -172,10 +175,10 @@ class MessageForm extends Component {
                 onSetIsAudioEnabled={onSetIsAudioEnabled} />
 
               <OpenSearchIcon
-                onToggleModalVisibility={onToggleModalVisibility} />
+                username={username}
+                messages={messages} />
 
-              <InviteIcon
-                onToggleModalVisibility={onToggleModalVisibility} />
+              <InviteIcon />
 
               <div className="right-chat-icons"></div>
             </div>
@@ -189,7 +192,7 @@ class MessageForm extends Component {
                 onKeyDown={this.onKeyDown}
                 name="message"
                 value={message}
-                ref={this.setMessageInput}
+                ref={this.messageInput}
                 placeholder="Enter message">
               </textarea>
               <Button onClick={this.onSendMessage}>
@@ -206,14 +209,18 @@ class MessageForm extends Component {
 }
 
 MessageForm.propType = {
-  onSendMessage: PropTypes.func.isRequired,
   shouldHaveFocus: PropTypes.bool.isRequired,
-  onSetIsAudioEnabled: PropTypes.func.isRequired,
-  isAudioEnabled: PropTypes.bool.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
-export default connect(({ chat }) => ({chat}), {
+const mapStateToProps = (reduxState) => {
+  return {
+    isAudioEnabled: reduxState.settings.isAudioEnabled,
+    ...reduxState.chat,
+  };
+};
+
+export default connect(mapStateToProps, {
   messageUpdate,
   clearMessage,
   togglePicker,
@@ -223,5 +230,6 @@ export default connect(({ chat }) => ({chat}), {
   stopSuggestions,
   downSuggestion,
   upSuggestion,
-  addSuggestion
+  addSuggestion,
+  sendMessage,
 })(MessageForm);

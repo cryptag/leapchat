@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+
 import { createStore, compose, applyMiddleware } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
-import rootReducer from './reducers';
-import rootEpic from './epics';
+import rootReducer from './store/reducers';
+import rootEpic from './store/epics';
+
 import 'bootstrap/dist/css/bootstrap.css';
 import './static/sass/main.scss';
 import './static/fonts/Lato.ttf';
@@ -33,8 +35,10 @@ if (module.hot) {
   );
 }
 
-const container = document.getElementById('root');
-const root = createRoot(container);
+const root = createRoot(
+  document.getElementById('root')
+);
+
 root.render(
   <Provider store={store}>
     <App />

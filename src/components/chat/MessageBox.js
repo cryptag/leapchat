@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 
 import MessageList from './MessageList';
 import { connect } from 'react-redux';
-import { closePicker } from '../../actions/chatActions';
+import { closePicker } from '../../store/actions/chatActions';
 import { playNotification } from '../../utils/audio';
 
 class MessageBox extends Component {
   constructor(props){
     super(props);
 
+    this.messagesEnd = null;
+
     this.state = {
-      notifiedIds: [],
-      messagesEnd: null
+      notifiedIds: []
     };
   }
 
@@ -27,8 +28,8 @@ class MessageBox extends Component {
   };
 
   // Separate function to set reference because of https://reactjs.org/docs/refs-and-the-dom.html#caveats
-  setMessagesEndRef = (el) => {
-    this.messagesEnd = el;
+  setMessagesEndRef = (element) => {
+    this.messagesEnd = element;
   };
 
   render(){
@@ -50,4 +51,13 @@ class MessageBox extends Component {
   }
 }
 
-export default connect(null, { closePicker })(MessageBox);
+
+const mapStateToProps = (reduxState) => {
+  return {
+    messages: reduxState.chat.messages,
+    username: reduxState.chat.username,
+    isAudioEnabled: reduxState.settings.isAudioEnabled,
+  };
+};
+
+export default connect(mapStateToProps, { closePicker })(MessageBox);

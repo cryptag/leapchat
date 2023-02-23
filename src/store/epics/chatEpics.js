@@ -25,11 +25,11 @@ import {
 import {
   USER_STATUS_DELAY_MS,
   USERNAME_KEY
-} from '../constants/messaging';
+} from '../../constants/messaging';
 
-import { getEmail, getPassphrase, generateMessageKey } from '../utils/encrypter';
+import { getEmail, getPassphrase, generateMessageKey } from '../../utils/encrypter';
 import ChatHandler from './helpers/ChatHandler';
-import miniLock from '../utils/miniLock';
+import miniLock from '../../utils/miniLock';
 import { combineEpics } from 'redux-observable';
 import createDetectVisibilityObservable from './helpers/createDetectPageVisibilityObservable';
 

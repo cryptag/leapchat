@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addSuggestion } from '../../actions/chatActions';
+import { addSuggestion } from '../../store/actions/chatActions';
 import { scrollIntoViewOptions } from '../../utils/suggestions';
 import { UserStatusIconBubble } from './UserStatusIcons';
 const MentionSuggestions = ({ chat, addSuggestion }) => (

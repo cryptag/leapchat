@@ -18,7 +18,7 @@ const searchInfoPopover = (
 );
 
 
-class MessageSearchModal extends Component {
+class SearchModal extends Component {
   constructor(props) {
     super(props);
 
@@ -58,12 +58,6 @@ class MessageSearchModal extends Component {
     });
   };
 
-  onClose = () => {
-    // belt and suspenders; explicitly wipe local index from state
-    this.setState({ miniSearch: null });
-    this.props.onToggleModalVisibility('search', false);
-  };
-
   render() {
     const {
       isVisible,
@@ -75,7 +69,7 @@ class MessageSearchModal extends Component {
 
     return (
       <div>
-        <Modal show={isVisible} onHide={this.onClose}>
+        <Modal show={isVisible} onHide={this.props.onClose}>
           <Modal.Header closeButton>
             Search{' '}
             <FaInfoCircle size="25" />
@@ -116,10 +110,11 @@ class MessageSearchModal extends Component {
   }
 }
 
-MessageSearchModal.propTypes = {
+SearchModal.propTypes = {
   username: PropTypes.string.isRequired,
   isVisible: PropTypes.bool.isRequired,
-  onToggleModalVisibility: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  messages: PropTypes.array.isRequired,
 };
 
-export default MessageSearchModal;
+export default SearchModal;

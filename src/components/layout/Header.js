@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -7,52 +7,38 @@ import UserList from '../chat/UserList';
 import Logo from './Logo';
 import Settings from './Settings';
 import Info from './Info';
-import { closePicker } from '../../actions/chatActions';
+import { closePicker } from '../../store/actions/chatActions';
 
-class Header extends Component {
-  constructor(props){
-    super(props);
+const Header = ({
+  username,
+  onToggleModalVisibility
+}) => {
+  const [showUserList, setShowUserList] = useState(false);
 
-    this.state = { displayUserList: false };
-  }
-
-  onToggleUserList = () => {
-    this.setState({ displayUserList: !this.state.displayUserList });
+  const onToggleUserList = () => {
+    setShowUserList((current) => !current);
   };
 
-  render(){
-    const {
-      username,
-      statuses,
-      onToggleModalVisibility,
-      onShowUsernameModal
-    } = this.props;
-    const { displayUserList } = this.state;
-    
-    return (
-      <header onClick={closePicker}>
-        <div className="logo-container">
-          <div id="logo-info">
-            <Logo />
-            <Info onToggleModalVisibility={onToggleModalVisibility}/>
-          </div>
-          <Settings
-            onToggleModalVisibility={onToggleModalVisibility} />
+  return (
+    <header onClick={closePicker}>
+      <div className="logo-container">
+        <div id="logo-info">
+          <Logo />
+          <Info />
         </div>
-        <UserIcon onToggleUserList={this.onToggleUserList} />
-        <UserList
-          username={username}
-          statuses={statuses}
-          displayUserList={displayUserList}
-          onToggleModalVisibility={onToggleModalVisibility} />
-      </header>
-    );
-  }
-}
+        <Settings />
+      </div>
+      <UserIcon onToggleUserList={onToggleUserList} />
+      <UserList
+        username={username}
+        displayUserList={showUserList}
+        onToggleModalVisibility={onToggleModalVisibility} />
+    </header>
+  );
+};
 
 Header.propTypes = {
   username: PropTypes.string.isRequired,
-  statuses: PropTypes.object.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired
 };
 

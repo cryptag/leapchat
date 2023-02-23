@@ -1,39 +1,46 @@
-import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { Alert } from 'react-bootstrap';
+
+import { dismissAlert } from '../../store/actions/alertActions';
 
 // https://v4-alpha.getbootstrap.com/components/alerts/#examples
 const alertStyles = ['success', 'danger', 'warning', 'info'];
 
-class AlertContainer extends Component {
-  constructor(props){
-    super(props);
+const AlertContainer = ({
+  alertMessage,
+  alertStyle,
+  dismissAlert,
+}) => {
+  if (!alertStyles.includes(alertStyle)){
+    alertStyle = 'success';
   }
 
-  render(){
-    let { message, alertStyle, onAlertDismiss } = this.props;
-    if (alertStyles.indexOf(alertStyle) === -1){
-      alertStyle = 'success';
-    }
-
-    return (
-      <div className="alert-container" ref="alert_container" style={{marginRight: '10px'}}>
-        {message && <Alert
-          bsStyle={alertStyle}
-          onDismiss={onAlertDismiss}>
-          {message}
-        </Alert>}
-      </div>
-    );
-  }
-}
-
-AlertContainer.propTypes = {
-  message: PropTypes.string.isRequired,
-  alertStyle: PropTypes.string,
-  onAlertDismiss: PropTypes.func.isRequired
+  return (
+    <div className="alert-container" style={{marginRight: '10px'}}>
+      {alertMessage && <Alert
+        bsStyle={alertStyle}
+        onDismiss={dismissAlert}>
+        {alertMessage}
+      </Alert>}
+    </div>
+  );
 };
 
-export default AlertContainer;
+AlertContainer.propTypes = {};
+
+const mapStateToProps = (reduxState) => {
+  return {
+    ...reduxState.alert,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dismissAlert: () => dispatch(dismissAlert()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AlertContainer);

@@ -4,63 +4,43 @@ import { connect } from 'react-redux';
 
 import MessageBox from './MessageBox';
 import MessageForm from './MessageForm';
-import AlertContainer from '../general/AlertContainer';
 import AutoSuggest from './AutoSuggest';
+import AlertContainer from '../general/AlertContainer';
 
-class ChatContainer extends Component {
-  render() {
-    const {
-      messages,
-      username,
-      onSendMessage,
-      alertMessage,
-      alertStyle,
-      onAlertDismiss,
-      messageInputFocus,
-      chat,
-      isAudioEnabled,
-      onSetIsAudioEnabled,
-      onToggleModalVisibility } = this.props;
+const ChatContainer = ({
+  suggestions,
+  messageInputFocus,
+  onToggleModalVisibility
+}) => {
 
-    return (
-      <div className="content">
+  return (
+    <div className="content">
 
-        <AlertContainer
-          message={alertMessage}
-          alertStyle={alertStyle}
-          onAlertDismiss={onAlertDismiss} />
+      <AlertContainer />
 
-        <MessageBox
-          messages={messages}
-          username={username} 
-          isAudioEnabled={isAudioEnabled} />
+      <MessageBox />
 
-        {chat.suggestions.length > 0 && <AutoSuggest />}
+      {suggestions.length > 0 && <AutoSuggest />}
 
-        <MessageForm
-          onSendMessage={onSendMessage}
-          shouldHaveFocus={messageInputFocus}
-          isAudioEnabled={isAudioEnabled}
-          onSetIsAudioEnabled={onSetIsAudioEnabled}
-          onToggleModalVisibility={onToggleModalVisibility} />
+      <MessageForm
+        shouldHaveFocus={messageInputFocus}
+        onToggleModalVisibility={onToggleModalVisibility} />
 
-      </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 ChatContainer.propTypes = {
-  messages: PropTypes.array.isRequired,
-  username: PropTypes.string.isRequired,
-  onSendMessage: PropTypes.func.isRequired,
-  alertMessage: PropTypes.string,
-  alertStyle: PropTypes.string,
-  onAlertDismiss: PropTypes.func,
   messageInputFocus: PropTypes.bool.isRequired,
-  chat: PropTypes.object.isRequired,
-  isAudioEnabled: PropTypes.bool.isRequired,
-  onSetIsAudioEnabled: PropTypes.func.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
-export default connect(({ chat }) => ({ chat }))(ChatContainer);
+const mapStateToProps = (reduxState) => {
+  return {
+    messages: reduxState.chat.messages,
+    username: reduxState.chat.username,
+    suggestions: reduxState.chat.suggestions,
+  };
+};
+
+export default connect(mapStateToProps)(ChatContainer);

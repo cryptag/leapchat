@@ -1,12 +1,12 @@
 import atob from 'atob';
 import btoa from 'btoa';
 import guid from 'guid';
-import miniLock from '../../utils/miniLock';
-import { nowUTC } from '../../utils/time';
-import { extractMessageMetadata } from '../../utils/chat';
+import miniLock from '../../../utils/miniLock';
+import { nowUTC } from '../../../utils/time';
+import { extractMessageMetadata } from '../../../utils/chat';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
-import { ajax } from 'rxjs/observable/dom/ajax';
+
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mapTo';

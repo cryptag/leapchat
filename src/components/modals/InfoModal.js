@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'react-bootstrap';
 
-const InfoModal = ({ isVisible, onToggleModalVisibility }) => {
-
-  const onClose = () => {
-    onToggleModalVisibility('info', false);
-  };
+const InfoModal = ({ isVisible, onClose }) => {
 
   return (
     <Modal show={isVisible} onHide={onClose}>
@@ -54,8 +50,7 @@ const InfoModal = ({ isVisible, onToggleModalVisibility }) => {
 };
 
 InfoModal.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
-  onToggleModalVisibility: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired
 };
 
 export default InfoModal;
