@@ -6,6 +6,8 @@ import {
   initChat
 } from '../store/actions/chatActions';
 
+import { initiateSessionAndConnect } from '../utils/sessions';
+
 import Header from './layout/Header';
 
 import ChatContainer from './chat/ChatContainer';
@@ -41,8 +43,30 @@ class App extends Component {
 
   connectIfNeeded() {
     if (!this.props.pincodeRequired && this.props.shouldConnect) {
-      this.props.initConnection();
+      this.onInitConnection();
     }
+  }
+
+  onSetPincode = (pincode = "") => {
+    if (!pincode || pincode.endsWith("--")) {
+      this.onError('Invalid pincode!');
+      return;
+    }
+    this.onInitConnection(pincode);
+  };
+
+
+  onInitConnection(pincode='') {
+    const urlHash = document.location.hash + pincode;
+    initiateSessionAndConnect(
+      this.props.initConnection,
+      this.createWebSession,
+      urlHash,
+    );
+  }
+
+  createWebSession(passphrase) {
+    document.location.hash = "#" + passphrase;
   }
 
   onToggleModalVisibility = (modalName, isVisible) => {
@@ -59,12 +83,16 @@ class App extends Component {
     });
   };
 
-  onSetPincode = (pincode = "") => {
-    if (!pincode || pincode.endsWith("--")) {
-      this.onError('Invalid pincode!');
-      return;
-    }
-    this.props.initConnection(pincode);
+  onSetIsAudioEnabled = (isAudioEnabled) => {
+    this.setState({
+      isAudioEnabled: isAudioEnabled
+    });
+    localStorage.setItem("isAudioEnabled", isAudioEnabled);
+  };
+
+  onSetUsername = (username) => {
+    this.props.setUsername(username);
+    this.onToggleModalVisibility('username', false);
   };
 
   render() {

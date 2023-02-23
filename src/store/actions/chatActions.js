@@ -13,8 +13,13 @@ export const CHAT_USERNAME_SET = 'CHAT_USERNAME_SET';
 
 export const initChat = () => ({ type: CHAT_INIT_CHAT });
 
-export const initConnection = (pincode = '') =>
-  ({ type: CHAT_INIT_CONNECTION, pincode });
+export const initConnection = ({
+  authToken, secretKey, mID, isNewRoom
+}) =>
+  ({
+    type: CHAT_INIT_CONNECTION,
+    authToken, secretKey, mID, isNewRoom
+  });
 
 export const disconnected = () =>
   ({ type: CHAT_DISCONNECTED });
