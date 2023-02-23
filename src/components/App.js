@@ -83,18 +83,6 @@ class App extends Component {
     });
   };
 
-  onSetIsAudioEnabled = (isAudioEnabled) => {
-    this.setState({
-      isAudioEnabled: isAudioEnabled
-    });
-    localStorage.setItem("isAudioEnabled", isAudioEnabled);
-  };
-
-  onSetUsername = (username) => {
-    this.props.setUsername(username);
-    this.onToggleModalVisibility('username', false);
-  };
-
   render() {
     const {
       username,
