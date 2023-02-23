@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   setUsername,
+  initAuth,
   initConnection,
   initChat
 } from '../store/actions/chatActions';
@@ -42,7 +43,7 @@ class App extends Component {
   }
 
   connectIfNeeded() {
-    if (!this.props.pincodeRequired && this.props.shouldConnect) {
+    if (!this.props.pincodeRequired && this.props.shouldConnect){
       this.onInitConnection();
     }
   }
@@ -57,6 +58,8 @@ class App extends Component {
 
 
   onInitConnection(pincode='') {
+    this.props.initAuth();
+
     const urlHash = document.location.hash + pincode;
     initiateSessionAndConnect(
       this.props.initConnection,
@@ -139,8 +142,18 @@ const mapStateToProps = (reduxState) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     initChat: () => dispatch(initChat()),
-    initConnection: (pincode) => dispatch(initConnection(pincode)),
-    initApplication: () => dispatch(initApplication()),
+    initAuth: () => dispatch(initAuth()),
+    initConnection: ({
+      authToken,
+      secretKey,
+      mID,
+      isNewRoom
+    }) => dispatch(initConnection({
+      authToken,
+      secretKey,
+      mID,
+      isNewRoom
+    })),
     setUsername: (username) => dispatch(setUsername(username)),
   };
 };

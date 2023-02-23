@@ -1,4 +1,5 @@
 import {
+  CHAT_INIT_AUTH,
   CHAT_INIT_CONNECTION,
   CHAT_CONNECTION_INITIATED,
   CHAT_DISCONNECTED,
@@ -17,6 +18,7 @@ const pincodeRequired = document && document.location.hash.endsWith('--') || fal
 const previousUsername = localStorage && localStorage.getItem(USERNAME_KEY) || '';
 
 const initialState = {
+  authenticating: false,
   connecting: false,
   connected: false,
   shouldConnect: true,
@@ -40,9 +42,21 @@ function chatReducer(state = initialState, action) {
 
   switch (action.type) {
 
+  case CHAT_INIT_AUTH:
+    return Object.assign({}, state, {
+      messages: [],
+      authenticating: true,
+      connecting: false,
+      connected: false,
+      shouldConnect: false,
+      pincodeRequired: false,
+      ready: false
+    });
+
   case CHAT_INIT_CONNECTION:
     return Object.assign({}, state, {
       messages: [],
+      authenticating: false,
       connecting: true,
       connected: false,
       shouldConnect: false,
@@ -52,6 +66,7 @@ function chatReducer(state = initialState, action) {
 
   case CHAT_CONNECTION_INITIATED:
     return Object.assign({}, state, {
+      authenticating: false,
       connecting: false,
       connected: true,
       shouldConnect: false,
