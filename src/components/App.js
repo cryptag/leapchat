@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   setUsername,
+  initAuth,
   initConnection,
   initChat
 } from '../store/actions/chatActions';
+
+import { initiateSessionAndConnect } from '../utils/sessions';
 
 import Header from './layout/Header';
 
@@ -40,9 +43,33 @@ class App extends Component {
   }
 
   connectIfNeeded() {
-    if (!this.props.pincodeRequired && this.props.shouldConnect) {
-      this.props.initConnection();
+    if (!this.props.pincodeRequired && this.props.shouldConnect){
+      this.onInitConnection();
     }
+  }
+
+  onSetPincode = (pincode = "") => {
+    if (!pincode || pincode.endsWith("--")) {
+      this.onError('Invalid pincode!');
+      return;
+    }
+    this.onInitConnection(pincode);
+  };
+
+
+  onInitConnection(pincode='') {
+    this.props.initAuth();
+
+    const urlHash = document.location.hash + pincode;
+    initiateSessionAndConnect(
+      this.props.initConnection,
+      this.createWebSession,
+      urlHash,
+    );
+  }
+
+  createWebSession(passphrase) {
+    document.location.hash = "#" + passphrase;
   }
 
   onToggleModalVisibility = (modalName, isVisible) => {
@@ -57,14 +84,6 @@ class App extends Component {
     this.setState({
       showPincodeModal: false
     });
-  };
-
-  onSetPincode = (pincode = "") => {
-    if (!pincode || pincode.endsWith("--")) {
-      this.onError('Invalid pincode!');
-      return;
-    }
-    this.props.initConnection(pincode);
   };
 
   render() {
@@ -123,8 +142,18 @@ const mapStateToProps = (reduxState) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     initChat: () => dispatch(initChat()),
-    initConnection: (pincode) => dispatch(initConnection(pincode)),
-    initApplication: () => dispatch(initApplication()),
+    initAuth: () => dispatch(initAuth()),
+    initConnection: ({
+      authToken,
+      secretKey,
+      mID,
+      isNewRoom
+    }) => dispatch(initConnection({
+      authToken,
+      secretKey,
+      mID,
+      isNewRoom
+    })),
     setUsername: (username) => dispatch(setUsername(username)),
   };
 };

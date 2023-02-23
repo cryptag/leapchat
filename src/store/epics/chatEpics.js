@@ -4,8 +4,6 @@ import {
   CHAT_INIT_CONNECTION,
   CHAT_INIT_CHAT,
   CHAT_SEND_MESSAGE,
-  readyToConnect,
-  initConnection,
   connectionInitiated,
   disconnected,
   addMessage,
@@ -27,18 +25,14 @@ import {
   USERNAME_KEY
 } from '../../constants/messaging';
 
-import { getEmail, getPassphrase, generateMessageKey } from '../../utils/encrypter';
 import ChatHandler from './helpers/ChatHandler';
-import miniLock from '../../utils/miniLock';
 import { combineEpics } from 'redux-observable';
 import createDetectVisibilityObservable from './helpers/createDetectPageVisibilityObservable';
 
-const authUrl = `${window.location.origin}/api/login`;
 const wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
 export const chatHandler = new ChatHandler(wsUrl);
 
 import { Observable } from 'rxjs/Observable';
-import { ajax } from 'rxjs/observable/dom/ajax';
 import 'rxjs/add/operator/partition';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/delay';
@@ -73,98 +67,34 @@ const suggestionEpic = (action$) =>
     .catch((err) => console.error(err));
 
 
-function createKeyPairObservable({ pincode = '' }) {
-  return Observable.create(function (observer) {
-    const urlHash = document.location.hash + pincode;
-    // 1. Get passphrase
-    const {
-      passphrase,
-      isNewPassphrase
-    } = getPassphrase(urlHash);
-
-    // 3. Get email based on passphrase
-    let email = getEmail(passphrase);
-    // 4. Decrypt to get key pair
-    miniLock.crypto.getKeyPair(passphrase, email, (keyPair) => {
-      miniLock.session.keys = keyPair;
-      miniLock.session.keyPairReady = true;
-      let mID = miniLock.crypto.getMiniLockID(keyPair.publicKey);
-      // 4. When we have keypair, login:
-
-      if (isNewPassphrase) {
-        document.location.hash = '#' + passphrase;
-      }
-
-      observer.next({ passphrase, keyPair, mID, isNewRoom: isNewPassphrase });
-      observer.complete();
-    });
+const initChatHandlerConnection = ({ authToken, secretKey, mID, isNewRoom }) => {
+  return chatHandler.initConnection({
+    authToken,
+    secretKey: secretKey,
+    mID
   });
-}
-
-function createDecryptMessageObservable({ message, mID, secretKey }) {
-  return Observable.create(function (observer) {
-    miniLock.crypto.decryptFile(message, mID, secretKey,
-      function (fileBlob, saveName, senderID) {
-        const reader = new FileReader();
-        reader.addEventListener("loadend", () => {
-          const authToken = reader.result;
-          observer.next(authToken);
-          observer.complete();
-        });
-
-        reader.readAsText(fileBlob);
-      });
-  });
-}
-
-function getAuthRequestSettings({ mID }) {
-  const settings = {
-    url: authUrl,
-    responseType: 'blob',
-    headers: {
-      'X-Minilock-Id': mID
-    },
-    method: 'GET'
-  };
-  return settings;
-}
+};
 
 const initConnectionEpic = (action$) =>
   action$.ofType(CHAT_INIT_CONNECTION)
-    .mergeMap(createKeyPairObservable)
-    .mergeMap(({ keyPair, mID, isNewRoom, passphrase }) =>
-      ajax(getAuthRequestSettings({ mID }))
-        .map(ajaxResult => ({
-          message: ajaxResult.response,
-          mID,
-          secretKey: keyPair.secretKey
-        }))
-        .mergeMap(createDecryptMessageObservable)
-        .mergeMap(authToken =>
-          chatHandler.initConnection({
-            authToken,
-            secretKey: keyPair.secretKey,
-            mID
-          })
-        )
-        .mergeMap(() =>
-          Observable.merge(
-            chatHandler.getMessageSubject()
-              .map(addMessage),
+    .mergeMap(initChatHandlerConnection)
+    .mergeMap((isNewRoom) =>
+      Observable.merge(
+        chatHandler.getMessageSubject()
+          .map(addMessage),
 
-            chatHandler.getUserStatusSubject()
-              .map(setUserStatus),
+        chatHandler.getUserStatusSubject()
+          .map(setUserStatus),
 
-            Observable.of(connectionInitiated(), alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`))
-          )
-        ).catch(error => {
-          console.error(error);
-          return Observable.from([
-            alertWarning('Lost connection to chat server. Trying to reconnect...'),
-            disconnected()
-          ]);
-        })
-    )
+        Observable.of(connectionInitiated(), alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`))
+      )
+    ).catch(error => {
+      console.error(error);
+      return Observable.from([
+        alertWarning('Lost connection to chat server. Trying to reconnect...'),
+        disconnected()
+      ]);
+    })
     .catch(error => {
       console.error(error);
       return Observable.from([

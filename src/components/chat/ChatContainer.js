@@ -37,8 +37,6 @@ ChatContainer.propTypes = {
 
 const mapStateToProps = (reduxState) => {
   return {
-    messages: reduxState.chat.messages,
-    username: reduxState.chat.username,
     suggestions: reduxState.chat.suggestions,
   };
 };
