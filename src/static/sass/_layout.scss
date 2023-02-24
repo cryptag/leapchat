@@ -34,6 +34,8 @@ body {
   }
 }
 
+$funky-purple: #663399;
+
 
 .encloser {
   display: flex;
@@ -179,6 +181,10 @@ header {
   }
 }
 
+.modal-content a {
+  color: $funky-purple;
+}
+
 // Sharing overlay - desktop settings
 @media (min-width: 768px) {
   .share-copy-link {
@@ -282,7 +288,7 @@ main {
       &.chat-outgoing {
         float: right;
         color: white;
-        background-color: #663399;
+        background-color: $funky-purple;
 
         p {
           margin: 2px 0;
@@ -398,6 +404,14 @@ main {
   svg {
     cursor: pointer;
   }
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited {
+  background-color: $funky-purple !important;
+  border-color: $funky-purple !important;
 }
 
 // Allows textarea to by dynamic instead of static

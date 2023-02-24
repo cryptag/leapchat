@@ -28,7 +28,7 @@ const SettingsModal = ({
           <p>
             Do you have feedback or suggestions on how we can improve LeapChat? We're listening!{' '}
             <a href="https://github.com/cryptag/leapchat/issues" target="_blank" rel="nofollow noreferrer noopener">
-              Share your feedback here.{' '}<FaExternalLinkAlt size={19} />
+              Share your feedback here.{' '}<FaExternalLinkAlt size={15} />
             </a>
           </p>
           <hr />

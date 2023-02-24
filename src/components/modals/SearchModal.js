@@ -72,7 +72,7 @@ class SearchModal extends Component {
         <Modal show={isVisible} onHide={this.props.onClose}>
           <Modal.Header closeButton>
             Search{' '}
-            <FaInfoCircle size="25" />
+            <FaInfoCircle size="15" />
             {/* <OverlayTrigger trigger="click" placement="bottom" overlay={searchInfoPopover}> */}
             {/* </OverlayTrigger> */}
           </Modal.Header>
