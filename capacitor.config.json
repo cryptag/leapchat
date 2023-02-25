@@ -1,0 +1,9 @@
+{
+  "appId": "org.leapchat",
+  "appName": "LeapChat",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "server": {
+    "hostname": "localhost:8080"
+  }
+}

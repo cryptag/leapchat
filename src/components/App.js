@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Capacitor } from '@capacitor/core';
 import {
   setUsername,
   initConnection,
@@ -56,6 +57,7 @@ class App extends Component {
     this.onInitConnection(pincode);
   };
 
+<<<<<<< HEAD
   createDeviceSession(passphrase) {
     document.location.hash = '#' + passphrase;
   }
@@ -63,6 +65,31 @@ class App extends Component {
   onInitConnection(pincode='') {
     const urlHash = document.location.hash + pincode;
     this.props.initConnection(this.createDeviceSession, urlHash);
+=======
+
+  onInitConnection(pincode='') {
+    this.props.initAuth();
+
+    let urlHash;
+    if (Capacitor.getPlatform() === 'web'){
+      urlHash = document.location.hash + pincode;
+    } else {
+      // for local testing in capacitor, just put in a valid fragment
+      urlHash = '';
+    }
+
+    initiateSessionAndConnect(
+      this.props.initConnection,
+      this.createWebSession,
+      urlHash,
+    );
+  }
+
+  createWebSession(passphrase) {
+    if (Capacitor.getPlatform() === "web"){
+      document.location.hash = "#" + passphrase;
+    }
+>>>>>>> b63a58f (CapacitorJS testing WIP)
   }
 
   onToggleModalVisibility = (modalName, isVisible) => {
