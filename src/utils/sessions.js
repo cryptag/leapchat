@@ -6,6 +6,7 @@ const authUrl = `${window.location.origin}/api/login`;
 
 
 async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewPassphrase) {
+  alert(authUrl);
   const response = await fetch(authUrl, {
     method: "GET",
     headers: {
