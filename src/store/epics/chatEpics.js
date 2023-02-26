@@ -75,6 +75,8 @@ const initChatHandlerConnection = ({ authToken, secretKey, mID, isNewRoom }) => 
   });
 };
 
+const connectionAlertTtlSeconds = 5;
+
 const initConnectionEpic = (action$) =>
   action$.ofType(CHAT_INIT_CONNECTION)
     .mergeMap(initChatHandlerConnection)
@@ -86,7 +88,10 @@ const initConnectionEpic = (action$) =>
         chatHandler.getUserStatusSubject()
           .map(setUserStatus),
 
-        Observable.of(connectionInitiated(), alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`))
+        Observable.of(
+          connectionInitiated(),
+          alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`, connectionAlertTtlSeconds)
+        )
       )
     ).catch(error => {
       console.error(error);

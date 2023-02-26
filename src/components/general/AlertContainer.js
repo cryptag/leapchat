@@ -13,10 +13,19 @@ const AlertContainer = ({
   alertMessage,
   alertStyle,
   dismissAlert,
+  alertRenderSeconds,
 }) => {
   if (!alertStyles.includes(alertStyle)){
     alertStyle = 'success';
   }
+
+  if (alertRenderSeconds && alertRenderSeconds > 0) {
+    // auto-dismiss option
+    setTimeout(() => {
+      dismissAlert();
+    }, alertRenderSeconds * 1000);
+  }
+  
 
   return (
     <div className="alert-container" style={{marginRight: '10px'}}>
