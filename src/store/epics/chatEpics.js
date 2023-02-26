@@ -71,7 +71,8 @@ const initChatHandlerConnection = ({ authToken, secretKey, mID, isNewRoom }) => 
   return chatHandler.initConnection({
     authToken,
     secretKey: secretKey,
-    mID
+    mID,
+    isNewRoom,
   });
 };
 
