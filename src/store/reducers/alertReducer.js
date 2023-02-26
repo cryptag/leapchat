@@ -6,7 +6,8 @@ import {
 
 const initialState = {
   alertMessage: '',
-  alertStyle: ''
+  alertStyle: '',
+  alertRenderSeconds: 0,
 };
 
 function alertReducer(state = initialState, action) {
@@ -15,7 +16,8 @@ function alertReducer(state = initialState, action) {
   case ALERT_DISPLAY:
     return {
       alertMessage: action.message,
-      alertStyle: action.style
+      alertStyle: action.style,
+      alertRenderSeconds: action?.alertRenderSeconds,
     };
 
   case ALERT_DISMISS:
