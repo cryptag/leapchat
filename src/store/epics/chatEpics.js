@@ -76,7 +76,7 @@ const initChatHandlerConnection = ({ authToken, secretKey, mID, isNewRoom }) => 
   });
 };
 
-const connectionAlertTtlSeconds = 5;
+const connectionAlertTtlSeconds = 4;
 
 const initConnectionEpic = (action$) =>
   action$.ofType(CHAT_INIT_CONNECTION)

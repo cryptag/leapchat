@@ -25,7 +25,6 @@ const AlertContainer = ({
       dismissAlert();
     }, alertRenderSeconds * 1000);
   }
-  
 
   return (
     <div className="alert-container" style={{marginRight: '10px'}}>
