@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -69,7 +68,7 @@ func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autoc
 	srv.Handler = middleware.Then(manager.HTTPHandler(srv.Handler))
 
 	srv.Addr = httpsAddr
-	srv.TLSConfig = getTLSConfig(domain, manager)
+	srv.TLSConfig = manager.TLSConfig()
 }
 
 func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
@@ -157,8 +156,4 @@ func getAutocertManager(domain string) *autocert.Manager {
 		HostPolicy: autocert.HostWhitelist(domain),
 		Cache:      autocert.DirCache("./" + domain),
 	}
-}
-
-func getTLSConfig(domain string, manager *autocert.Manager) *tls.Config {
-	return manager.TLSConfig()
 }
