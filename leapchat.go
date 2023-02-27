@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	stdlog "log"
 	"strings"
 
 	"github.com/cathalgarvey/go-minilock/taber"
@@ -42,6 +43,13 @@ func main() {
 		BUILD_DIR = "public"
 	}
 
+	// Doing this: https://github.com/sirupsen/logrus/blob/fdf1618bf7436ec3ee65753a6e2999c335e97221/writer_test.go
+	// ...to set up this: https://github.com/caddyserver/caddy/pull/3668
+	logrusLogger := log.New()
+	logrusWr := logrusLogger.Writer()
+	defer logrusWr.Close()
+	logger := stdlog.New(logrusWr, "", 0)
+
 	if *prod {
 		log.SetLevel(log.FatalLevel)
 	} else {
@@ -50,7 +58,7 @@ func main() {
 
 	m := miniware.NewMapper()
 
-	srv := NewServer(m, *httpAddr)
+	srv := NewServer(m, *httpAddr, logger)
 
 	if *prod {
 		if *domain == "" {
@@ -61,7 +69,7 @@ func main() {
 
 		// Setup http->https redirection
 		httpsPort := strings.SplitN(*httpsAddr, ":", 2)[1]
-		go redirectToHTTPS(*httpAddr, httpsPort, manager)
+		go redirectToHTTPS(*httpAddr, httpsPort, manager, logger)
 
 		// Production modifications to server
 		ProductionServer(srv, *httpsAddr, *domain, manager, *iframeOrigin)
