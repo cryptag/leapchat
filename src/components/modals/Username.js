@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Alert, ProgressBar } from 'react-bootstrap';
 
 import { generateRandomUsername } from '../../data/username';
 
@@ -12,11 +12,15 @@ export const MAX_USERNAME_LENGTH = 45;
 
 const UsernameModal = ({
   isVisible,
+  isNewRoom,
   previousUsername,
   username,
   onToggleModalVisibility,
   setUsername,
   enableAudio,
+  authenticating,
+  connecting,
+  connected,
 }) => {
   const usernameInput = useRef(null);
 
@@ -66,6 +70,22 @@ const UsernameModal = ({
     }
   };
 
+  let progress = 0;
+  let statusMessage = (
+    <p>Cranking a bunch of gears.</p>
+  );
+
+  if (authenticating) {
+    progress = 60;
+    statusMessage = <p>Establishing a session in your browser.</p>;
+  } else if (connecting) {
+    progress = 80;
+    statusMessage = <p>Creating a secure connection with LeapChat servers.</p>;
+  } else if (connected) {
+    progress = 95;
+    statusMessage = <p>Connected!</p>;
+  }
+
   return (
     <div>
       <Modal show={isVisible} onHide={onClose}>
@@ -74,6 +94,15 @@ const UsernameModal = ({
         </Modal.Header>
         <Modal.Body>
           <div data-testid="set-username-form" className="form-group">
+            {/* username is empty on initial page load, not on subsequent 'edit username' opens */}
+            {!username && isNewRoom && <Alert
+              bsStyle="success">
+              New room created!
+            </Alert>}
+            {!username && !isNewRoom && <Alert
+              bsStyle="success">
+              Successfully joined room!
+            </Alert>}
             <label htmlFor="username">Username</label>
             <input 
               id="username"
@@ -92,10 +121,14 @@ const UsernameModal = ({
             </div>}
             <Button bsSize="xsmall" bsStyle="primary" onClick={setRandomUsernameInForm}>Generate Random Username</Button>
           </div>
+          {!connected && <div className="progress-indicator">
+            {statusMessage}
+            <ProgressBar active now={progress} label={`${progress}%`} />
+          </div>}
         </Modal.Body>
         <Modal.Footer>
           {username && <Button onClick={onClose}>Cancel</Button>}
-          <Button data-testid="set-username" onClick={onSetUsername} bsStyle="primary">Set Username</Button>
+          <Button data-testid="set-username" onClick={onSetUsername} bsStyle="primary" disabled={!connected}>Set Username</Button>
         </Modal.Footer>
       </Modal>
     </div>
@@ -104,10 +137,14 @@ const UsernameModal = ({
 
 UsernameModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
+  isNewRoom: PropTypes.bool.isRequired,
   previousUsername: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
   setUsername: PropTypes.func.isRequired,
+  authenticating: PropTypes.bool.isRequired,
+  connecting: PropTypes.bool.isRequired,
+  connected: PropTypes.bool.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => {
