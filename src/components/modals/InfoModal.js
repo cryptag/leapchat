@@ -5,7 +5,7 @@ import { Modal } from 'react-bootstrap';
 const InfoModal = ({ isVisible, onClose }) => {
 
   return (
-    <Modal show={isVisible} onHide={onClose}>
+    <Modal size="lg" show={isVisible} onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>
           <h3>Welcome to LeapChat!</h3>

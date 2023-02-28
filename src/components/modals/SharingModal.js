@@ -29,7 +29,7 @@ const SharingModal = ({
 }) => {
   return (
     <div>
-      <Modal show={isVisible} onHide={onClose}>
+      <Modal size="lg" show={isVisible} onHide={onClose}>
         <Modal.Header closeButton>
           <Modal.Title>Invite to Chat</Modal.Title>
         </Modal.Header>

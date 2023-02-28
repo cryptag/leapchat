@@ -69,7 +69,7 @@ class SearchModal extends Component {
 
     return (
       <div>
-        <Modal show={isVisible} onHide={this.props.onClose}>
+        <Modal size="lg" show={isVisible} onHide={this.props.onClose}>
           <Modal.Header closeButton>
             Search{' '}
             <FaInfoCircle size="15" />
