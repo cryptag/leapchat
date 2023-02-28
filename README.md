@@ -60,33 +60,33 @@ to manage your node environments.
 If you're using NVM, you can install the correct node version by running:
 
 ```
-$ nvm install   # run from inside of leapchat/ dir, uses .nvmrc file
-$ nvm install v14.0.0   # run from anywhere
+nvm install   # run from inside of leapchat/ dir, uses .nvmrc file
+nvm install v14.0.0   # run from anywhere
 ```
 
 Then, to configure the use of the correct node version whenever you enter the project:
 
 ```
-$ cd ~/code/leapchat && nvm use
+cd ~/code/leapchat && nvm use
 ```
 
 To install JavaScript dependencies:
 
 ```
-$ npm install
+npm install
 ```
 
 In development, when you want to see your frontend code changes immediately on a browser refresh, run
 the command that boots up a watch process to re-compile the frontend whenever a file changes:
 
 ```
-$ npm run dev
+npm run dev
 ```
 
 In order to do a one-time build of the production assets:
 
 ```
-$ npm run build
+npm run build
 ```
 
 The frontend is served through an HTTP server running in the go binary. This allows us to make API requests
@@ -130,15 +130,15 @@ PostgREST provides a REST API interface that maps to the underlying tables.
 To install and run the REST API with the LeapChat configuration file:
 
 ```
-$ brew install postgrest
-$ postgrest db/postgrest.conf
+brew install postgrest
+postgrest db/postgrest.conf
 ```
 
 If you get an error, make sure that Postgres is running. On Mac OS,
 you can check PostgreSQL status by running:
 
 ```
-$ brew services list
+brew services list
 ```
 
 **In the second terminal**, run LeapChat's Go backend:
@@ -166,16 +166,16 @@ LeapChat's dev server should now be running on <http://localhost:8080>!
 ...then run in 3 different terminals:
 
 ```
-$ brew services start postgresql@12
-$ postgrest db/postgrest.conf
+brew services start postgresql@12
+postgrest db/postgrest.conf
 ```
 
 ```
-$ ./leapchat
+./leapchat
 ```
 
 ```
-$ npm run dev
+npm run dev
 ```
 
 ### Linux Instructions (for Ubuntu; works on Debian if other dependencies met)
@@ -292,9 +292,9 @@ sudo setcap cap_net_bind_service=+ep leapchat
 Open via `npm`:
 
 ```
-$ npm docs bootstrap
-$ npm docs react-bootstrap
-$ npm docs react-icons
+npm docs bootstrap
+npm docs react-bootstrap
+npm docs react-icons
 ```
 
 
@@ -310,7 +310,7 @@ Unit tests are located at `./test/` and have an extension of `.test.js`.
 To run unit tests only, run:
 
 ```
-$ npm run mocha
+npm run mocha
 ```
 
 ### Browser Tests
@@ -319,7 +319,7 @@ For browser tests, we use [playwright](https://playwright.dev/). This should be 
 via `npm`, but you may need to install the playwright browser have tests run successfully:
 
 ```
-$ npx playwright install-deps
+npx playwright install-deps
 ```
 
 Browser tests are located at `./test/playwright` and have an extension of `.spec.js`.
@@ -327,19 +327,19 @@ Browser tests are located at `./test/playwright` and have an extension of `.spec
 To run browser tests only, run:
 
 ```
-$ npm run playwright
+npm run playwright
 ```
 
 By default, the browser tests run in headless mode. To run with an interactive browser session, run:
 
 ```
-$ npm run webtests
+npm run webtests
 ```
 
 **To run all of the tests, all together**:
 
 ```
-$ npm test
+npm test
 ```
 
 ### Documentation Links
