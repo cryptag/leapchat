@@ -52,6 +52,45 @@ Then grab and build the `leapchat` source:
 go get github.com/cryptag/leapchat
 ```
 
+### JavaScript and Node Setup
+
+Install Node v14. We recommend using the [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm) package
+to manage your node environments.
+
+If you're using NVM, you can install the correct node version by running:
+
+```
+$ nvm install   # run from inside of leapchat/ dir, uses .nvmrc file
+$ nvm install v14.0.0   # run from anywhere
+```
+
+Then, to configure the use of the correct node version whenever you enter the project:
+
+```
+$ cd ~/code/leapchat && nvm use
+```
+
+To install JavaScript dependencies:
+
+```
+$ npm install
+```
+
+In development, when you want to see your frontend code changes immediately on a browser refresh, run
+the command that boots up a watch process to re-compile the frontend whenever a file changes:
+
+```
+$ npm run dev
+```
+
+In order to do a one-time build of the production assets:
+
+```
+$ npm run build
+```
+
+The frontend is served through an HTTP server running in the go binary. This allows us to make API requests
+from the browser without any CORS configuration.
 
 ### macOS Instructions
 
@@ -59,7 +98,7 @@ If you don't already have Postgres 9.5 to Postgres 12 installed and
 running, install it with Homebrew:
 
 ```
-brew install postgresql@10
+brew install postgresql@12
 ```
 
 (It may ask you to append a line to your shell config; watch for this
@@ -70,23 +109,37 @@ Next, you'll need three terminals.
 **In the first terminal**, run database migrations, download `postgrest`,
 and have `postgrest` connect to Postgres:
 
+Start the PostgreSQL server:
+
+```
+brew services start postgresql@12
+```
+
+Then, create the default database and run the migrations.
+
 ```
 cd $(go env GOPATH)/src/github.com/cryptag/leapchat/db
 chmod a+rx ~/
 createdb
 sudo -u $USER bash init_sql.sh
-wget https://github.com/PostgREST/postgrest/releases/download/v7.0.0/postgrest-v7.0.0-osx.tar.xz
-tar xvf postgrest-v7.0.0-osx.tar.xz
-./postgrest postgrest.conf
 ```
 
-If you get an error, make sure that Postgres is running.  On macOS,
-run Postgres by running
+We use [PostgREST](https://postgrest.org/en/stable/) to expose the database to the application.
+PostgREST provides a REST API interface that maps to the underlying tables.
+
+To install and run the REST API with the LeapChat configuration file:
 
 ```
-pg_ctl -D /usr/local/var/postgres start
+$ brew install postgrest
+$ postgrest db/postgrest.conf
 ```
 
+If you get an error, make sure that Postgres is running. On Mac OS,
+you can check PostgreSQL status by running:
+
+```
+$ brew services list
+```
 
 **In the second terminal**, run LeapChat's Go backend:
 
@@ -102,13 +155,10 @@ LeapChat's auto-reloading dev server:
 ```
 cd $(go env GOPATH)/src/github.com/cryptag/leapchat
 npm install
-npm run build
 npm run dev
 ```
 
-LeapChat's dev server should now be running on
-<http://localhost:5000> !  (And the Go backend on
-<http://localhost:5001> .)
+LeapChat's dev server should now be running on <http://localhost:8080>!
 
 
 #### macOS: Once you're set up
@@ -116,19 +166,17 @@ LeapChat's dev server should now be running on
 ...then run in 3 different terminals:
 
 ```
-cd db
-pg_ctl -D /usr/local/var/postgres start
-./postgrest postgrest.conf
+$ brew services start postgresql@12
+$ postgrest db/postgrest.conf
 ```
 
 ```
-./leapchat
+$ ./leapchat
 ```
 
 ```
-npm run dev
+$ npm run dev
 ```
-
 
 ### Linux Instructions (for Ubuntu; works on Debian if other dependencies met)
 
@@ -241,11 +289,13 @@ sudo setcap cap_net_bind_service=+ep leapchat
 
 ## Documentation Links
 
-Currently, some of the packages we use are slightly out of date. Here are some quick documentation links that might prove useful:
+Open via `npm`:
 
-[React Bootstrap version 0.33.1 docs](https://react-bootstrap-v3.netlify.app/components/tooltips/)
-
-Search for available [Font Awesome Icons](https://fontawesome.com/v5/search)
+```
+$ npm docs bootstrap
+$ npm docs react-bootstrap
+$ npm docs react-icons
+```
 
 
 ## JavaScript Testing
