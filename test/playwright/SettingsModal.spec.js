@@ -15,7 +15,7 @@ test.describe("Opens settings modal", () => {
     await page.locator(".settings").click();
     await expect(page.getByText("Settings")).toBeVisible();
 
-    await page.locator(".modal-header .close").click();
+    await page.locator(".modal-header .btn-close").click();
     await expect(page.getByText("Settings")).not.toBeVisible();
   });
 

@@ -15,17 +15,17 @@ test.describe("Opens sharing modal", () => {
     await page.locator(".sharing").click();
     await expect(page.getByText("Invite to Chat")).toBeVisible();
 
-    await page.locator(".modal-header .close").click();
+    await page.locator(".modal-header .btn-close").click();
     await expect(page.getByText("Invite to Chat")).not.toBeVisible();
   });
 
   test("opens and closes the invite users modal by clicking invite button in users list", async ({ page }) => {
     await expect(page.getByText("Invite to Chat")).not.toBeVisible();
 
-    await page.locator(".invite-users .icon-button").click();
+    await page.locator(".icon-button").click();
     await expect(page.getByText("Invite to Chat")).toBeVisible();
 
-    await page.locator(".modal-header .close").click();
+    await page.locator(".modal-header .btn-close").click();
     await expect(page.getByText("Invite to Chat")).not.toBeVisible();
   });
 
@@ -37,10 +37,9 @@ test.describe("Opens sharing modal", () => {
     //    permissions. Only chromium (not currently running) supports allowing this.
     // Just check that we see the tooltip appear.
 
-    // FIXME: restore this test once we have restored tooltips
-    // await expect(page.getByText("Link copied!")).not.toBeVisible();
-    // await page.locator(".share-copy-link .icon-button").click();
-    // await expect(page.getByText("Link copied!")).toBeVisible();
+    await expect(page.getByText("Link copied!")).not.toBeVisible();
+    await page.locator(".share-copy-link .icon-button").click();
+    await expect(page.getByText("Link copied!")).toBeVisible();
     
   });
 

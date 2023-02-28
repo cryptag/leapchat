@@ -174,10 +174,13 @@ header {
   }
   .form-control {
     flex-grow: 2;
-    border: none;
   }
   .emoji-picker-icon {
     cursor: pointer;
+  }
+
+  .form-label {
+    font-weight: bold;
   }
 }
 
@@ -243,6 +246,7 @@ main {
         float: right;
         height: 54px;
         vertical-align: bottom;
+        margin-left: 5px;
 
         i {
           color: #1e202f;
@@ -370,7 +374,7 @@ main {
   z-index: 10;
 
   .alert {
-    padding: 5px 15px;
+
 
     &.alert-dismissable {
       .close {

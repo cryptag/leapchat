@@ -39,7 +39,7 @@ const SharingModal = ({
             <p>
               Invite with a link shared via SMS, Email, etc.
             </p>
-            <Button className="icon-button" onClick={onShareLink} bsStyle="primary">
+            <Button className="icon-button" onClick={onShareLink} variant="primary">
               Share Link <FaShareAltSquare />
             </Button>
             <hr />
@@ -48,24 +48,19 @@ const SharingModal = ({
 
           <h3>Copy Link</h3>
           <p>Invite with a link copied to your clipboard.</p>
-          <div className="form-group share-copy-link">
-            <form role="form" className="form-inline">
-              <input className="form-control current-href" type="text" readOnly value={window.location.href} />
-              {/* <OverlayTrigger
-                trigger="click"
-                overlay={copyLinkTooltip}
-                placement="top"
-                delayShow={300}
-                delayHide={150}> */}
-                
-              {/* </OverlayTrigger> */}
-              <Button className="icon-button" bsStyle="primary" onClick={onCopyShareLink}>
+          <div className="input-group share-copy-link">
+            <input className="form-control current-href" type="text" readOnly value={window.location.href} />
+            <OverlayTrigger
+              trigger="click"
+              overlay={copyLinkTooltip}
+              placement="top"
+              delay={{ show: 300, hide: 150 }}>
+              <Button className="icon-button" variant="primary" onClick={onCopyShareLink}>
                 Copy to Clipboard
                 <FaShareAlt size={15} />
               </Button>
-            </form>
+            </OverlayTrigger>
           </div>
-
         </Modal.Body>
       </Modal>
     </div>

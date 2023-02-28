@@ -96,15 +96,16 @@ const UsernameModal = ({
           <div data-testid="set-username-form" className="form-group">
             {/* username is empty on initial page load, not on subsequent 'edit username' opens */}
             {!username && isNewRoom && <Alert
-              bsStyle="success">
+              variant="success">
               New room created!
             </Alert>}
             {!username && !isNewRoom && <Alert
-              bsStyle="success">
+              variant="success">
               Successfully joined room!
             </Alert>}
-            <label htmlFor="username">Username</label>
+            <label className="form-label" htmlFor="username">Username</label>
             <input 
+              style={{marginBottom: "10px"}}
               id="username"
               type="text"
               className="form-control"
@@ -114,21 +115,22 @@ const UsernameModal = ({
               onKeyUp={onUsernameKeyUp}
               autoFocus={true}
               autoComplete="off" />
-            <br />
+            
             {failMessage && <div className="alert alert-danger" role="alert" >
+              <br />
               <strong>Invalid Username: </strong>
               {failMessage}
             </div>}
-            <Button bsSize="xsmall" bsStyle="primary" onClick={setRandomUsernameInForm}>Generate Random Username</Button>
+            <Button size="sm" variant="primary" onClick={setRandomUsernameInForm}>Generate Random Username</Button>
           </div>
-          {!connected && <div className="progress-indicator">
+          {!connected && <div className="progress-indicator" style={{marginTop: '20px'}}>
             {statusMessage}
-            <ProgressBar active now={progress} label={`${progress}%`} />
+            <ProgressBar animated now={progress} label={`${progress}%`} />
           </div>}
         </Modal.Body>
         <Modal.Footer>
-          {username && <Button onClick={onClose}>Cancel</Button>}
-          <Button data-testid="set-username" onClick={onSetUsername} bsStyle="primary" disabled={!connected}>Set Username</Button>
+          {username && <Button variant="light" onClick={onClose}>Cancel</Button>}
+          <Button data-testid="set-username" onClick={onSetUsername} variant="primary" disabled={!connected}>Set Username</Button>
         </Modal.Footer>
       </Modal>
     </div>
