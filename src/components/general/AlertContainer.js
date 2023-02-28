@@ -29,8 +29,9 @@ const AlertContainer = ({
   return (
     <div className="alert-container" style={{marginRight: '10px'}}>
       {alertMessage && <Alert
-        bsStyle={alertStyle}
-        onDismiss={dismissAlert}>
+        variant={alertStyle}
+        onClose={dismissAlert}
+        dismissible>
         {alertMessage}
       </Alert>}
     </div>

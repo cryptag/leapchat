@@ -45,7 +45,7 @@ const UserList = ({
       <div className="invite-users" >
         <Button
           className="icon-button"
-          bsStyle="link"
+          variant="link"
           onClick={() => setShowSharingModal(true)}>
           Invite Users <FaShareAlt size={15} />
         </Button>

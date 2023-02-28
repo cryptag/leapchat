@@ -15,7 +15,7 @@ const Info = () => {
 
   return (
     <div className="info">
-      <FaInfoCircle onClick={() => setShowInfoModal(true)} size={25}/>
+      <FaInfoCircle onClick={() => setShowInfoModal(true)} size={19}/>
       {showInfoModal && <InfoModal
         isVisible={showInfoModal}
         onClose={() => setShowInfoModal(false)} />}

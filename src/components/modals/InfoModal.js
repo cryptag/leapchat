@@ -5,12 +5,14 @@ import { Modal } from 'react-bootstrap';
 const InfoModal = ({ isVisible, onClose }) => {
 
   return (
-    <Modal show={isVisible} onHide={onClose}>
+    <Modal size="lg" show={isVisible} onHide={onClose}>
       <Modal.Header closeButton>
-        <h3>Welcome to LeapChat!</h3>
-        <h4>LeapChat: encrypted, ephemeral, in-browser chat.</h4>
+        <Modal.Title>
+          <h3>Welcome to LeapChat!</h3>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <h4>LeapChat: encrypted, ephemeral, in-browser chat.</h4>
         <p>Just visit <a href="https://www.leapchat.org/" target="_blank">leapchat.org</a> and a new, secure chat room will instantly be created for you. And once you're in, just link people to that page to invite them to join you!</p>
         <h3>
           Why LeapChat?

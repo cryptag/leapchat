@@ -19,7 +19,7 @@ const SettingsModal = ({
 
   return (
     <div>
-      <Modal show={isVisible} onHide={onClose}>
+      <Modal size="lg" show={isVisible} onHide={onClose}>
         <Modal.Header closeButton>
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
@@ -36,7 +36,7 @@ const SettingsModal = ({
           <p>
             By clicking here, you will delete all messages in this chat from the server, for all users, forever.
           </p>
-          <Button onClick={onDeleteAllMsgs} bsStyle="danger">
+          <Button onClick={onDeleteAllMsgs} variant="danger">
             Delete All Messages Forever
           </Button>
 

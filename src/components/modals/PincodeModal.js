@@ -53,7 +53,7 @@ class PincodeModal extends PureComponent {
 
     return (
       <div>
-        <Modal show={showModal} onHide={this.onClose}>
+        <Modal size="lg" show={showModal} onHide={this.onClose}>
           <Modal.Header>
             <Modal.Title>Set Pincode</Modal.Title>
           </Modal.Header>
@@ -68,12 +68,12 @@ class PincodeModal extends PureComponent {
                 onKeyPress={this.onPincodeKeyPress} 
                 autoFocus={true} />
               <br />
-              <Button bsSize="xsmall" bsStyle="primary" onClick={this.setRandomPincodeInForm}>Generate Random Pincode</Button>
+              <Button size="sm" variant="primary" onClick={this.setRandomPincodeInForm}>Generate Random Pincode</Button>
             </div>
           </Modal.Body>
           <Modal.Footer>
             {pincode && <Button onClick={this.onClose}>Cancel</Button>}
-            <Button onClick={this.onSetPincodeClick} bsStyle="primary">Set Pincode</Button>
+            <Button onClick={this.onSetPincodeClick} variant="primary">Set Pincode</Button>
           </Modal.Footer>
         </Modal>
       </div>

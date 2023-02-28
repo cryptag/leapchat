@@ -20,7 +20,7 @@ test.describe('Opens modal dialogs', () => {
     await expect(page.getByText("Welcome to LeapChat!")).toBeVisible();
 
     // shut yourself sesame
-    await page.locator(".modal-header .close").click();
+    await page.locator(".modal-header .btn-close").click();
     await expect(page.getByText("Welcome to LeapChat!")).not.toBeVisible();
   });
 });
