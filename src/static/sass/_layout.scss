@@ -67,21 +67,6 @@ header {
     }
   }
 
-  .icon-button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: none;
-    }
-
-    svg {
-      margin: 0 4px;
-    }
-  }
-
   .users-list {
     flex: 0 1 100%;
 
@@ -403,6 +388,22 @@ main {
   }
 }
 
+.icon-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  svg {
+    margin: 0 6px;
+  }
+}
+
+
 // Cursor effect over Settings button
 .settings {
   svg {
@@ -419,7 +420,7 @@ main {
   border-color: $funky-purple !important;
 }
 
-// Allows textarea to by dynamic instead of static
+// Allows textarea to be dynamic instead of static
 textarea {
   box-sizing: border-box !important;
   max-height: 40vh !important;
