@@ -10,6 +10,9 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Sets an initial user name', () => {
   test('sets username', async ({ page }) => {
+    await expect(page.locator(".form-group .alert-success")).toBeVisible();
+    await expect(page.locator(".form-group .alert-success")).toHaveText(/New room created/);
+
     await page.locator("#username").fill(username);
     await page.getByTestId("set-username").click();
 
@@ -19,25 +22,25 @@ test.describe('Sets an initial user name', () => {
   });
 
   test("sees an error if username is empty", async ({ page }) => {
-    await expect(page.getByRole("alert")).not.toBeVisible();
+    await expect(page.locator(".alert-danger")).not.toBeVisible();
     
     await page.locator("#username").fill("");
     await page.getByTestId("set-username").click();
     
-    await expect(page.getByRole("alert")).toBeVisible();
-    await expect(page.getByRole("alert")).toHaveText(/Must not be empty/);
+    await expect(page.locator(".form-group .alert-danger")).toBeVisible();
+    await expect(page.locator(".form-group .alert-danger")).toHaveText(/Must not be empty/);
   });
 
   test("sees an error if username is too long", async ({ page }) => {
-    await expect(page.getByRole("alert")).not.toBeVisible();
+    await expect(page.locator(".alert-danger")).not.toBeVisible();
 
     const tooLongUsername = new Array(MAX_USERNAME_LENGTH + 3).join("X");
     
     await page.locator("#username").fill(tooLongUsername);
     await page.getByTestId("set-username").click();
     
-    await expect(page.getByRole("alert")).toBeVisible();
+    await expect(page.locator(".alert-danger")).toBeVisible();
     const expectedError = new RegExp(`Length must not exceed ${MAX_USERNAME_LENGTH}`);
-    await expect(page.getByRole("alert")).toHaveText(expectedError);
+    await expect(page.locator(".alert-danger")).toHaveText(expectedError);
   });
 });

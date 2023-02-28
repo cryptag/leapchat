@@ -16,6 +16,9 @@ import ChatContainer from './chat/ChatContainer';
 import PincodeModal from './modals/PincodeModal';
 import UsernameModal from './modals/Username';
 
+// evaluate on initial render only, not on every re-render.
+const isNewRoom = Boolean(!document.location.hash);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -90,7 +93,11 @@ class App extends Component {
     const {
       username,
       pincodeRequired,
-      previousUsername } = this.props;
+      previousUsername,
+      authenticating,
+      connecting,
+      connected,
+    } = this.props;
 
     let showUsernameModal = this.state.modals.username.isVisible;
     showUsernameModal = !pincodeRequired && (showUsernameModal || username === '');
@@ -112,7 +119,11 @@ class App extends Component {
           previousUsername={previousUsername}
           username={username}
           isVisible={showUsernameModal}
+          isNewRoom={isNewRoom}
           setUsername={this.props.setUsername}
+          authenticating={authenticating}
+          connecting={connecting}
+          connected={connected}
           onToggleModalVisibility={this.onToggleModalVisibility} />}
 
         <main className="encloser">
@@ -136,6 +147,9 @@ const mapStateToProps = (reduxState) => {
     previousUsername: reduxState.chat.previousUsername,
     pincodeRequired: reduxState.chat.pincodeRequired,
     shouldConnect: reduxState.chat.shouldConnect,
+    connecting: reduxState.chat.connecting,
+    connected: reduxState.chat.connected,
+    authenticating: reduxState.chat.authenticating,
   };
 };
 
