@@ -53,7 +53,7 @@ class PincodeModal extends PureComponent {
 
     return (
       <div>
-        <Modal show={showModal} onHide={this.onClose}>
+        <Modal size="lg" show={showModal} onHide={this.onClose}>
           <Modal.Header>
             <Modal.Title>Set Pincode</Modal.Title>
           </Modal.Header>

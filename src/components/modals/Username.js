@@ -88,7 +88,7 @@ const UsernameModal = ({
 
   return (
     <div>
-      <Modal show={isVisible} onHide={onClose}>
+      <Modal size="lg" show={isVisible} onHide={onClose}>
         <Modal.Header>
           <Modal.Title>Set Username</Modal.Title>
         </Modal.Header>

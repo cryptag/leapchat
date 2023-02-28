@@ -19,7 +19,7 @@ const SettingsModal = ({
 
   return (
     <div>
-      <Modal show={isVisible} onHide={onClose}>
+      <Modal size="lg" show={isVisible} onHide={onClose}>
         <Modal.Header closeButton>
           <Modal.Title>Settings</Modal.Title>
         </Modal.Header>
