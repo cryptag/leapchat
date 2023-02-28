@@ -18,7 +18,7 @@ const Settings = () => {
     <div className="settings" >
       {/* <OverlayTrigger placement="bottom" overlay={settingsTooltip} delayShow={300} delayHide={150}> */}
       {/* </OverlayTrigger> */}
-      <FaCog size={30} onClick={() => setShowSettingsModal(true)} />
+      <FaCog size={27} onClick={() => setShowSettingsModal(true)} />
       {showSettingsModal && <SettingsModal 
         isVisible={showSettingsModal}
         onClose={() => setShowSettingsModal(false)} />}
