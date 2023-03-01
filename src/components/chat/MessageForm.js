@@ -135,6 +135,11 @@ class MessageForm extends Component {
     }
   };
 
+  onMessageUpdate = (e) => {
+    const message = e.target.value;
+    this.props.messageUpdate(message);
+  };
+
   render() {
     const {
       message,
@@ -187,7 +192,7 @@ class MessageForm extends Component {
             <div className="message" onKeyDown={this.handleKeyDown}>
               <textarea
                 className="form-control"
-                onChange={this.props.messageUpdate}
+                onChange={this.onMessageUpdate}
                 onKeyPress={this.onKeyPress}
                 onKeyDown={this.onKeyDown}
                 name="message"
