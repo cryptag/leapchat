@@ -421,6 +421,11 @@ main {
   border-color: $funky-purple !important;
 }
 
+.form-control:focus {
+  box-shadow: 0 0 0 0.15rem #66339959;
+  border-color: $funky-purple !important;
+}
+
 // Allows textarea to be dynamic instead of static
 textarea {
   box-sizing: border-box !important;
