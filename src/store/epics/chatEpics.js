@@ -204,7 +204,6 @@ const ownUserStatusEpic = (action$, store) =>
         .map(() => userStatusSent())
     )
     .catch(error => {
-      console.error(error);
       return Observable.of(alertWarning('Error sending user status.'));
     });
 

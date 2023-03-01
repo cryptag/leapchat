@@ -443,7 +443,6 @@ miniLock.crypto.decryptFile = function (
     );
     miniLock.file.read(file, 12, headerLength + 12, function (header) {
       try {
-        alert(header.data);
         header = nacl.util.encodeUTF8(header.data);
         header = JSON.parse(header);
       }
