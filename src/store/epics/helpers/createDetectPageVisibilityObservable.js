@@ -6,6 +6,14 @@ import 'rxjs/add/observable/of';
 
 export default function createDetectPageVisibilityObservable() {
 
+  if (typeof document === "undefined") {
+    // make non-web versions a no-op for now
+    return new Observable((subscriber) => {
+      subscriber.next();
+      subscriber.complete();
+    });
+  }
+
   let hiddenKeyName, visibilityChangeEventName;
   if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
     hiddenKeyName = "hidden";

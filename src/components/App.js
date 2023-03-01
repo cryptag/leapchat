@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   setUsername,
-  initAuth,
   initConnection,
   initChat
 } from '../store/actions/chatActions';
-
-import { initiateSessionAndConnect } from '../utils/sessions';
 
 import Header from './layout/Header';
 
@@ -59,21 +56,13 @@ class App extends Component {
     this.onInitConnection(pincode);
   };
 
-
-  onInitConnection(pincode='') {
-    // this.props.initAuth();
-
-    // const urlHash = document.location.hash + pincode;
-    // initiateSessionAndConnect(
-    //   this.props.initConnection,
-    //   this.createWebSession,
-    //   urlHash,
-    // );
-    this.props.initConnection(pincode);
+  createDeviceSession(passphrase) {
+    document.location.hash = '#' + passphrase;
   }
 
-  createWebSession(passphrase) {
-    document.location.hash = "#" + passphrase;
+  onInitConnection(pincode='') {
+    const urlHash = document.location.hash + pincode;
+    this.props.initConnection(this.createDeviceSession, urlHash);
   }
 
   onToggleModalVisibility = (modalName, isVisible) => {
@@ -122,7 +111,6 @@ class App extends Component {
           isVisible={showUsernameModal}
           isNewRoom={isNewRoom}
           setUsername={this.props.setUsername}
-          authenticating={authenticating}
           connecting={connecting}
           connected={connected}
           onToggleModalVisibility={this.onToggleModalVisibility} />}
@@ -150,26 +138,13 @@ const mapStateToProps = (reduxState) => {
     shouldConnect: reduxState.chat.shouldConnect,
     connecting: reduxState.chat.connecting,
     connected: reduxState.chat.connected,
-    authenticating: reduxState.chat.authenticating,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     initChat: () => dispatch(initChat()),
-    initAuth: () => dispatch(initAuth()),
-    initConnection: (pincode) => dispatch(initConnection(pincode)),
-    // initConnection: ({
-    //   authToken,
-    //   secretKey,
-    //   mID,
-    //   isNewRoom
-    // }) => dispatch(initConnection({
-    //   authToken,
-    //   secretKey,
-    //   mID,
-    //   isNewRoom
-    // })),
+    initConnection: (createDeviceSession, urlHash) => dispatch(initConnection(createDeviceSession, urlHash)),
     setUsername: (username) => dispatch(setUsername(username)),
   };
 };

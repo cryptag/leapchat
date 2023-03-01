@@ -1,6 +1,5 @@
 
 export const CHAT_INIT_CHAT = 'CHAT_INIT_CHAT';
-export const CHAT_INIT_AUTH = 'CHAT_INIT_AUTH';
 export const CHAT_INIT_CONNECTION = 'CHAT_INIT_CONNECTION';
 export const CHAT_DISCONNECTED = 'CHAT_DISCONNECTED';
 export const CHAT_CONNECTION_INITIATED = 'CHAT_CONNECTION_INITIATED';
@@ -14,19 +13,8 @@ export const CHAT_USERNAME_SET = 'CHAT_USERNAME_SET';
 
 export const initChat = () => ({ type: CHAT_INIT_CHAT });
 
-export const initConnection = (pincode = '') =>
-  ({ type: CHAT_INIT_CONNECTION, pincode });
-
-export const initConnectionNew = ({
-  authToken, secretKey, mID, isNewRoom
-}) =>
-  ({
-    type: CHAT_INIT_CONNECTION,
-    authToken, secretKey, mID, isNewRoom
-  });
-
-export const initAuth = () =>
-  ({ type: CHAT_INIT_AUTH });
+export const initConnection = (createDeviceSession, urlHash ) =>
+  ({ type: CHAT_INIT_CONNECTION, createDeviceSession, urlHash });
 
 export const disconnected = () =>
   ({ type: CHAT_DISCONNECTED });

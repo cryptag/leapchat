@@ -1,3 +1,13 @@
+
+/**
+ * Module intended to replace the init connection epic in chatEpics.js
+ * Currently lacking connection retry capabilities on disconnect.
+ * STRs: create a chat session in the browser, then kill the running 
+ *    leapchat binary, to simulate the server going away.
+ * The 'disconnected' action can be dispatched on connection error,
+ * however, this doesn't initiate a proper re-connect flow.
+ * UNUSED FOR NOW.
+ */
 import { getEmail, getPassphrase } from '../utils/encrypter';
 import miniLock from '../utils/miniLock';
 

@@ -23,17 +23,15 @@ import {
 import { getPassphrase, getEmail } from '../../utils/encrypter';
 import miniLock from '../../utils/miniLock';
 
-import {
-  USER_STATUS_DELAY_MS,
-  USERNAME_KEY
-} from '../../constants/messaging';
+import { USER_STATUS_DELAY_MS } from '../../constants/messaging';
+import { persistUsername } from '../reducers/helpers/deviceState';
 
 import ChatHandler from './helpers/ChatHandler';
 import { combineEpics } from 'redux-observable';
 import createDetectVisibilityObservable from './helpers/createDetectPageVisibilityObservable';
 
-const authUrl = `${window.location.origin}/api/login`;
-const wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
+import { authUrl, wsUrl } from './helpers/urls';
+
 export const chatHandler = new ChatHandler(wsUrl);
 
 import { Observable } from 'rxjs/Observable';
@@ -71,36 +69,25 @@ const suggestionEpic = (action$) =>
     .map(() => stopSuggestions())
     .catch((err) => console.error(err));
 
-
-const initChatHandlerConnection = ({ authToken, secretKey, mID, isNewRoom }) => {
-  return chatHandler.initConnection({
-    authToken,
-    secretKey: secretKey,
-    mID,
-    isNewRoom,
-  });
-};
-
-function createKeyPairObservable({ pincode = '' }) {
+function createKeyPairObservable({ createDeviceSession, urlHash }) {
   return Observable.create(function (observer) {
-    const urlHash = document.location.hash + pincode;
     // 1. Get passphrase
     const {
       passphrase,
       isNewPassphrase
     } = getPassphrase(urlHash);
 
-    // 3. Get email based on passphrase
+    // 2. Get email based on passphrase
     let email = getEmail(passphrase);
-    // 4. Decrypt to get key pair
+    // 3. Decrypt to get key pair
     miniLock.crypto.getKeyPair(passphrase, email, (keyPair) => {
       miniLock.session.keys = keyPair;
       miniLock.session.keyPairReady = true;
       let mID = miniLock.crypto.getMiniLockID(keyPair.publicKey);
-      // 4. When we have keypair, login:
-
+      
+      // 4. When we have keypair, login on device:
       if (isNewPassphrase) {
-        document.location.hash = '#' + passphrase;
+        createDeviceSession(passphrase);
       }
 
       observer.next({ passphrase, keyPair, mID, isNewRoom: isNewPassphrase });
@@ -165,7 +152,13 @@ const initConnectionEpic = (action$) =>
             chatHandler.getUserStatusSubject()
               .map(setUserStatus),
 
-            Observable.of(connectionInitiated(), alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`, connectionAlertTtlSeconds))
+            Observable.of(
+              connectionInitiated(),
+              alertSuccess(
+                `${isNewRoom ? 'New room created.' : ''} Connected to server.`,
+                connectionAlertTtlSeconds
+              )
+            )
           )
         ).catch(error => {
           console.error(error);
@@ -183,38 +176,6 @@ const initConnectionEpic = (action$) =>
       ]);
     });
 
-
-// const initConnectionEpic = (action$) =>
-//   action$.ofType(CHAT_INIT_CONNECTION)
-//     .mergeMap(initChatHandlerConnection)
-//     .mergeMap((isNewRoom) =>
-//       Observable.merge(
-//         chatHandler.getMessageSubject()
-//           .map(addMessage),
-
-//         chatHandler.getUserStatusSubject()
-//           .map(setUserStatus),
-
-//         Observable.of(
-//           connectionInitiated(),
-//           alertSuccess(`${isNewRoom ? 'New room created.' : ''} Connected to server.`, connectionAlertTtlSeconds)
-//         )
-//       )
-//     ).catch(error => {
-//       console.error(error);
-//       return Observable.from([
-//         alertWarning('Lost connection to chat server. Trying to reconnect...'),
-//         disconnected()
-//       ]);
-//     })
-//     .catch(error => {
-//       console.error(error);
-//       return Observable.from([
-//         alertWarning('Something went wrong when initiating. Trying again...'),
-//         disconnected()
-//       ]);
-//     });
-
 const setUsernameEpic = (action$, store) =>
   action$.ofType(CHAT_SET_USERNAME)
     .filter(action => action.username && !store.getState().chat.paranoidMode)
@@ -225,7 +186,7 @@ const setUsernameEpic = (action$, store) =>
           chatHandler.sendUserStatus(username, 'viewing', ttl);
         })
         .retryWhen(error => error.delay(500))
-        .do(() => localStorage && localStorage.setItem(USERNAME_KEY, action.username))
+        .do(() => persistUsername(action.username))
     )
     .map(username => usernameSet(username));
 
