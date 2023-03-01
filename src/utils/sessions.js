@@ -1,6 +1,9 @@
 import { getEmail, getPassphrase } from '../utils/encrypter';
 import miniLock from '../utils/miniLock';
 
+
+import { disconnected } from '../store/actions/chatActions';
+
 // TODO: will be different host from a mobile device, probably if (!window)
 const authUrl = `${window.location.origin}/api/login`;
 

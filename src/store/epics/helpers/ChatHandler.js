@@ -181,7 +181,7 @@ class ChatHandler {
     reader.readAsArrayBuffer(fileBlob);
   };
 
-  initConnection = ({ mID, secretKey, authToken, isNewRoom }) => {
+  initConnectionNew = ({ mID, secretKey, authToken, isNewRoom }) => {
     this.mID = mID;
     this.secretKey = secretKey;
     this.authToken = authToken;
@@ -196,6 +196,27 @@ class ChatHandler {
       this.ws.onopen = (event) => {
         event.target.send(this.authToken);
         observer.next(isNewRoom);
+        observer.complete();
+      };
+
+    });
+  };
+
+  initConnection = ({ mID, secretKey, authToken }) => {
+    this.mID = mID;
+    this.secretKey = secretKey;
+    this.authToken = authToken;
+    this.wsMessageSubject = new Subject();
+    this.wsUserStatusSubject = new Subject();
+
+    return Observable.create(observer => {
+      this.ws = new WebSocket(this.wsUrl);
+      this.ws.onclose = this.onWsClose;
+      this.ws.onerror = this.onWsError;
+      this.ws.onmessage = this.onWsMessage;
+      this.ws.onopen = (event) => {
+        event.target.send(this.authToken);
+        observer.next();
         observer.complete();
       };
 

@@ -61,14 +61,15 @@ class App extends Component {
 
 
   onInitConnection(pincode='') {
-    this.props.initAuth();
+    // this.props.initAuth();
 
-    const urlHash = document.location.hash + pincode;
-    initiateSessionAndConnect(
-      this.props.initConnection,
-      this.createWebSession,
-      urlHash,
-    );
+    // const urlHash = document.location.hash + pincode;
+    // initiateSessionAndConnect(
+    //   this.props.initConnection,
+    //   this.createWebSession,
+    //   urlHash,
+    // );
+    this.props.initConnection(pincode);
   }
 
   createWebSession(passphrase) {
@@ -157,17 +158,18 @@ const mapDispatchToProps = (dispatch) => {
   return {
     initChat: () => dispatch(initChat()),
     initAuth: () => dispatch(initAuth()),
-    initConnection: ({
-      authToken,
-      secretKey,
-      mID,
-      isNewRoom
-    }) => dispatch(initConnection({
-      authToken,
-      secretKey,
-      mID,
-      isNewRoom
-    })),
+    initConnection: (pincode) => dispatch(initConnection(pincode)),
+    // initConnection: ({
+    //   authToken,
+    //   secretKey,
+    //   mID,
+    //   isNewRoom
+    // }) => dispatch(initConnection({
+    //   authToken,
+    //   secretKey,
+    //   mID,
+    //   isNewRoom
+    // })),
     setUsername: (username) => dispatch(setUsername(username)),
   };
 };
