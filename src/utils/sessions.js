@@ -1,19 +1,35 @@
 import { getEmail, getPassphrase } from '../utils/encrypter';
 import miniLock from '../utils/miniLock';
+import { Capacitor } from '@capacitor/core';
+import { CapacitorHttp } from '@capacitor/core';
 
 // TODO: will be different host from a mobile device, probably if (!window)
-const authUrl = `${window.location.origin}/api/login`;
+let authUrl = `${window.location.origin}/api/login`;
+
+if (Capacitor.isNativePlatform()){
+  authUrl = "http://192.168.1.247:8080/api/login";
+}
 
 
 async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewPassphrase) {
-  alert(authUrl);
-  const response = await fetch(authUrl, {
-    method: "GET",
-    headers: {
-      'X-Minilock-Id': mID
-    }
-  });
-
+  let response;
+  if (Capacitor.isNativePlatform()){
+    response = await CapacitorHttp.request({
+      url: authUrl,
+      headers: {
+        'X-Minilock-Id': mID
+      },
+      method: 'GET'
+    });
+  } else {
+    response = await fetch(authUrl, {
+      method: "GET",
+      headers: {
+        'X-Minilock-Id': mID
+      }
+    });
+  }
+  
   const message = await response.blob();
   miniLock.crypto.decryptFile(message, mID, secretKey,
     function (fileBlob, saveName, senderID) {
