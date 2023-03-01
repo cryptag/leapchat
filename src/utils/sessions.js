@@ -1,6 +1,9 @@
 import { getEmail, getPassphrase } from '../utils/encrypter';
 import miniLock from '../utils/miniLock';
 
+
+import { disconnected } from '../store/actions/chatActions';
+
 // TODO: will be different host from a mobile device, probably if (!window)
 const authUrl = `${window.location.origin}/api/login`;
 
@@ -11,24 +14,34 @@ async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewP
     headers: {
       'X-Minilock-Id': mID
     }
+  }).then((response) => {
+    if (!response.ok) {
+      disconnected();
+    }
+    return response;
+  }).then(async (response) => {
+    const message = await response.blob();
+    miniLock.crypto.decryptFile(message, mID, secretKey,
+      function (fileBlob, saveName, senderID) {
+        const reader = new FileReader();
+        reader.addEventListener("loadend", () => {
+          const authToken = reader.result;
+          initiateConnection({
+            authToken,
+            secretKey,
+            mID,
+            isNewRoom: isNewPassphrase,
+          });
+        });
+
+        reader.readAsText(fileBlob);
+      });
+  }).catch((error) => {
+    console.error(error);
+    disconnected();
   });
 
-  const message = await response.blob();
-  miniLock.crypto.decryptFile(message, mID, secretKey,
-    function (fileBlob, saveName, senderID) {
-      const reader = new FileReader();
-      reader.addEventListener("loadend", () => {
-        const authToken = reader.result;
-        initiateConnection({
-          authToken,
-          secretKey,
-          mID,
-          isNewRoom: isNewPassphrase,
-        });
-      });
-
-      reader.readAsText(fileBlob);
-    });
+  
 }
 
 export const initiateSessionAndConnect = (

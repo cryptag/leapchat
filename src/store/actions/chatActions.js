@@ -14,7 +14,10 @@ export const CHAT_USERNAME_SET = 'CHAT_USERNAME_SET';
 
 export const initChat = () => ({ type: CHAT_INIT_CHAT });
 
-export const initConnection = ({
+export const initConnection = (pincode = '') =>
+  ({ type: CHAT_INIT_CONNECTION, pincode });
+
+export const initConnectionNew = ({
   authToken, secretKey, mID, isNewRoom
 }) =>
   ({
