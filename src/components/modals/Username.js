@@ -18,7 +18,6 @@ const UsernameModal = ({
   onToggleModalVisibility,
   setUsername,
   enableAudio,
-  authenticating,
   connecting,
   connected,
 }) => {
@@ -75,11 +74,8 @@ const UsernameModal = ({
     <p>Cranking a bunch of gears.</p>
   );
 
-  if (authenticating) {
-    progress = 60;
-    statusMessage = <p>Establishing a session in your browser.</p>;
-  } else if (connecting) {
-    progress = 80;
+  if (connecting) {
+    progress = 50;
     statusMessage = <p>Creating a secure connection with LeapChat servers.</p>;
   } else if (connected) {
     progress = 95;
@@ -144,7 +140,6 @@ UsernameModal.propTypes = {
   username: PropTypes.string.isRequired,
   onToggleModalVisibility: PropTypes.func.isRequired,
   setUsername: PropTypes.func.isRequired,
-  authenticating: PropTypes.bool.isRequired,
   connecting: PropTypes.bool.isRequired,
   connected: PropTypes.bool.isRequired,
 };
