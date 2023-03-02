@@ -65,7 +65,7 @@ var upgrader = websocket.Upgrader{
 		origin := r.Header.Get("Origin")
 		return origin == "http://127.0.0.1:8080" || // dev
 			origin == "http://localhost:8080" || // dev
-			origin == "http://10.0.2.2:8080" ||
+			origin == "http://10.0.2.2:8080" || // Android emulator
 			origin == "http://leapchat.org" || // prod
 			origin == "https://leapchat.org" || // prod
 			origin == "http://www.leapchat.org" || // prod
