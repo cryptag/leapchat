@@ -61,6 +61,17 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:   1024,
 	WriteBufferSize:  1024,
 	HandshakeTimeout: 45 * time.Second,
+	CheckOrigin: func(r *http.Request) bool {
+		origin := r.Header.Get("Origin")
+		return origin == "http://127.0.0.1:8080" || // dev
+			origin == "http://localhost:8080" || // dev
+			origin == "http://10.0.2.2:8080" ||
+			origin == "http://leapchat.org" || // prod
+			origin == "https://leapchat.org" || // prod
+			origin == "http://www.leapchat.org" || // prod
+			origin == "https://www.leapchat.org" || // prod
+			origin == "http://localhost" // Capacitor
+	},
 }
 
 func Auth(h http.Handler, m *Mapper) func(w http.ResponseWriter, req *http.Request) {

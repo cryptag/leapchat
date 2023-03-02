@@ -6,21 +6,29 @@ import { CapacitorHttp } from '@capacitor/core';
 // TODO: will be different host from a mobile device, probably if (!window)
 let authUrl = `${window.location.origin}/api/login`;
 
-if (Capacitor.isNativePlatform()){
-  authUrl = "http://192.168.1.247:8080/api/login";
+if (Capacitor.isNativePlatform()) {
+  authUrl = "http://10.0.2.2:8080/api/login";
 }
 
+// Helper for parsing response from Go API
+//
+// From https://stackoverflow.com/a/36183085
+const b64toBlob = (base64, type = 'application/octet-stream') =>
+      fetch(`data:${type};base64,${base64}`).then(res => res.blob());
 
 async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewPassphrase) {
-  let response;
-  if (Capacitor.isNativePlatform()){
+  let response, message;
+  if (Capacitor.isNativePlatform()) {
     response = await CapacitorHttp.request({
       url: authUrl,
       headers: {
         'X-Minilock-Id': mID
       },
-      method: 'GET'
+      method: 'GET',
+      responseType: 'blob'  // Makes `response.data` base64-encoded binary data
     });
+
+    message = await b64toBlob(response.data);
   } else {
     response = await fetch(authUrl, {
       method: "GET",
@@ -28,9 +36,10 @@ async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewP
         'X-Minilock-Id': mID
       }
     });
+
+    message = await response.blob();
   }
-  
-  const message = await response.blob();
+
   miniLock.crypto.decryptFile(message, mID, secretKey,
     function (fileBlob, saveName, senderID) {
       const reader = new FileReader();

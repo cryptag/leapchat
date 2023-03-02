@@ -28,8 +28,13 @@ import {
 import ChatHandler from './helpers/ChatHandler';
 import { combineEpics } from 'redux-observable';
 import createDetectVisibilityObservable from './helpers/createDetectPageVisibilityObservable';
+import { Capacitor } from '@capacitor/core';
 
-const wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
+let wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
+if (Capacitor.isNativePlatform()) {
+  wsUrl = 'ws://10.0.2.2:8080/api/ws/messages/all'
+}
+
 export const chatHandler = new ChatHandler(wsUrl);
 
 import { Observable } from 'rxjs/Observable';
