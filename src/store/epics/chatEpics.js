@@ -30,6 +30,12 @@ import ChatHandler from './helpers/ChatHandler';
 import { combineEpics } from 'redux-observable';
 import createDetectVisibilityObservable from './helpers/createDetectPageVisibilityObservable';
 
+// let wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
+// if (Capacitor.isNativePlatform()) {
+//   // wsUrl = 'wss://www.leapchat.org/api/ws/messages/all'
+//   wsUrl = 'ws://10.0.2.2:8080/api/ws/messages/all'
+// }
+
 import { authUrl, wsUrl } from './helpers/urls';
 
 export const chatHandler = new ChatHandler(wsUrl);
