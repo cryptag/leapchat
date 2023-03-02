@@ -7,6 +7,7 @@ import { CapacitorHttp } from '@capacitor/core';
 let authUrl = `${window.location.origin}/api/login`;
 
 if (Capacitor.isNativePlatform()) {
+  // authUrl = "https://www.leapchat.org/api/login";
   authUrl = "http://10.0.2.2:8080/api/login";
 }
 
