@@ -9,7 +9,7 @@ export const persistUsername = (username) => {
 
 export const getPersistedUsername = () => {
   if (typeof localStorage !== "undefined"){
-    return localStorage.getItem(USERNAME_KEY);
+    return localStorage.getItem(USERNAME_KEY) || '';
   }
   return '';
 };
@@ -23,7 +23,7 @@ export const getIsParanoidMode = () => {
 
 export const getIsPincodeRequired = () => {
   if (typeof document !== "undefined") {
-    return  document.location.hash.endsWith('--') || false;
+    return document.location.hash.endsWith('--') || false;
   }
   return false;
 };
