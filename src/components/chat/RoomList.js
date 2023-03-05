@@ -28,8 +28,9 @@ const RoomList = ({
   };
 
   const styleRoomName = (passphrase) => {
+    const lightPurple = '#aa6fe3';
     return {
-      color: passphrase === passphraseFromUrlHash ? '#663399' : 'white',
+      color: passphrase === passphraseFromUrlHash ? lightPurple : 'white',
       width: '100%'
     }
   }
