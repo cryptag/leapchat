@@ -1,20 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Capacitor } from '@capacitor/core';
+import { Clipboard } from '@capacitor/clipboard';
 
 import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaShareAlt } from 'react-icons/fa';
 import { FaShareAltSquare } from 'react-icons/fa';
 
-const onCopyShareLink = (e) => {
-  navigator.clipboard.writeText(window.location.href);
-}
 
 const getWindowLocationHref = () => {
   if (Capacitor.isNativePlatform()) {
     return 'https://' + window.location.href.split('//')[1]  // http -> https
   } else {
     return window.location.href;
+  }
+};
+
+const onCopyShareLink = async (e) => {
+  if (Capacitor.isNativePlatform()) {
+    await Clipboard.write({ string: getWindowLocationHref() });
+  } else {
+    navigator.clipboard.writeText( getWindowLocationHref() );
   }
 };
 
