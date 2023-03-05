@@ -1,3 +1,14 @@
+html, body {
+  /* iOS viewport bug fix (bottom of screen covered by control bar) */
+  /* CSS var `--vh` set in JS; see `src/utils/vh_fix.js` */
+  min-height: 100vh;
+  min-height: fill-available;
+  min-height: calc(var(--vh, 1vh) * 100);
+  height: 100vh;
+  height: fill-available;
+  height: calc(var(--vh, 1vh) * 100);
+}
+
 html, body, ul {
   padding: 0;
   margin: 0; }
@@ -14,7 +25,7 @@ body {
     display: flex;
     flex-direction: row;
     max-width: 100vw;
-    max-height: 100vh;
+    max-height: calc(var(--vh, 1vh) * 100);
   }
 }
 
@@ -23,8 +34,8 @@ body {
   #page {
     display: flex;
     flex-direction: column;
-    max-height: 100vh;
-    min-height: 100vh;
+    max-height: calc(var(--vh, 1vh) * 100);
+    min-height: calc(var(--vh, 1vh) * 100);
     header {
       flex: 1;
     }
@@ -114,7 +125,7 @@ header {
     max-width: 306px;
     flex-direction: column;
     justify-content: start;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
 
     .logo-container {
       margin-bottom: 15px;
@@ -248,7 +259,12 @@ main {
   // for now, message box is viewport height
   // less display height of message form
   // + display height of header
-  height: calc(100vh - 120px);
+  //
+  // 157px is a magic number -- and one that works well on 2 desktop
+  // browsers, the Android native app (Capacitor), and the Android
+  // emulator.  We need to explicitly set the heights set more heights
+  // of things to avoid the magic number, methinks. --@elimisteve
+  height: calc(var(--vh, 1vh) * 100 - 157px - var(--androidTopBar, 0));
   overflow-y: scroll;
   padding-top: 5px;
 
@@ -321,7 +337,7 @@ main {
 
 .search-results {
   height: auto;
-  max-height: calc(50vh);
+  max-height: calc(var(--vh, 1vh) * 50);
   padding-right: 10px;
 }
 
@@ -333,7 +349,7 @@ main {
     flex: 1;
     flex-direction: row;
     justify-content: start;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     width: 50vw !important;
 
     .content {
@@ -342,7 +358,7 @@ main {
         // scroll with flexbox needs revisiting
         // for now, message box is viewport height
         // less display height of message form
-        height: calc(100vh - 70px);
+        height: calc(var(--vh, 1vh) * 100 - 70px);
         box-shadow: inset 2px 2px 2px #aaa;
       }
     }
