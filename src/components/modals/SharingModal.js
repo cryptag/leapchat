@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Capacitor } from '@capacitor/core';
 
 import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaShareAlt } from 'react-icons/fa';
@@ -7,11 +8,19 @@ import { FaShareAltSquare } from 'react-icons/fa';
 
 const onCopyShareLink = (e) => {
   navigator.clipboard.writeText(window.location.href);
+}
+
+const getWindowLocationHref = () => {
+  if (Capacitor.isNativePlatform()) {
+    return 'https://' + window.location.href.split('//')[1]  // http -> https
+  } else {
+    return window.location.href;
+  }
 };
 
 const onShareLink = (e) => {
   navigator.share({
-    url: window.location.href,
+    url: getWindowLocationHref(),
     title: "LeapChat",
     text: "Join me on LeapChat"
   });
@@ -49,7 +58,7 @@ const SharingModal = ({
           <h3>Copy Link</h3>
           <p>Invite with a link copied to your clipboard.</p>
           <div className="input-group share-copy-link">
-            <input className="form-control current-href" type="text" readOnly value={window.location.href} />
+            <input className="form-control current-href" type="text" readOnly value={getWindowLocationHref()} />
             <OverlayTrigger
               trigger="click"
               overlay={copyLinkTooltip}

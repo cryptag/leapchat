@@ -9,6 +9,7 @@
     }
   },
   "server": {
+    "hostname": "www.leapchat.org",
     "cleartext": "true",
     "allowNavigation": [
       "192.168.1.247:8080/*",

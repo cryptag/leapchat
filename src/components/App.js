@@ -83,6 +83,10 @@ class App extends Component {
     if (Capacitor.getPlatform() === "web"){
       document.location.hash = "#" + passphrase;
     }
+    else {
+      // Works in Capacitor! Added it like this to avoid merge conflicts
+      document.location.hash = "#" + passphrase;
+    }
   }
 
   onToggleModalVisibility = (modalName, isVisible) => {

@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 import { FaShareAlt } from 'react-icons/fa';
 
 import { UserStatusIcon } from './UserStatusIcons';
+import RoomList from './RoomList';
 
 import SharingModal from '../modals/SharingModal';
 
@@ -42,6 +43,9 @@ const UserList = ({
           );
         })}
       </ul>
+
+      {document.location.hash.slice(1) && <RoomList />}
+
       <div className="invite-users" >
         <Button
           className="icon-button"
@@ -53,7 +57,7 @@ const UserList = ({
           isVisible={showSharingModal}
           onClose={() => setShowSharingModal(false)} />}
       </div>
-      
+
     </div>
   );
 };
