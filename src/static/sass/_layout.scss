@@ -189,11 +189,20 @@ header {
 }
 
 // Sharing overlay - mobile settings
-@media (max-width: 768px) {
+@media (max-width: 999px) {
   .share-copy-link {
     .current-href {
       width: 100%;
+      border-radius: 7px !important;
       margin-bottom: 5px;
+    }
+    .icon-button {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      border-radius: 7px !important;
+      width: 100%;
     }
   }
 }
