@@ -36,12 +36,6 @@ body {
     flex-direction: column;
     max-height: calc(var(--vh, 1vh) * 100);
     min-height: calc(var(--vh, 1vh) * 100);
-    header {
-      flex: 1;
-    }
-    main {
-      flex: 1;
-    }
   }
 }
 
