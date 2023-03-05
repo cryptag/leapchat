@@ -8,6 +8,7 @@ import rootReducer from './store/reducers';
 import rootEpic from './store/epics';
 
 import 'bootstrap/dist/css/bootstrap.css';
+import './utils/vh_fix';
 import './static/sass/main.scss';
 import './static/fonts/Lato.ttf';
 import './static/audio/notification_gertz.wav';
