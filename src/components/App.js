@@ -65,11 +65,11 @@ class App extends Component {
     this.props.initAuth();
 
     let urlHash;
-    if (Capacitor.getPlatform() === 'web'){
+    if (Capacitor.getPlatform() === 'web') {
       urlHash = document.location.hash + pincode;
     } else {
       // for local testing in capacitor, just put in a valid fragment
-      urlHash = '';
+      urlHash = document.location.hash + pincode;
     }
 
     initiateSessionAndConnect(
