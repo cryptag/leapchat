@@ -212,6 +212,12 @@ header {
   color: $funky-purple;
 }
 
+.modal-content {
+  .qr-code {
+    margin-top: 20px;
+  }
+}
+
 // Sharing overlay - desktop settings
 @media (min-width: 768px) {
   .share-copy-link {
