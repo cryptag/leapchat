@@ -24,7 +24,7 @@ const RoomList = ({
 
   const changeRoom = (passphrase) => {
     // just update fragment and reload page for now
-    window.location.assign(window.location.origin + `/#${passphrase}`);
+    window.location.assign(window.location.origin + '/#' + passphrase);
     window.location.reload(true);
   };
 
