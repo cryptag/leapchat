@@ -58,6 +58,7 @@
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
+    "react-qr-code": "^2.0.11",
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",
     "stream-browserify": "^3.0.0",

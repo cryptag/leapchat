@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
@@ -6,6 +6,10 @@ import { Clipboard } from '@capacitor/clipboard';
 import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaShareAlt } from 'react-icons/fa';
 import { FaShareAltSquare } from 'react-icons/fa';
+
+import { FaQrcode } from 'react-icons/fa';
+
+import QRCode from "react-qr-code";
 
 
 const getWindowLocationHref = () => {
@@ -42,6 +46,15 @@ const SharingModal = ({
   isVisible,
   onClose
 }) => {
+
+  const [showQRCode, setShowQRCode] = useState(false);
+  const [inviteLink, setInviteLink] = useState("");
+
+  const onGenerateQRCode = () => {
+    setShowQRCode(true);
+    setInviteLink(getWindowLocationHref());
+  };
+
   return (
     <div>
       <Modal size="lg" show={isVisible} onHide={onClose}>
@@ -75,6 +88,16 @@ const SharingModal = ({
                 <FaShareAlt size={15} />
               </Button>
             </OverlayTrigger>
+            
+          </div>
+          <hr />
+          <h3>QR Code</h3>
+          <Button className="icon-button" variant="primary" onClick={onGenerateQRCode}>
+            Generate QR Code
+            <FaQrcode size={15} />
+          </Button>
+          <div className="qr-code">
+            {showQRCode && <QRCode value={inviteLink} />}
           </div>
         </Modal.Body>
       </Modal>
