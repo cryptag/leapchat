@@ -14,7 +14,7 @@ import QRCode from "react-qr-code";
 
 const getWindowLocationHref = () => {
   if (Capacitor.isNativePlatform()) {
-    return 'https://' + window.location.href.split('//')[1];  // http -> https
+    return 'https://www.leapchat.org/' + window.location.hash;
   } else {
     return window.location.href;
   }
