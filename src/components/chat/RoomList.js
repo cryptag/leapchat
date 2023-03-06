@@ -18,10 +18,6 @@ const RoomList = ({
     localStorage.setItem('roomList', JSON.stringify(roomList));
   }
 
-  const setPassphrase = (passphrase) => {
-    console.log('setPassphrase() -- TODO: Disconnect the WebSocket, change the current URL hash, auth again, connect via WebSocket');
-  };
-
   const changeRoom = (passphrase) => {
     // just update fragment and reload page for now
     window.location.assign(window.location.origin + '/#' + passphrase);
