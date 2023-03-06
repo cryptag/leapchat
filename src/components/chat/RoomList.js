@@ -24,8 +24,6 @@ const RoomList = ({
     window.location.reload(true);
   };
 
-  roomList.sort((a, b) => {a > b;});
-
   return (
     <div className="room-list">
       <h4>Chat Rooms</h4>
