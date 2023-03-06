@@ -33,7 +33,7 @@ import { Capacitor } from '@capacitor/core';
 let wsUrl = `${window.location.origin.replace('http', 'ws')}/api/ws/messages/all`;
 if (Capacitor.isNativePlatform()) {
   // wsUrl = 'wss://www.leapchat.org/api/ws/messages/all'
-  wsUrl = 'ws://10.0.2.2:8080/api/ws/messages/all'
+  wsUrl = 'ws://10.0.2.2:8080/api/ws/messages/all';
 }
 
 export const chatHandler = new ChatHandler(wsUrl);

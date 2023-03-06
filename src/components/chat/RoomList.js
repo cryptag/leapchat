@@ -8,7 +8,7 @@ const RoomList = ({
   const displayRoomName = (passphrase) => {
     // 'OneTwoThreeFourFive' => 'One Two Three'
     return passphrase.replace(/([A-Z])/g, '_$1').slice(1).split('_').slice(0, 3).join(' ');
-  }
+  };
 
   // Append the current room to our room list if it isn't there already
   let roomList = JSON.parse( localStorage.getItem('roomList') || '[]' );
@@ -18,34 +18,25 @@ const RoomList = ({
     localStorage.setItem('roomList', JSON.stringify(roomList));
   }
 
-  const styleRoomList = () => {
-    return {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      marginTop: '48px'
-    };
-  };
-
-  const styleRoomName = (passphrase) => {
-    const lightPurple = '#aa6fe3';
-    return {
-      color: passphrase === passphraseFromUrlHash ? lightPurple : 'white',
-      width: '100%'
-    }
-  }
-
   const setPassphrase = (passphrase) => {
     console.log('setPassphrase() -- TODO: Disconnect the WebSocket, change the current URL hash, auth again, connect via WebSocket');
-  }
+  };
+
+  const changeRoom = (passphrase) => {
+    // just update fragment and reload page for now
+    window.location.assign(window.location.origin + `/#${passphrase}`);
+    window.location.reload(true);
+  };
+
+  roomList.sort((a, b) => {a > b;});
 
   return (
-    <div style={styleRoomList()}>
+    <div className="room-list">
       <h4>Chat Rooms</h4>
       <ul>
         {roomList.map((passphrase) => {
           return (
-            <li key={passphrase} style={styleRoomName(passphrase)} onClick={() => setPassphrase(passphrase)}>
+            <li className={passphrase === passphraseFromUrlHash ? "current-room": ""} key={passphrase} onClick={() => changeRoom(passphrase)}>
               {displayRoomName(passphrase)}
             </li>
           );
@@ -55,8 +46,7 @@ const RoomList = ({
   );
 };
 
-RoomList.propTypes = {
-};
+RoomList.propTypes = {};
 
 const mapStateToProps = (reduxState) => ({
 });

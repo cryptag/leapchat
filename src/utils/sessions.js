@@ -15,7 +15,7 @@ if (Capacitor.isNativePlatform()) {
 //
 // From https://stackoverflow.com/a/36183085
 const b64toBlob = (base64, type = 'application/octet-stream') =>
-      fetch(`data:${type};base64,${base64}`).then(res => res.blob());
+  fetch(`data:${type};base64,${base64}`).then(res => res.blob());
 
 async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewPassphrase) {
   let response, message;

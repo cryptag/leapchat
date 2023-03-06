@@ -10,7 +10,7 @@ import { FaShareAltSquare } from 'react-icons/fa';
 
 const getWindowLocationHref = () => {
   if (Capacitor.isNativePlatform()) {
-    return 'https://' + window.location.href.split('//')[1]  // http -> https
+    return 'https://' + window.location.href.split('//')[1];  // http -> https
   } else {
     return window.location.href;
   }

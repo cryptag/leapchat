@@ -97,6 +97,38 @@ header {
     }
   }
 
+  $light-purple: #aa6fe3;
+
+  .room-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 48px;
+
+    ul {
+      li {
+        width: 100%;
+        color: white;
+        cursor: pointer;
+        font-size: 1.2em;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        &.current-room {
+          color: $light-purple;
+          cursor: default;
+          font-weight: bold;
+
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+
   .logo-container {
     display: flex;
     justify-content: space-between;
