@@ -1,7 +1,7 @@
 # LeapChat
 
 LeapChat is an ephemeral chat application.  LeapChat uses
-[miniLock](https://minilock.io) for challenge/response-based
+[miniLock](https://web.archive.org/web/20180508023310/https://minilock.io/) for challenge/response-based
 authentication. This app also enables users to create chat rooms,
 invite others to said rooms (via a special URL with a passphrase at
 the end of it that is used to generate a miniLock keypair), and of
