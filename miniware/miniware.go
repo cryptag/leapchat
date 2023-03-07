@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cathalgarvey/go-minilock/taber"
+	"github.com/cryptag/go-minilock/taber"
 	gorillacontext "github.com/gorilla/context"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"

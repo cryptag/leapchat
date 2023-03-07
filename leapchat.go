@@ -4,7 +4,7 @@ import (
 	"flag"
 	"strings"
 
-	"github.com/cathalgarvey/go-minilock/taber"
+	"github.com/cryptag/go-minilock/taber"
 	"github.com/cryptag/leapchat/miniware"
 	log "github.com/sirupsen/logrus"
 )

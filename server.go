@@ -16,8 +16,8 @@ import (
 	"github.com/cryptag/gosecure/xss"
 	"github.com/cryptag/leapchat/miniware"
 
-	minilock "github.com/cathalgarvey/go-minilock"
-	"github.com/cathalgarvey/go-minilock/taber"
+	minilock "github.com/cryptag/go-minilock"
+	"github.com/cryptag/go-minilock/taber"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 	uuid "github.com/nu7hatch/gouuid"
