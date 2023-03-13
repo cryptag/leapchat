@@ -1,8 +1,8 @@
 package main
 
 import (
-	"crypto/tls"
 	"fmt"
+	stdlog "log"
 	"net/http"
 	"strings"
 	"time"
@@ -47,7 +47,7 @@ func NewRouter(m *miniware.Mapper) *mux.Router {
 	return r
 }
 
-func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
+func NewServer(m *miniware.Mapper, httpAddr string, errLog *stdlog.Logger) *http.Server {
 	r := NewRouter(m)
 
 	return &http.Server{
@@ -56,6 +56,7 @@ func NewServer(m *miniware.Mapper, httpAddr string) *http.Server {
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
 		Handler:      r,
+		ErrorLog:     errLog,
 	}
 }
 
@@ -69,7 +70,7 @@ func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autoc
 	srv.Handler = middleware.Then(manager.HTTPHandler(srv.Handler))
 
 	srv.Addr = httpsAddr
-	srv.TLSConfig = getTLSConfig(domain, manager)
+	srv.TLSConfig = manager.TLSConfig()
 }
 
 func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
@@ -134,7 +135,7 @@ func parseMinilockID(req *http.Request) (string, *taber.Keys, error) {
 	return mID, keypair, nil
 }
 
-func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
+func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager, errLog *stdlog.Logger) {
 	srv := &http.Server{
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
@@ -146,6 +147,7 @@ func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 			url := "https://" + domain + ":" + httpsPort + req.URL.String()
 			http.Redirect(w, req, url, http.StatusFound)
 		})),
+		ErrorLog: errLog,
 	}
 	log.Infof("Listening on %v\n", httpAddr)
 	log.Fatal(srv.ListenAndServe())
@@ -157,8 +159,4 @@ func getAutocertManager(domain string) *autocert.Manager {
 		HostPolicy: autocert.HostWhitelist(domain),
 		Cache:      autocert.DirCache("./" + domain),
 	}
-}
-
-func getTLSConfig(domain string, manager *autocert.Manager) *tls.Config {
-	return manager.TLSConfig()
 }
