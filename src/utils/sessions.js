@@ -10,23 +10,50 @@
  */
 import { getEmail, getPassphrase } from '../utils/encrypter';
 import miniLock from '../utils/miniLock';
+import { Capacitor } from '@capacitor/core';
+import { CapacitorHttp } from '@capacitor/core';
 
 
 import { disconnected } from '../store/actions/chatActions';
 
 // TODO: will be different host from a mobile device, probably if (!window)
-const authUrl = `${window.location.origin}/api/login`;
+let authUrl = `${window.location.origin}/api/login`;
 
+if (Capacitor.isNativePlatform()) {
+  // authUrl = "https://www.leapchat.org/api/login";
+  authUrl = "http://10.0.2.2:8080/api/login";
+}
+
+// Helper for parsing response from Go API
+//
+// From https://stackoverflow.com/a/36183085
+const b64toBlob = (base64, type = 'application/octet-stream') =>
+      fetch(`data:${type};base64,${base64}`).then(res => res.blob());
 
 async function connectWithAuthRequest(initiateConnection, mID, secretKey, isNewPassphrase) {
-  const response = await fetch(authUrl, {
-    method: "GET",
-    headers: {
-      'X-Minilock-Id': mID
-    }
-  });
+  let response, message;
+  if (Capacitor.isNativePlatform()) {
+    response = await CapacitorHttp.request({
+      url: authUrl,
+      headers: {
+        'X-Minilock-Id': mID
+      },
+      method: 'GET',
+      responseType: 'blob'  // Makes `response.data` base64-encoded binary data
+    });
 
-  const message = await response.blob();
+    message = await b64toBlob(response.data);
+  } else {
+    response = await fetch(authUrl, {
+      method: "GET",
+      headers: {
+        'X-Minilock-Id': mID
+      }
+    });
+
+    message = await response.blob();
+  }
+
   miniLock.crypto.decryptFile(message, mID, secretKey,
     function (fileBlob, saveName, senderID) {
       const reader = new FileReader();

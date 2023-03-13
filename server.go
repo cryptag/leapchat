@@ -74,6 +74,7 @@ func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autoc
 
 func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		//w.Header().Set("Access-Control-Allow-Origin", "*")
 		mID, keypair, err := parseMinilockID(req)
 		if err != nil {
 			WriteErrorStatus(w, "Error: invalid miniLock ID",

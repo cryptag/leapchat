@@ -1,10 +1,9 @@
+import { Capacitor } from '@capacitor/core';
 
-let hostname;
-if (typeof window.location !== "undefined") {
-  hostname = window.location.origin;
-} else {
-  // hard-coded for mobile device scenarios
-  hostname = "http://locahost:8080";
+let hostname = window.location.origin;
+
+if (Capacitor.isNativePlatform()){
+  hostname = "http://10.0.2.2:8080";
 }
 
 export const authUrl = `${hostname}/api/login`;

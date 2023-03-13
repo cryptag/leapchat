@@ -124,6 +124,12 @@ function getAuthRequestSettings({ mID }) {
   return settings;
 }
 
+// Helper for parsing response from Go API
+//
+// From https://stackoverflow.com/a/36183085
+const b64toBlob = (base64, type = 'application/octet-stream') =>
+      fetch(`data:${type};base64,${base64}`).then(res => res.blob());
+
 const connectionAlertTtlSeconds = 4;
 
 const initConnectionEpic = (action$) =>
@@ -204,7 +210,6 @@ const ownUserStatusEpic = (action$, store) =>
         .map(() => userStatusSent())
     )
     .catch(error => {
-      console.error(error);
       return Observable.of(alertWarning('Error sending user status.'));
     });
 

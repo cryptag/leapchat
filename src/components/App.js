@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Capacitor } from '@capacitor/core';
 import {
   setUsername,
   initConnection,

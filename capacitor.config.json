@@ -1,0 +1,19 @@
+{
+  "appId": "org.leapchat",
+  "appName": "LeapChat",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  },
+  "server": {
+    "cleartext": "true",
+    "allowNavigation": [
+      "192.168.1.247:8080/*",
+      "localhost:8080/*",
+      "leapchat.org/*"
+    ]
+  }
+}
