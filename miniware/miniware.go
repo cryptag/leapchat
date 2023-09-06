@@ -70,6 +70,7 @@ var upgrader = websocket.Upgrader{
 			origin == "https://leapchat.org" || // prod
 			origin == "http://www.leapchat.org" || // prod
 			origin == "https://www.leapchat.org" || // prod
+			origin == "" || // CLI
 			origin == "http://localhost" // Capacitor
 	},
 }
