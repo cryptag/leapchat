@@ -153,9 +153,17 @@ func redirectToHTTPS(httpAddr, httpsPort, domain string, manager *autocert.Manag
 }
 
 func getAutocertManager(domain string) *autocert.Manager {
+	domains := []string{domain}
+	// Support both website.com and www.website.com
+	if strings.HasPrefix(domain, "www.") {
+		domains = append(domains, domain[len("www."):])
+	} else {
+		domains = append(domains, "www." + domain)
+	}
+
 	return &autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist(domain),
+		HostPolicy: autocert.HostWhitelist(domains...),
 		Cache:      autocert.DirCache("./" + domain),
 	}
 }
