@@ -61,7 +61,7 @@ func main() {
 
 		// Setup http->https redirection
 		httpsPort := strings.SplitN(*httpsAddr, ":", 2)[1]
-		go redirectToHTTPS(*httpAddr, httpsPort, manager)
+		go redirectToHTTPS(*httpAddr, httpsPort, *domain, manager)
 
 		// Production modifications to server
 		ProductionServer(srv, *httpsAddr, *domain, manager, *iframeOrigin)

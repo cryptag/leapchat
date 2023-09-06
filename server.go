@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -69,7 +68,7 @@ func ProductionServer(srv *http.Server, httpsAddr, domain string, manager *autoc
 	srv.Handler = middleware.Then(manager.HTTPHandler(srv.Handler))
 
 	srv.Addr = httpsAddr
-	srv.TLSConfig = getTLSConfig(domain, manager)
+	srv.TLSConfig = manager.TLSConfig()
 }
 
 func Login(m *miniware.Mapper, pgClient *PGClient) func(w http.ResponseWriter, req *http.Request) {
@@ -134,7 +133,7 @@ func parseMinilockID(req *http.Request) (string, *taber.Keys, error) {
 	return mID, keypair, nil
 }
 
-func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
+func redirectToHTTPS(httpAddr, httpsPort, domain string, manager *autocert.Manager) {
 	srv := &http.Server{
 		Addr:         httpAddr,
 		ReadTimeout:  5 * time.Second,
@@ -142,8 +141,10 @@ func redirectToHTTPS(httpAddr, httpsPort string, manager *autocert.Manager) {
 		IdleTimeout:  5 * time.Second,
 		Handler: manager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Set("Connection", "close")
-			domain := strings.SplitN(req.Host, ":", 2)[0]
 			url := "https://" + domain + ":" + httpsPort + req.URL.String()
+			if httpsPort == "443" {
+				url = "https://" + domain + req.URL.String()
+			}
 			http.Redirect(w, req, url, http.StatusFound)
 		})),
 	}
@@ -157,8 +158,4 @@ func getAutocertManager(domain string) *autocert.Manager {
 		HostPolicy: autocert.HostWhitelist(domain),
 		Cache:      autocert.DirCache("./" + domain),
 	}
-}
-
-func getTLSConfig(domain string, manager *autocert.Manager) *tls.Config {
-	return manager.TLSConfig()
 }
