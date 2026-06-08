@@ -1,25 +1,8 @@
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
-
 import Message from './Message';
 
 class MessageList extends Component {
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.messages.length > 0 
-      && nextProps.messages
-        .map(m => m.id)
-        .concat(this.props.messages.map(m => m.id))
-        .reduce((acc, id) => {
-          if(!acc.indexOf(id) === -1){
-            acc.push(id);
-          }
-          return acc;
-        }, [])
-        .length !== this.props.messages;
-  }
-
-  componentDidUpdate(){
+  componentDidUpdate() {
     this.props.onNewMessages();
   }
 
@@ -27,16 +10,18 @@ class MessageList extends Component {
     const { messages, username } = this.props;
 
     return (
-      <ul>
+      <div className="message-list">
         {messages.map((message, i) => {
+          const isGroupStart = i === 0 || messages[i - 1].from !== message.from;
           return (
             <Message
-              key={i}
+              key={message.key || i}
               message={message}
-              username={username} />
+              username={username}
+              isGroupStart={isGroupStart} />
           );
         })}
-      </ul>
+      </div>
     );
   }
 }

@@ -1,31 +1,22 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { FaSearch } from 'react-icons/fa';
-
+import { FiSearch } from 'react-icons/fi';
 import SearchModal from '../../modals/SearchModal';
 
 const OpenSearchIcon = ({ username, messages }) => {
   const [showSearchModal, setShowSearchModal] = useState(false);
 
-  const openTooltip = (
-    <Tooltip id="open-message-search">Search Content</Tooltip>
-  );
-
   return (
-    <div className="open-message-search">
-      {/* <OverlayTrigger overlay={openTooltip} placement="top" delayShow={300} delayHide={150}> */}
-      {/* </OverlayTrigger> */}
-      <FaSearch
-        size={24}
-        onClick={() => setShowSearchModal(true)} />
-      {showSearchModal && <SearchModal 
+    <>
+      <button className="chat-tool-btn" onClick={() => setShowSearchModal(true)} title="Search messages">
+        <FiSearch size={18} />
+      </button>
+      {showSearchModal && <SearchModal
         username={username}
         isVisible={showSearchModal}
         messages={messages}
         onClose={() => setShowSearchModal(false)} />}
-    </div>
+    </>
   );
 };
 

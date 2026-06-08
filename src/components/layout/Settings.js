@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
-import { PropTypes } from 'prop-types';
-
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
-
-import { FaCog } from 'react-icons/fa';
-
+import { connect } from 'react-redux';
+import { FiSettings, FiSun, FiMoon } from 'react-icons/fi';
+import { setTheme } from '../../store/actions/settingsActions';
 import SettingsModal from '../modals/SettingsModal';
 
-const settingsTooltip = (
-  <Tooltip id="open-settings-tooltip">Open Settings</Tooltip>
-);
-
-const Settings = () => {
+const Settings = ({ theme, setTheme }) => {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const isDark = theme === 'dark';
 
   return (
-    <div className="settings" >
-      {/* <OverlayTrigger placement="bottom" overlay={settingsTooltip} delayShow={300} delayHide={150}> */}
-      {/* </OverlayTrigger> */}
-      <FaCog size={27} onClick={() => setShowSettingsModal(true)} />
-      {showSettingsModal && <SettingsModal 
+    <>
+      <button
+        className="sidebar-icon-btn"
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+        {isDark ? <FiSun size={16} /> : <FiMoon size={16} />}
+      </button>
+      <button
+        className="sidebar-icon-btn"
+        onClick={() => setShowSettingsModal(true)}
+        title="Settings">
+        <FiSettings size={16} />
+      </button>
+      {showSettingsModal && <SettingsModal
         isVisible={showSettingsModal}
         onClose={() => setShowSettingsModal(false)} />}
-    </div>
+    </>
   );
 };
 
-Settings.propTypes = {};
-
-export default Settings;
+const mapStateToProps = (state) => ({ theme: state.settings.theme });
+export default connect(mapStateToProps, { setTheme })(Settings);

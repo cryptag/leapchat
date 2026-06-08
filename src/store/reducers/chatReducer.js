@@ -73,7 +73,8 @@ function chatReducer(state = initialState, action) {
       messages: [...state.messages, {
         key: action.key,
         from: action.fromUsername,
-        msg: action.message
+        msg: action.message,
+        ts: Date.now(),
       }],
       suggestionStart: null,
       suggestions: []

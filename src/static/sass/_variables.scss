@@ -1,1 +1,89 @@
-$base-color: #111;
+// Design tokens as CSS custom properties — switch via [data-theme="dark"]
+
+:root {
+  // Colors — light mode
+  --bg-app:             #FFFFFF;
+  --bg-sidebar:         #F4F4F5;
+  --bg-sidebar-hover:   #EAEAEC;
+  --bg-input:           #F4F4F5;
+  --bg-msg-hover:       rgba(0, 0, 0, 0.025);
+  --surface:            #FFFFFF;
+  --surface-raised:     #FFFFFF;
+  --border:             #E4E4E7;
+  --border-subtle:      #F0F0F2;
+
+  --text-primary:       #18181B;
+  --text-secondary:     #71717A;
+  --text-muted:         #A1A1AA;
+  --text-inverse:       #FFFFFF;
+
+  --accent:             #5E6AD2;
+  --accent-hover:       #4A58C5;
+  --accent-active:      #3B49B8;
+  --accent-faint:       rgba(94, 106, 210, 0.08);
+  --accent-ring:        rgba(94, 106, 210, 0.3);
+
+  --danger:             #EF4444;
+  --danger-hover:       #DC2626;
+  --danger-faint:       rgba(239, 68, 68, 0.08);
+  --success:            #22C55E;
+  --warning:            #F59E0B;
+
+  --status-online:      #22C55E;
+  --status-away:        #F59E0B;
+  --status-offline:     #A1A1AA;
+
+  // Layout
+  --sidebar-width:      256px;
+
+  // Effects
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 8px rgba(0,0,0,0.06), 0 12px 20px rgba(0,0,0,0.06);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.08), 0 24px 48px rgba(0,0,0,0.06);
+
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   10px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+}
+
+[data-theme="dark"] {
+  --bg-app:             #0F0F10;
+  --bg-sidebar:         #18181B;
+  --bg-sidebar-hover:   #27272A;
+  --bg-input:           #27272A;
+  --bg-msg-hover:       rgba(255, 255, 255, 0.03);
+  --surface:            #1C1C1F;
+  --surface-raised:     #27272A;
+  --border:             #27272A;
+  --border-subtle:      #1F1F22;
+
+  --text-primary:       #FAFAFA;
+  --text-secondary:     #A1A1AA;
+  --text-muted:         #52525B;
+  --text-inverse:       #18181B;
+
+  --accent:             #7280E0;
+  --accent-hover:       #8290ED;
+  --accent-active:      #6270D3;
+  --accent-faint:       rgba(114, 128, 224, 0.12);
+  --accent-ring:        rgba(114, 128, 224, 0.3);
+
+  --danger:             #F87171;
+  --danger-hover:       #FCA5A5;
+  --danger-faint:       rgba(248, 113, 113, 0.1);
+  --success:            #34D399;
+  --warning:            #FBBF24;
+
+  --status-online:      #34D399;
+  --status-away:        #FBBF24;
+  --status-offline:     #52525B;
+
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.3);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:  0 4px 8px rgba(0,0,0,0.3), 0 12px 20px rgba(0,0,0,0.4);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.5), 0 24px 48px rgba(0,0,0,0.6);
+}

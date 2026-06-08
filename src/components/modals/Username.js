@@ -1,12 +1,9 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { Modal, Button, Alert, ProgressBar } from 'react-bootstrap';
-
-import { generateRandomUsername } from '../../data/username';
-
+import { Modal, Button, ProgressBar } from 'react-bootstrap';
 import { enableAudio } from '../../store/actions/settingsActions';
+import { generateRandomUsername } from '../../data/username';
 
 export const MAX_USERNAME_LENGTH = 45;
 
@@ -22,12 +19,9 @@ const UsernameModal = ({
   connected,
 }) => {
   const usernameInput = useRef(null);
+  const [failMessage, setFailMessage] = useState('');
 
-  const [failMessage, setFailMessage ] = useState("");
-
-  const onClose = () => {
-    onToggleModalVisibility('username', false);
-  };
+  const onClose = () => onToggleModalVisibility('username', false);
 
   const setRandomUsernameInForm = () => {
     usernameInput.current.value = generateRandomUsername();
@@ -35,101 +29,87 @@ const UsernameModal = ({
   };
 
   const isUsernameValid = () => {
-    const usernameFromForm = usernameInput.current.value;
-    if (!usernameFromForm || usernameFromForm.length === 0) {
-      setFailMessage("Must not be empty");
-      return false;
-    } else if (usernameFromForm.length > MAX_USERNAME_LENGTH) {
-      setFailMessage(`Length must not exceed ${MAX_USERNAME_LENGTH}`);
-      return false;
-    }
-    setFailMessage("");
+    const val = usernameInput.current.value;
+    if (!val || val.length === 0) { setFailMessage('Username cannot be empty'); return false; }
+    if (val.length > MAX_USERNAME_LENGTH) { setFailMessage(`Max ${MAX_USERNAME_LENGTH} characters`); return false; }
+    setFailMessage('');
     return true;
-  };
-
-  const onUsernameKeyUp = (e) => {
-    if (e.which === 13) {
-      onSetUsername();
-    }
-  };
-
-  const setDefaultAudio = () => {
-    // set the audio to the user's previously selected preference; enable by default
-    let isAudioEnabled = JSON.parse(localStorage.getItem('isAudioEnabled') || 'true');
-    if (isAudioEnabled){
-      enableAudio();
-    }
   };
 
   const onSetUsername = () => {
     if (isUsernameValid()) {
       setUsername(usernameInput.current.value);
-      setDefaultAudio();
+      const isAudioEnabled = JSON.parse(localStorage.getItem('isAudioEnabled') || 'true');
+      if (isAudioEnabled) enableAudio();
       onClose();
     }
   };
 
-  let progress = 0;
-  let statusMessage = (
-    <p>Cranking a bunch of gears.</p>
-  );
+  const onKeyUp = (e) => { if (e.which === 13) onSetUsername(); };
 
-  if (connecting) {
-    progress = 50;
-    statusMessage = <p>Creating a secure connection with LeapChat servers.</p>;
-  } else if (connected) {
-    progress = 95;
-    statusMessage = <p>Connected!</p>;
-  }
+  let progress = 0;
+  let statusText = 'Preparing secure connection…';
+  if (connecting) { progress = 50; statusText = 'Establishing encrypted connection…'; }
+  else if (connected) { progress = 100; statusText = 'Connected!'; }
 
   return (
-    <div>
-      <Modal size="lg" show={isVisible} onHide={onClose}>
-        <Modal.Header>
-          <Modal.Title>Set Username</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div data-testid="set-username-form" className="form-group">
-            {/* username is empty on initial page load, not on subsequent 'edit username' opens */}
-            {!username && isNewRoom && <Alert
-              variant="success">
-              New room created!
-            </Alert>}
-            {!username && !isNewRoom && <Alert
-              variant="success">
-              Successfully joined room!
-            </Alert>}
-            <label className="form-label" htmlFor="username">Username</label>
-            <input 
-              style={{marginBottom: "10px"}}
-              id="username"
-              type="text"
-              className="form-control"
-              ref={usernameInput}
-              defaultValue={ username || previousUsername }
-              placeholder="Enter username (e.g., trinity)" 
-              onKeyUp={onUsernameKeyUp}
-              autoFocus={true}
-              autoComplete="off" />
-            
-            {failMessage && <div className="alert alert-danger" role="alert" >
-              <br />
-              <strong>Invalid Username: </strong>
-              {failMessage}
-            </div>}
-            <Button size="sm" variant="primary" onClick={setRandomUsernameInForm}>Generate Random Username</Button>
+    <Modal size="lg" show={isVisible} onHide={onClose} centered>
+      <Modal.Header closeButton={!!username}>
+        <Modal.Title>{username ? 'Edit Username' : 'Set Username'}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {!username && (
+          <div style={{
+            padding: '10px 14px',
+            borderRadius: 'var(--radius-md)',
+            background: isNewRoom ? 'rgba(94, 106, 210, 0.08)' : 'rgba(34, 197, 94, 0.08)',
+            border: `1px solid ${isNewRoom ? 'rgba(94,106,210,0.2)' : 'rgba(34,197,94,0.2)'}`,
+            marginBottom: '16px',
+            fontSize: '13px',
+            color: isNewRoom ? 'var(--accent)' : 'var(--success)',
+            fontWeight: 500,
+          }}>
+            {isNewRoom ? '🔐 New encrypted room created' : '✓ Room joined successfully'}
           </div>
-          {!connected && <div className="progress-indicator" style={{marginTop: '20px'}}>
-            {statusMessage}
-            <ProgressBar animated now={progress} label={`${progress}%`} />
-          </div>}
-        </Modal.Body>
-        <Modal.Footer>
-          {username && <Button variant="light" onClick={onClose}>Cancel</Button>}
-          <Button data-testid="set-username" onClick={onSetUsername} variant="primary" disabled={!connected}>Set Username</Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+        )}
+
+        <label className="form-label">Username</label>
+        <input
+          id="username"
+          type="text"
+          className="form-control"
+          ref={usernameInput}
+          defaultValue={username || previousUsername}
+          placeholder="e.g., trinity"
+          onKeyUp={onKeyUp}
+          autoFocus
+          autoComplete="off"
+          style={{ marginBottom: '8px' }} />
+
+        {failMessage && (
+          <div className="alert alert-danger" style={{ marginBottom: '8px' }}>
+            {failMessage}
+          </div>
+        )}
+
+        <Button size="sm" variant="light" onClick={setRandomUsernameInForm}>
+          Generate random username
+        </Button>
+
+        {!connected && (
+          <div className="progress-indicator">
+            <p>{statusText}</p>
+            <ProgressBar animated now={progress} style={{ height: '4px' }} />
+          </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        {username && <Button variant="light" onClick={onClose}>Cancel</Button>}
+        <Button onClick={onSetUsername} variant="primary" disabled={!connected}>
+          {username ? 'Save' : 'Join Room'}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
@@ -144,10 +124,5 @@ UsernameModal.propTypes = {
   connected: PropTypes.bool.isRequired,
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    enableAudio: () => dispatch(enableAudio()),
-  };
-};
-
+const mapDispatchToProps = (dispatch) => ({ enableAudio: () => dispatch(enableAudio()) });
 export default connect(null, mapDispatchToProps)(UsernameModal);
