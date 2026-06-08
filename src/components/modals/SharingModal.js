@@ -1,76 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Modal, Button } from 'react-bootstrap';
+import { FiShare2, FiCopy, FiLink } from 'react-icons/fi';
 
-import { Modal, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { FaShareAlt } from 'react-icons/fa';
-import { FaShareAltSquare } from 'react-icons/fa';
+const SharingModal = ({ isVisible, onClose }) => {
+  const onCopy = () => navigator.clipboard.writeText(window.location.href);
+  const onShare = () => navigator.share({ url: window.location.href, title: 'LeapChat', text: 'Join me on LeapChat' });
 
-const onCopyShareLink = (e) => {
-  navigator.clipboard.writeText(window.location.href);
-};
-
-const onShareLink = (e) => {
-  navigator.share({
-    url: window.location.href,
-    title: "LeapChat",
-    text: "Join me on LeapChat"
-  });
-};
-
-const copyLinkTooltip = (
-  <Tooltip id="confirm-copy">
-    <strong>Link copied!</strong>
-  </Tooltip>
-);
-
-const SharingModal = ({
-  isVisible,
-  onClose
-}) => {
   return (
-    <div>
-      <Modal size="lg" show={isVisible} onHide={onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Invite to Chat</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          { navigator.share && <div>
-            <h3>Share Link</h3>
-            <p>
-              Invite with a link shared via SMS, Email, etc.
-            </p>
-            <Button className="icon-button" onClick={onShareLink} variant="primary">
-              Share Link <FaShareAltSquare />
+    <Modal size="lg" show={isVisible} onHide={onClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Invite People</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {navigator.share && (
+          <div className="settings-section">
+            <h3>Share</h3>
+            <p>Invite via SMS, email, or other apps.</p>
+            <Button className="icon-button" onClick={onShare} variant="primary" size="sm">
+              <FiShare2 size={14} /> Share Link
             </Button>
-            <hr />
           </div>
-          }
+        )}
 
+        <div className="settings-section">
           <h3>Copy Link</h3>
-          <p>Invite with a link copied to your clipboard.</p>
-          <div className="input-group share-copy-link">
-            <input className="form-control current-href" type="text" readOnly value={window.location.href} />
-            <OverlayTrigger
-              trigger="click"
-              overlay={copyLinkTooltip}
-              placement="top"
-              delay={{ show: 300, hide: 150 }}>
-              <Button className="icon-button" variant="primary" onClick={onCopyShareLink}>
-                Copy to Clipboard
-                <FaShareAlt size={15} />
-              </Button>
-            </OverlayTrigger>
+          <p>Share this link with anyone you want to invite.</p>
+          <div className="share-copy-link">
+            <input
+              className="form-control"
+              type="text"
+              readOnly
+              value={window.location.href}
+              onClick={(e) => e.target.select()} />
+            <Button className="icon-button" variant="primary" size="sm" onClick={onCopy}>
+              <FiCopy size={14} /> Copy
+            </Button>
           </div>
-        </Modal.Body>
-      </Modal>
-    </div>
+        </div>
+      </Modal.Body>
+    </Modal>
   );
 };
 
 SharingModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-
 };
 
 export default SharingModal;

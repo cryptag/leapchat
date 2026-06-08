@@ -1,58 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FiEdit2 } from 'react-icons/fi';
 
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+const AVATAR_COLORS = [
+  '#5E6AD2', '#4CAF82', '#E96A5D', '#F5A623',
+  '#8B5CF6', '#06B6D4', '#F43F5E', '#10B981',
+  '#EC4899', '#3B82F6',
+];
 
-import { FaCircle } from 'react-icons/fa';
-import { FaMinusCircle } from 'react-icons/fa';
-import { FaEdit } from 'react-icons/fa';
-
-const editUsernameTooltip = (
-  <Tooltip id="edit-username-tooltip">Edit Username</Tooltip>
-);
-
-export const UserStatusIconBubble = ({ status }) => {
-  let statusIcon = <FaMinusCircle style={styleOffline} />;
-  if (status === 'viewing') {
-    statusIcon = <FaCircle style={styleViewing} />;
-  } else if (status === 'online') {
-    statusIcon = <FaCircle style={styleOnline} />;
+export const getAvatarColor = (username = '') => {
+  let hash = 0;
+  for (let i = 0; i < username.length; i++) {
+    hash = username.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return (
-    <>
-      {statusIcon}
-    </>
-  );
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 };
-
-UserStatusIconBubble.propTypes = {
-  status: PropTypes.string.isRequired,
-};
-
 
 export const UserStatusIcon = ({
   username,
   status,
   isCurrentUser,
-  onToggleModalVisibility
+  onToggleModalVisibility,
 }) => {
+  const initial = (username || '?')[0].toUpperCase();
+  const color = getAvatarColor(username);
 
-  const onShowUsernameModal = () => {
-    onToggleModalVisibility('username', true);
-  };
+  const statusClass =
+    status === 'viewing' || status === 'online' ? 'online' :
+    status === 'away' ? 'away' : 'offline';
 
   return (
-    <div style={styleUserStatus}>
-      <UserStatusIconBubble status={status} />
-      {username}
-      {isCurrentUser && <span>&nbsp;(me)</span> }
-      <span style={styleEditUsername} data-testid="edit-username">
-        {isCurrentUser &&
-          // <OverlayTrigger placement="bottom" overlay={editUsernameTooltip} delayShow={300} delayHide={150}>
-          // </OverlayTrigger>
-          <FaEdit onClick={onShowUsernameModal} size={19} />
-        }
+    <div className="user-list-item">
+      <div className="user-avatar" style={{ backgroundColor: color }}>
+        {initial}
+        <span className={`user-status-dot ${statusClass}`} />
+      </div>
+      <span className="user-name">
+        {username}
+        {isCurrentUser && <span className="user-name-me-badge"> (me)</span>}
       </span>
+      {isCurrentUser && (
+        <span
+          className="user-edit-btn"
+          title="Edit username"
+          data-testid="edit-username"
+          onClick={() => onToggleModalVisibility('username', true)}>
+          <FiEdit2 size={13} />
+        </span>
+      )}
     </div>
   );
 };
@@ -61,38 +56,12 @@ UserStatusIcon.propTypes = {
   username: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   isCurrentUser: PropTypes.bool.isRequired,
-  onToggleModalVisibility: PropTypes.func.isRequired
+  onToggleModalVisibility: PropTypes.func.isRequired,
 };
 
-const styleUserStatus = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center'
-};
-
-const styleDots = {
-  marginTop: '.2em',
-  marginRight: '.2em',
-  marginBottom: '.2em'
-};
-
-const styleViewing = Object.assign(
-  { color: 'green' },
-  styleDots
-);
-
-const styleOnline = Object.assign(
-  { color: 'yellow' },
-  styleDots
-);
-
-const styleOffline = Object.assign(
-  { color: 'gray' },
-  styleDots
-);
-
-const styleEditUsername = {
-  cursor: 'pointer',
-  marginLeft: 'auto',
-  marginRight: '2px'  // For optical vertical alignment with gear icon
+export const UserStatusIconBubble = ({ status }) => {
+  const statusClass =
+    status === 'viewing' || status === 'online' ? 'online' :
+    status === 'away' ? 'away' : 'offline';
+  return <span className={`user-status-dot ${statusClass}`} style={{ position: 'static', border: 'none' }} />;
 };

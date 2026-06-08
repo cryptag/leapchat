@@ -7,50 +7,48 @@ import {
 } from '../store/actions/chatActions';
 
 import Header from './layout/Header';
-
 import ChatContainer from './chat/ChatContainer';
-
 import PincodeModal from './modals/PincodeModal';
 import UsernameModal from './modals/Username';
 
-// evaluate on initial render only, not on every re-render.
 const isNewRoom = Boolean(!document.location.hash);
 
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       modals: {
-        username: {
-          isVisible: false
-        },
-        pincode: {
-          isVisible: false
-        }
+        username: { isVisible: false },
+        pincode:  { isVisible: false },
       }
     };
-
   }
 
   componentDidMount() {
+    this.applyTheme(this.props.theme);
     this.props.initChat();
     this.connectIfNeeded();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.theme !== this.props.theme) {
+      this.applyTheme(this.props.theme);
+    }
     this.connectIfNeeded();
   }
 
+  applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
+  }
+
   connectIfNeeded() {
-    if (!this.props.pincodeRequired && this.props.shouldConnect){
+    if (!this.props.pincodeRequired && this.props.shouldConnect) {
       this.onInitConnection();
     }
   }
 
-  onSetPincode = (pincode = "") => {
-    if (!pincode || pincode.endsWith("--")) {
-      this.onError('Invalid pincode!');
+  onSetPincode = (pincode = '') => {
+    if (!pincode || pincode.endsWith('--')) {
       return;
     }
     this.onInitConnection(pincode);
@@ -60,23 +58,15 @@ class App extends Component {
     document.location.hash = '#' + passphrase;
   }
 
-  onInitConnection(pincode='') {
+  onInitConnection(pincode = '') {
     const urlHash = document.location.hash + pincode;
     this.props.initConnection(this.createDeviceSession, urlHash);
   }
 
   onToggleModalVisibility = (modalName, isVisible) => {
-    let modalsState = {...this.state.modals};
+    const modalsState = { ...this.state.modals };
     modalsState[modalName].isVisible = isVisible;
-    this.setState({
-      modals: modalsState
-    });
-  };
-
-  onClosePincodeModal = () => {
-    this.setState({
-      showPincodeModal: false
-    });
+    this.setState({ modals: modalsState });
   };
 
   render() {
@@ -84,7 +74,6 @@ class App extends Component {
       username,
       pincodeRequired,
       previousUsername,
-      authenticating,
       connecting,
       connected,
     } = this.props;
@@ -115,14 +104,11 @@ class App extends Component {
           connected={connected}
           onToggleModalVisibility={this.onToggleModalVisibility} />}
 
-        <main className="encloser">
-
+        <main>
           <ChatContainer
             messageInputFocus={chatInputFocus}
             onToggleModalVisibility={this.onToggleModalVisibility} />
-
         </main>
-
       </div>
     );
   }
@@ -130,23 +116,20 @@ class App extends Component {
 
 App.propTypes = {};
 
-const mapStateToProps = (reduxState) => {
-  return {
-    username: reduxState.chat.username,
-    previousUsername: reduxState.chat.previousUsername,
-    pincodeRequired: reduxState.chat.pincodeRequired,
-    shouldConnect: reduxState.chat.shouldConnect,
-    connecting: reduxState.chat.connecting,
-    connected: reduxState.chat.connected,
-  };
-};
+const mapStateToProps = (reduxState) => ({
+  username:         reduxState.chat.username,
+  previousUsername: reduxState.chat.previousUsername,
+  pincodeRequired:  reduxState.chat.pincodeRequired,
+  shouldConnect:    reduxState.chat.shouldConnect,
+  connecting:       reduxState.chat.connecting,
+  connected:        reduxState.chat.connected,
+  theme:            reduxState.settings.theme,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    initChat: () => dispatch(initChat()),
-    initConnection: (createDeviceSession, urlHash) => dispatch(initConnection(createDeviceSession, urlHash)),
-    setUsername: (username) => dispatch(setUsername(username)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  initChat:        () => dispatch(initChat()),
+  initConnection:  (createDeviceSession, urlHash) => dispatch(initConnection(createDeviceSession, urlHash)),
+  setUsername:     (username) => dispatch(setUsername(username)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
